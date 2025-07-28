@@ -5,7 +5,14 @@ A modular Django backend powering the **OSIJ** platform — built for scalable, 
 ## 📦 Project Structure
 
 ```
-.
+.   osij_frontend
+        node_modules/
+        public/
+        src/
+        REAME.md
+        .gitignore
+        package-lock.json
+        package.json
 ├── osij_backend/
 │   ├── osij_backend/  # Django project settings and config
 │   ├── services/      # Core services app (business logic, models, views)
@@ -16,23 +23,27 @@ A modular Django backend powering the **OSIJ** platform — built for scalable, 
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
+
 ```bash
-git clone https://github.com/yourusername/osij_backend.git
+git clone https://github.com/hopeigbinosa123/CompaniesWebsite.git
 cd osij_backend
 ```
 
 ### 2. Create virtual environment
+
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 ### 3. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 4. Start the server
+
 ```bash
 python manage.py runserver
 ```
