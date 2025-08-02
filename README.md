@@ -1,151 +1,269 @@
-# 💡 OSIJ Backend and Frontend Development Application
+# 💡 OSIJ Fullstack Development Guide
 
-A modular **Django backend** powering the OSIJ platform — designed for scalable, lore-driven services and smooth user flows.
+Modular Django + React project powering the OSIJ platform — built for scalable, lore-driven services and smooth user flows. This guide includes everything backend and frontend devs need to get started.
 
 ---
 
-## 📁 Project Structure
+<details>
+<summary>📁 <strong>Project Structure</strong></summary>
 
 ```
 project_root/
-├── osij_frontend/           # React + Tailwind frontend
-│   └── ...
-│
 ├── osij_backend/
-│   ├── osij_backend/        # Global Django settings
-│   ├── services/            # Core backend logic
-│   ├── static/              # Static files (optional)
-│   ├── media/               # User-uploaded content
-│   ├── manage.py            # CLI tool for backend control
-│   └── requirements.txt     # Python dependencies
-├── .env                     # Environment variables (hidden from Git)
-└── README.md                # You're reading it!
+│   ├── osij_backend/        # Django settings
+│   ├── education/           # Course delivery + certificates
+│   ├── software_services/   # Enquiry system & support flow
+│   ├── static/              # Static assets
+│   ├── media/               # User uploads
+│   ├── manage.py
+│   └── requirements.txt
+│
+├── osij_frontend/           # React + Tailwind frontend
+│   ├── public/
+│   └── src/
+│       ├── api/             # API utility calls
+│       ├── components/      # Reusable UI components
+│       ├── pages/           # Route-level views
+│       ├── styles/
+│       └── App.js
+├── .env
+└── README.md
 ```
+
+</details>
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Clone the repository
+<details>
+<summary>🚀 <strong>Getting Started (Backend)</strong></summary>
 
 ```bash
 git clone https://github.com/hopeigbinosa123/CompaniesWebsite.git
 cd osij_backend
-```
 
-### 2. Create & activate virtual environment
-
-```bash
 python -m venv venv
-source venv/bin/activate    # Windows: venv\Scripts\activate
-```
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-### 3. Install dependencies
-
-```bash
 pip install -r requirements.txt
-```
-
-### 4. Create `.env` file (optional but recommended)
-
-```env
-SECRET_KEY=your-secret-key
-DEBUG=True
-DATABASE_URL=sqlite:///db.sqlite3
-```
-
-### 5. Run migrations
-
-```bash
+python manage.py makemigrations
 python manage.py migrate
-```
-
-### 6. Start the development server
-
-```bash
 python manage.py runserver
 ```
 
-Your backend will now be available at `http://127.0.0.1:8000/`
+🔗 App runs at [`http://localhost:8000`](http://localhost:8000)
+
+</details>
 
 ---
 
-## 🧩 App Overview — `services`
-
-Handles core platform features like service creation, content delivery, and user flows.
-
-| File | Role |
-|------|------|
-| `models.py` | Database models |
-| `views.py` | Business logic and controller actions |
-| `urls.py` | App-level routing |
-| `serializers.py` | API data formatting (if using DRF) |
-| `admin.py` | Admin panel registration |
-
----
-
-## 🛠️ Admin Panel Setup
-
-Django includes a built-in admin dashboard to manage backend data visually.
-
-### Step 1: Create superuser
+<details>
+<summary>🛠️ <strong>Admin Panel Setup</strong></summary>
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Follow the prompts for username, email, and password.
-
-### Step 2: Register models
-
-In `services/admin.py`, register models like:
+Register models in `admin.py`:
 
 ```python
 from django.contrib import admin
-from .models import YourModelName
-
-admin.site.register(YourModelName)
+from .models import Course, Enrollment, Certificate
+admin.site.register(Course)
+admin.site.register(Enrollment)
+admin.site.register(Certificate)
 ```
 
-### Step 3: Access the dashboard
+🔐 Panel URL: [`http://localhost:8000/admin`](http://localhost:8000/admin)
 
-```bash
-python manage.py runserver
-```
-
-Visit [`http://127.0.0.1:8000/admin/`](http://127.0.0.1:8000/admin/) and log in using your superuser credentials.
+</details>
 
 ---
 
-## 🌐 Routing Guide
+<details>
+<summary>🧩 <strong>Backend App Overview</strong></summary>
 
-Update `osij_backend/urls.py` as needed:
+| App Name            | Role                                   | Models |
+|---------------------|----------------------------------------|--------|
+| `education`          | Courses, enrollments, certificates     | `Course`, `Enrollment`, `Certificate` |
+| `software_services`  | Enquiries + support responses          | `SoftwareEnquiry`, `SupportResponse` |
 
+✅ All models are migration-ready and integrated with Django admin.
+
+</details>
+
+---
+
+<details>
+<summary>🌐 <strong>API Exposure & Routing</strong></summary>
+
+🔧 Install Django REST Framework + CORS headers:
+```bash
+pip install djangorestframework django-cors-headers
+```
+
+Update `settings.py`:
 ```python
-from django.urls import path, include
+INSTALLED_APPS = ['rest_framework', 'corsheaders', ...]
+MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware', ...]
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+```
 
+Create basic API views & serializers for `education` app.
+
+Add to root `urls.py`:
+```python
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('services.urls')),
+    path('education/', include('education.urls')),
+    path('software/', include('software_services.urls')),
 ]
 ```
 
-Sample endpoint: `GET /api/services/`
+✅ Frontend can now access `GET /education/courses/`, `POST /software/support/`
+
+</details>
 
 ---
 
-## 🔧 Dev Tips
-
-- Use Postman to test endpoints
-- Add Django REST Framework (DRF) for browsable APIs
-- Consider Swagger UI for documentation
-- Avoid committing `.env`, database files, or migrations without confirming
+<details>
+<summary>🖼️ <strong>Frontend Dev Guide & Starter Setup</strong></summary>
 
 ---
 
-## 👥 Team Workflow Notes
+### 🧰 React Setup
 
-- **Single branch setup**: all work is done on `main` for simplicity
-- **Updates**: teammates should run `git pull origin main` to get the latest code
-- **Virtualenv required**: make sure teammates activate before installing packages
-- **Admin access**: only trusted roles should create superusers or manage live data
+```bash
+npm install axios
+npm start
+```
+
+Confirm React is running on `localhost:3000` and Django on `localhost:8000`.
+
+---
+
+### 📁 Suggested React Structure
+
+```
+osij_frontend/
+├── src/
+│   ├── api/
+│   │   └── api.js
+│   ├── components/
+│   │   ├── CourseList.jsx
+│   │   └── SupportForm.jsx
+│   ├── pages/
+│   │   ├── Courses.jsx
+│   │   └── Support.jsx
+│   ├── styles/
+│   └── App.js
+```
+
+---
+
+### 🔗 API Utility
+
+`src/api/api.js`:
+
+```js
+import axios from "axios";
+const BASE = "http://localhost:8000";
+
+export const fetchCourses = () => axios.get(`${BASE}/education/courses/`);
+export const submitSupport = (data) => axios.post(`${BASE}/software/support/`, data);
+```
+
+---
+
+### 📚 Course Display
+
+`components/CourseList.jsx`:
+```jsx
+const CourseList = ({ courses }) => (
+  <div>
+    {courses.map(course => (
+      <div key={course.id}>
+        <h2>{course.title}</h2>
+        <p>{course.description}</p>
+      </div>
+    ))}
+  </div>
+);
+```
+
+`pages/Courses.jsx`:
+```jsx
+import { useEffect, useState } from "react";
+import { fetchCourses } from "../api/api";
+import CourseList from "../components/CourseList";
+
+const Courses = () => {
+  const [courses, setCourses] = useState([]);
+  useEffect(() => {
+    fetchCourses().then(res => setCourses(res.data));
+  }, []);
+  return <CourseList courses={courses} />;
+};
+```
+
+---
+
+### 🛠️ Support Form
+
+`components/SupportForm.jsx`:
+```jsx
+import { useState } from "react";
+import { submitSupport } from "../api/api";
+
+const SupportForm = () => {
+  const [issue, setIssue] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await submitSupport({ description: issue });
+    setIssue("");
+    alert("Submitted!");
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <textarea value={issue} onChange={e => setIssue(e.target.value)} />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+```
+
+`pages/Support.jsx`:
+```jsx
+import SupportForm from "../components/SupportForm";
+
+const Support = () => <SupportForm />;
+```
+
+---
+
+### 👶 Beginner Notes
+
+- Keep components small and reusable
+- Test backend endpoints with Postman or your browser
+- Use `console.log()` to debug
+- Ask for help often — this project is built on teamwork 💙
+
+</details>
+
+---
+
+<details>
+<summary>👥 <strong>Team Workflow Notes</strong></summary>
+
+- 🛠️ All work done on `main` branch for simplicity
+- 🔃 Pull updates using `git pull origin main`
+- ✅ Virtualenv required for backend contributors
+- 🔐 Admin access restricted to trusted users only
+- 📂 Media files & `.env` should be excluded from commits
+- 💬 Document errors and fixes — they help the whole team grow
+- 💡 Use task boards to assign and track progress
+- ❤️ Help each other — everyone's still learning
+
+</details>
+```
