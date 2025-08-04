@@ -13,17 +13,20 @@ project_root/
 │   ├── osij_backend/        # Django settings
 │   ├── education/           # Course delivery + certificates
 │   ├── software_services/   # Enquiry system & support flow
-│   ├── static/              # Static assets
-│   ├── media/               # User uploads
+│   ├── static/
+│   ├── media/
 │   ├── manage.py
 │   └── requirements.txt
-│
 ├── osij_frontend/           # React + Tailwind frontend
 │   ├── public/
 │   └── src/
-│       ├── api/             # API utility calls
-│       ├── components/      # Reusable UI components
-│       ├── pages/           # Route-level views
+│       ├── api/
+│       ├── admin/
+│       │   ├── ITTraining/
+│       │   ├── SoftwareServices/
+│       │   └── CEO/
+│       ├── components/
+│       ├── pages/
 │       ├── styles/
 │       └── App.js
 ├── .env
@@ -108,9 +111,7 @@ MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware', ...]
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
 ```
 
-Create basic API views & serializers for `education` app.
-
-Add to root `urls.py`:
+Add app routes:
 ```python
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -119,135 +120,80 @@ urlpatterns = [
 ]
 ```
 
-✅ Frontend can now access `GET /education/courses/`, `POST /software/support/`
+### 🔗 Key Endpoints for Admin Dashboards
+
+| Method | Endpoint                             | Purpose                         |
+|--------|--------------------------------------|----------------------------------|
+| GET    | `/education/sessions/`               | Fetch IT training sessions       |
+| POST   | `/education/feedback/`               | Submit feedback form             |
+| GET    | `/software/enquiries/?status=open`   | Filter service enquiries         |
+| POST   | `/software/responses/`               | Submit enquiry response          |
 
 </details>
 
 ---
 
 <details>
-<summary>🖼️ <strong>Frontend Dev Guide & Starter Setup</strong></summary>
+<summary>🖼️ <strong>Frontend Dev Guide</strong></summary>
 
----
-
-### 🧰 React Setup
+### 🧰 Setup
 
 ```bash
 npm install axios
 npm start
 ```
 
-Confirm React is running on `localhost:3000` and Django on `localhost:8000`.
+Confirm React is running on `http://localhost:3000`
 
 ---
 
-### 📁 Suggested React Structure
+### 📁 Suggested CRA Structure (with Admin Panels)
 
 ```
 osij_frontend/
 ├── src/
 │   ├── api/
-│   │   └── api.js
+│   ├── admin/
+│   │   ├── ITTraining/
+│   │   │   ├── ITDashboard.jsx
+│   │   │   ├── SessionList.jsx
+│   │   │   └── FeedbackForm.jsx
+│   │   ├── SoftwareServices/
+│   │   │   ├── SupportDashboard.jsx
+│   │   │   ├── EnquiryTable.jsx
+│   │   │   └── ResponseForm.jsx
+│   │   └── CEO/
+│   │       └── MasterDashboard.jsx
 │   ├── components/
-│   │   ├── CourseList.jsx
-│   │   └── SupportForm.jsx
 │   ├── pages/
-│   │   ├── Courses.jsx
-│   │   └── Support.jsx
 │   ├── styles/
 │   └── App.js
 ```
 
 ---
 
-### 🔗 API Utility
+### 🔗 API Utilities
 
-`src/api/api.js`:
-
+`src/api/adminApi.js`:
 ```js
 import axios from "axios";
 const BASE = "http://localhost:8000";
 
-export const fetchCourses = () => axios.get(`${BASE}/education/courses/`);
-export const submitSupport = (data) => axios.post(`${BASE}/software/support/`, data);
+export const fetchSessions = () => axios.get(`${BASE}/education/sessions/`);
+export const postFeedback = (data) => axios.post(`${BASE}/education/feedback/`, data);
+export const fetchEnquiries = () => axios.get(`${BASE}/software/enquiries/?status=open`);
+export const postResponse = (data) => axios.post(`${BASE}/software/responses/`, data);
 ```
 
 ---
 
-### 📚 Course Display
+### 🔐 Role-Based Routing (Optional)
 
-`components/CourseList.jsx`:
 ```jsx
-const CourseList = ({ courses }) => (
-  <div>
-    {courses.map(course => (
-      <div key={course.id}>
-        <h2>{course.title}</h2>
-        <p>{course.description}</p>
-      </div>
-    ))}
-  </div>
-);
+<Route path="/admin/it-training" element={<ITDashboard />} />
+<Route path="/admin/software-services" element={<SupportDashboard />} />
+<Route path="/admin/master" element={<MasterDashboard />} />
 ```
-
-`pages/Courses.jsx`:
-```jsx
-import { useEffect, useState } from "react";
-import { fetchCourses } from "../api/api";
-import CourseList from "../components/CourseList";
-
-const Courses = () => {
-  const [courses, setCourses] = useState([]);
-  useEffect(() => {
-    fetchCourses().then(res => setCourses(res.data));
-  }, []);
-  return <CourseList courses={courses} />;
-};
-```
-
----
-
-### 🛠️ Support Form
-
-`components/SupportForm.jsx`:
-```jsx
-import { useState } from "react";
-import { submitSupport } from "../api/api";
-
-const SupportForm = () => {
-  const [issue, setIssue] = useState("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await submitSupport({ description: issue });
-    setIssue("");
-    alert("Submitted!");
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <textarea value={issue} onChange={e => setIssue(e.target.value)} />
-      <button type="submit">Submit</button>
-    </form>
-  );
-};
-```
-
-`pages/Support.jsx`:
-```jsx
-import SupportForm from "../components/SupportForm";
-
-const Support = () => <SupportForm />;
-```
-
----
-
-### 👶 Beginner Notes
-
-- Keep components small and reusable
-- Test backend endpoints with Postman or your browser
-- Use `console.log()` to debug
-- Ask for help often — this project is built on teamwork 💙
 
 </details>
 
@@ -256,14 +202,14 @@ const Support = () => <SupportForm />;
 <details>
 <summary>👥 <strong>Team Workflow Notes</strong></summary>
 
-- 🛠️ All work done on `main` branch for simplicity
-- 🔃 Pull updates using `git pull origin main`
-- ✅ Virtualenv required for backend contributors
-- 🔐 Admin access restricted to trusted users only
-- 📂 Media files & `.env` should be excluded from commits
-- 💬 Document errors and fixes — they help the whole team grow
-- 💡 Use task boards to assign and track progress
-- ❤️ Help each other — everyone's still learning
+- 🛠️ Work is done on `main` branch
+- 🔃 Use `git pull origin main` to stay updated
+- ✅ Use virtualenv for backend development
+- 🔐 Keep admin access secure
+- 📂 Exclude `.env` and media files from commits
+- 💬 Document bugs and fixes for shared learning
+- 💡 Use task boards to track work
+- ❤️ Lift each other up — everyone's growing
 
 </details>
 ```
