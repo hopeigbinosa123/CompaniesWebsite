@@ -10,15 +10,23 @@ class Course(models.Model):
     instructor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
 class Enrollment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     enrolled_at = models.DateTimeField(auto_now_add=True)
     paid = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
-    enrolled_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-enrolled_at']
 
 class Certificate(models.Model):
     enrollment = models.OneToOneField(Enrollment, on_delete=models.CASCADE)
     download_link = models.URLField(max_length=200)
     issued_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-issued_at']
