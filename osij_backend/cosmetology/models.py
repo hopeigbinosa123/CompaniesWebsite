@@ -17,4 +17,5 @@ class AppointmentBooking(models.Model):
     name = models.ForeignKey(User, on_delete=models.CASCADE)
     appointment_date = models.DateTimeField()
     booked_at = models.DateTimeField(auto_now_add=True)
+    service = models.ForeignKey(BeautyServices, on_delete=models.CASCADE)
     stylist = models.ForeignKey(StylistProfile)
