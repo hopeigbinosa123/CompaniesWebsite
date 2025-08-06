@@ -1,11 +1,13 @@
 # 💡 OSIJ Fullstack Development Guide
 
-Modular Django + React project powering the OSIJ platform — built for scalable, lore-driven services and smooth user flows. This guide includes everything backend and frontend devs need to get started.
+Modular Django + React project powering the OSIJ platform — built for scalable, lore-driven services and emotionally supportive user flows. This guide equips backend and frontend developers with everything they need to contribute confidently.
 
 ---
 
+## 📁 Project Structure
+
 <details>
-<summary>📁 <strong>Project Structure</strong></summary>
+<summary>Click to expand</summary>
 
 ```
 project_root/
@@ -29,7 +31,7 @@ project_root/
 │       ├── pages/
 │       ├── styles/
 │       └── App.js
-├── .env
+├── .env                     # Environment config (excluded from commits)
 └── README.md
 ```
 
@@ -37,8 +39,7 @@ project_root/
 
 ---
 
-<details>
-<summary>🚀 <strong>Getting Started (Backend)</strong></summary>
+## 🚀 Getting Started (Backend)
 
 ```bash
 git clone https://github.com/hopeigbinosa123/CompaniesWebsite.git
@@ -55,22 +56,36 @@ python manage.py runserver
 
 🔗 App runs at [`http://localhost:8000`](http://localhost:8000)
 
-</details>
+---
+
+## 🔐 Environment Setup
+
+Create a `.env` file based on the following template:
+
+```ini
+DEBUG=True
+SECRET_KEY=your-secret-key
+DATABASE_URL=postgres://user:pass@localhost:5432/osij
+```
+
+✅ `.env` should be excluded from commits via `.gitignore`
 
 ---
 
-<details>
-<summary>🛠️ <strong>Admin Panel Setup</strong></summary>
+## 🛠️ Admin Panel Setup
+
+Create your admin account:
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Register models in `admin.py`:
+Sample model registration:
 
 ```python
 from django.contrib import admin
 from .models import Course, Enrollment, Certificate
+
 admin.site.register(Course)
 admin.site.register(Enrollment)
 admin.site.register(Certificate)
@@ -78,12 +93,9 @@ admin.site.register(Certificate)
 
 🔐 Panel URL: [`http://localhost:8000/admin`](http://localhost:8000/admin)
 
-</details>
-
 ---
 
-<details>
-<summary>🧩 <strong>Backend App Overview</strong></summary>
+## 🧩 Backend App Overview
 
 | App Name            | Role                                   | Models |
 |---------------------|----------------------------------------|--------|
@@ -92,26 +104,52 @@ admin.site.register(Certificate)
 
 ✅ All models are migration-ready and integrated with Django admin.
 
-</details>
+---
+
+## 📦 Model Field Reference
+
+Here’s a quick breakdown of `SoftwareEnquiry` to support backend logic and frontend integrations:
+
+| Field Name               | Type             | Notes                                |
+|--------------------------|------------------|---------------------------------------|
+| `user`                   | `ForeignKey`     | Linked to `User`                      |
+| `problem_title`          | `CharField`      | Required title                        |
+| `problem_description`    | `TextField`      | Detailed issue                        |
+| `platform`               | `CharField`      | Optional (e.g., Windows, macOS)       |
+| `attachment`             | `FileField`      | Optional upload                       |
+| `preferred_contact_method`| `CharField`     | Email / Phone / Live Chat             |
+| `status`                 | `CharField`      | Default = `"open"`, 4 choices         |
+| `submitted_at`           | `DateTimeField`  | Auto-generated on submit              |
 
 ---
 
-<details>
-<summary>🌐 <strong>API Exposure & Routing</strong></summary>
+## 🌐 API Exposure & Routing
 
-🔧 Install Django REST Framework + CORS headers:
+Install API dependencies:
+
 ```bash
 pip install djangorestframework django-cors-headers
 ```
 
 Update `settings.py`:
+
 ```python
-INSTALLED_APPS = ['rest_framework', 'corsheaders', ...]
-MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware', ...]
+INSTALLED_APPS = [
+    'rest_framework',
+    'corsheaders',
+    ...
+]
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    ...
+]
+
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
 ```
 
-Add app routes:
+Define backend routes:
+
 ```python
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -120,7 +158,9 @@ urlpatterns = [
 ]
 ```
 
-### 🔗 Key Endpoints for Admin Dashboards
+---
+
+## 🔗 API Endpoint Reference
 
 | Method | Endpoint                             | Purpose                         |
 |--------|--------------------------------------|----------------------------------|
@@ -129,25 +169,39 @@ urlpatterns = [
 | GET    | `/software/enquiries/?status=open`   | Filter service enquiries         |
 | POST   | `/software/responses/`               | Submit enquiry response          |
 
-</details>
+---
+
+## 🧠 Frontend-Backend Flow Example
+
+### From `SupportDashboard.jsx`:
+```js
+postResponse({ enquiry_id, message, responder_id })
+```
+
+🔁 Hits backend:
+```http
+POST /software/responses/
+↳ Creates a SupportResponse linked to the correct enquiry
+```
+
+✅ This modular mapping helps new devs understand fullstack logic.
 
 ---
 
-<details>
-<summary>🖼️ <strong>Frontend Dev Guide</strong></summary>
+## 🖼️ Frontend Dev Guide
 
-### 🧰 Setup
+### Setup
 
 ```bash
 npm install axios
 npm start
 ```
 
-Confirm React is running on `http://localhost:3000`
+React should run at [`http://localhost:3000`](http://localhost:3000)
 
 ---
 
-### 📁 Suggested CRA Structure (with Admin Panels)
+### Suggested CRA Structure
 
 ```
 osij_frontend/
@@ -172,9 +226,10 @@ osij_frontend/
 
 ---
 
-### 🔗 API Utilities
+### API Utilities
 
 `src/api/adminApi.js`:
+
 ```js
 import axios from "axios";
 const BASE = "http://localhost:8000";
@@ -187,7 +242,7 @@ export const postResponse = (data) => axios.post(`${BASE}/software/responses/`, 
 
 ---
 
-### 🔐 Role-Based Routing (Optional)
+### Optional: Role-Based Routing
 
 ```jsx
 <Route path="/admin/it-training" element={<ITDashboard />} />
@@ -195,21 +250,28 @@ export const postResponse = (data) => axios.post(`${BASE}/software/responses/`, 
 <Route path="/admin/master" element={<MasterDashboard />} />
 ```
 
-</details>
+---
+
+## 🧭 Deployment Notes (WIP)
+
+Prepare for production with:
+
+- Docker setup (optional)
+- PostgreSQL for scalability
+- Railway or Heroku deployment flow
+- Static/media file handling via AWS S3 or similar
+
+A deployment guide will be added once the platform is ready for staging.
 
 ---
 
-<details>
-<summary>👥 <strong>Team Workflow Notes</strong></summary>
+## 👥 Team Workflow Notes
 
 - 🛠️ Work is done on `main` branch
 - 🔃 Use `git pull origin main` to stay updated
-- ✅ Use virtualenv for backend development
-- 🔐 Keep admin access secure
-- 📂 Exclude `.env` and media files from commits
-- 💬 Document bugs and fixes for shared learning
-- 💡 Use task boards to track work
-- ❤️ Lift each other up — everyone's growing
-
-</details>
-```
+- ✅ Always use virtualenv for backend dev
+- 🔐 Admin access should remain secure
+- 📂 Exclude `.env`, media, and migration folders from commits unless intentional
+- 🐞 Log and comment bugs as learning artifacts
+- 🗂️ Use task boards for modular planning
+- ❤️ Encourage and uplift — progress over perfection
