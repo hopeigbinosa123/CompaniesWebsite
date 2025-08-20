@@ -1,8 +1,11 @@
 from django.urls import path
-from .views import CourseList, EnrollmentList, CertificateList
+from . import views
 
 urlpatterns = [
-    path('courses/', CourseList.as_view()),
-    path('enrollments/', EnrollmentList.as_view()),
-    path('certificates/', CertificateList.as_view()),
+    path("courses/", views.CourseListView.as_view()),
+    path("courses/<int:pk>/", views.CourseDetailView.as_view()),
+    path("enrollments/", views.EnrollmentCreateView.as_view()),
+    # path('progress/', views.ProgressView.as_view()),
+    path("videos/<int:pk>/", views.VideoDetailView.as_view()),
+    path("certificates/", views.CertificateList.as_view()),
 ]

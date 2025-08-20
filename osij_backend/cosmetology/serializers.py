@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import BeautyServices, StylistProfile, AppointmentBooking
+from .models import BeautyService, StylistProfile, AppointmentBooking
 
-class BeautyServicesSerializer(serializers.ModelSerializer):
+class BeautyServiceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BeautyServices
+        model = BeautyService
         fields = '__all__'
 
 class StylistProfileSerializer(serializers.ModelSerializer):
