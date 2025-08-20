@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/software_services/', include('software_services.urls')), # Added
     path('api/cosmetology/', include('cosmetology.urls')), # Added
     path('api/graphic_design/', include('graphic_design.urls')), # Added
+    path('api/auth/', include('Authentication.routers')), # Updated to include Authentication URLs
 ]
