@@ -6,7 +6,11 @@ from django.contrib.auth.models import User
 
 class Designer(models.Model):
     name = models.CharField(max_length=200)
+    email = models.EmailField()
     image = models.ImageField()
+
+    def __str__(self):
+        return self.name
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -28,7 +32,7 @@ class Order(models.Model):
 
 
     def __str__(self):
-        return f"{self.title} ({self.get_status_display()})"
+        return f"{self.name} - {self.title} ({self.status})"
 
     def reject(self, reason):
         self.status = 'REJECTED'

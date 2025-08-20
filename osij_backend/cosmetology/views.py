@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import BeautyServices, StylistProfile, AppointmentBooking
+from .models import BeautyService, StylistProfile, AppointmentBooking
 from .serializers import BeautyServicesSerializer, StylistProfileSerializer, AppointmentBookingSerializers
 
 # Create your views here.
 class ServicesList(APIView):
     def get(self, request):
-        services = BeautyServices.objects.all()
+        services = BeautyService.objects.all()
         serializer = BeautyServicesSerializer(services, many=True)
         return Response(serializer.data)
 

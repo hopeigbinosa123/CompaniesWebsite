@@ -12,7 +12,10 @@ class BeautyService(models.Model):
 class StylistProfile(models.Model):
     name = models.CharField(max_length=200)
     services = models.ForeignKey(BeautyService, on_delete=models.CASCADE)
-    availability = models.DateTimeField()
+    availability = models.DateTimeField() 
+    
+    def __str__(self):
+        return self.name
 
 class AppointmentBooking(models.Model):
     name = models.ForeignKey(User, on_delete=models.CASCADE)
