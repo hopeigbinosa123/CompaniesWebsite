@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import BeautyService, StylistProfile, AppointmentBooking
 
-class BeautyServicesSerializer(serializers.ModelSerializer):
+class BeautyServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = BeautyService
         fields = '__all__'

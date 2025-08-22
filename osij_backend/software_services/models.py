@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
+from django.conf import settings
+
 
 # Create your models here.
 
@@ -12,7 +14,7 @@ STATUS_CHOICES = [
 ]
 
 class SoftwareEnquiry(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     problem_title = models.CharField(max_length=200)
     problem_description = models.TextField()
     platform = models.CharField(max_length=100, blank=True, null=True)
@@ -34,7 +36,7 @@ class SoftwareEnquiry(models.Model):
 
 class SupportResponse(models.Model):
     enquiry = models.ForeignKey(SoftwareEnquiry, on_delete=models.CASCADE)
-    responder = models.ForeignKey(User, on_delete=models.CASCADE)
+    responder = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
