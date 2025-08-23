@@ -3,15 +3,26 @@ from django.conf import settings
 
 # Create your models here.
 
-
+# Model for the structure of the graphic designer's profile, including the designer's specialities
 class Designer(models.Model):
+    SPECIALITIES = [
+        ('THUMBNAIL', 'Thumbnail'),
+        ('WEB_DESIGN', 'Web Design'),
+        ('BARNER', 'Barner'), 
+        ('LOGO', 'Logo'),
+    ]
+
     name = models.CharField(max_length=200)
-    email = models.EmailField()
     image = models.ImageField()
+    email = models.EmailField()
+    speciality = models.CharField(max_length=50, choices = SPECIALITIES)
+    bio = models.TextField()
 
     def __str__(self):
         return self.name
 
+
+# model for graphic design orders made by users with the order requirements and status tracking
 class Order(models.Model):
     STATUS_CHOICES = [
         ('PENDING', 'Pending'),

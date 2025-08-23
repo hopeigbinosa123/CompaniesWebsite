@@ -1,9 +1,16 @@
 from django.urls import path
-from .views import ServicesList, StylistsList, StylistProfileDetails, Booking
+from .views import (
+    ServicesListView, 
+    ServiceDetailsView, 
+    StylistsListView, 
+    StylistDetailsView, 
+    BookingView, 
+)
 
 urlpatterns = [
-    path('services/', ServicesList.as_view(), name='services-list'),
-    path('stylists/', StylistsList.as_view(), name='stylists-list'),
-    path('stylists/<int:pk>/', StylistsList.as_view(), name='stylist-details'),
-    path('bookings/', Booking.as_view(), name='bookings'),
+    path('services/', ServicesListView.as_view(), name='services_list'),
+    path('services/<int:pk>/', ServiceDetailsView.as_view(), name="service_details"),
+    path('stylists/', StylistsListView.as_view(), name='stylists_list'),
+    path('stylists/<int:pk>/', StylistDetailsView.as_view(), name='stylist_details'),
+    path('bookings/', BookingView.as_view(), name='appointment_bookings'),
 ]

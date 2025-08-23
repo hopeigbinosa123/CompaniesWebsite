@@ -1,19 +1,49 @@
 from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from .models import Order, Designer
-from .serializers import DesignerSerializer, OrderSerializer
+from .serializers import (
+    DesignerSerializer, 
+    DesignerDetailsSerializer, 
+    OrderSerializer, 
+    OrderDetailsSerializer,
+    UpdateStatusSerializer, 
+)
 
 # Create your views here.
 
-class Designer(APIView):
-    def get(self, request, pk):
-        designer = Designer.objects.all(pk=pk)
-        serializer = DesignerSerializer(designer, many=True)
-        return Response(serializer.data)
+# view for showing a list of all graphic designers
+class DesignerView(generics.ListAPIView):
+    queryset = Designer.objects.all()
+    serializer = DesignerSerializer
+    
+# view for showing a specific graphic designer's details
+class DesignerDetailsView(generics.RetrieveAPIView):
+    queryset = Designer.objects.all()
+    serializer = DesignerDetailsSerializer
 
-class Order(APIView):
-    def get(self, request):
-        order = Order.objects.all()
-        serializer = OrderSerializer(order, many=True)
-        return Response(serializer.data)
+# A view for showing a list of all orders made by an authenticated user
+# it shows only the orders made by the logged in user
+class OrderView(generics.ListAPIView):
+    serializer = OrderSerializer
+    permission_classes = (IsAuthenticated)
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+    
+# A view for showing full details of an order
+class OrderDetailsView(generics.RetrieveAPIView):
+    serializer = OrderDetailsSerializer
+    permission_classes = (IsAuthenticated)
+    queryset = Order.objects.all()
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
+# View for allowing graphic designers to update the status of an order assigned to them only
+class UpdateStatusView(generics.UpdateAPIView):
+    selializer = UpdateStatusSerializer
+    permission_classes = (IsAuthenticated)
+
+    def get_queryset(self):
+        return Order.objects.filter(designer = self.request.user)
