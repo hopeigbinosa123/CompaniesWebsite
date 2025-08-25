@@ -15,6 +15,8 @@ project_root/
 │   ├── osij_backend/        # Django settings
 │   ├── education/           # Course delivery + certificates
 │   ├── software_services/   # Enquiry system & support flow
+|   ├── graphic_design/
+|   ├── cosmetology/
 │   ├── static/
 │   ├── media/
 │   ├── manage.py

@@ -42,7 +42,15 @@ INSTALLED_APPS = [
     'software_services', 
     'cosmetology',
     'graphic_design',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'Authentication',
+    'Authentication.core_user',
+    'Authentication.core_auth',
+    'paypal.standard.ipn',
+    'Authentication.zoom_api',
+
     
 ]
 
@@ -56,6 +64,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+Rest_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ( 
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
+    ),
+    'DEFAULT_FILTER_BACKENDS': 
+        ['django_filters.rest_framework.DjangoFilterBackend']
+
+}
 
 ROOT_URLCONF = 'osij_backend.urls'
 
@@ -75,7 +92,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'osij_backend.wsgi.application'
-
+AUTH_USER_MODEL = 'core_user.User'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -141,3 +158,11 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'your@email.com'
 EMAIL_HOST_PASSWORD = 'yourpassword'
 DEFAULT_FROM_EMAIL = 'Course Platform <noreply@yourdomain.com>'
+
+
+ZOOM_CLIENT_ID = "your_client_id"
+ZOOM_CLIENT_SECRET = "your_client_secret"
+ZOOM_ACCOUNT_ID = "your_account_id"  # if using server-to-server OAuth
+ZOOM_REDIRECT_URI = "http://localhost:8000/api/zoom/callback/"
+
+PAYPAL_TEST = True  # Set to False in production
