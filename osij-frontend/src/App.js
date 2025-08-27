@@ -1,64 +1,123 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+// src/App.js
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import Navbar from './components/shared/Navbar';
+import Footer from './components/shared/Footer';
+import LoadingSpinner from './components/shared/LoadingSpinner';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
-// Components
-import CourseCard from './components/ItTraining.js/CourseCard';
-import CourseDetails from './components/ItTraining.js/CourseDetails';
-import EnrollmentForm from './components/ItTraining.js/EnrollmentForm';
-import ProgressTracker from './components/ItTraining.js/ProgressTraining';
-import VideoPlayer from './components/ItTraining.js/VideoPlayer';
-import CourseList from './components/ItTraining.js/CourseList';
+// Import Page Components - Public
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import ServicesPage from './pages/ServicesPage';
+import ContactPage from './pages/ContactPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
-function App() {
-  const [courses, setCourses] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Import Module Pages - Public
+import EducationPage from './pages/EducationPage';
+import SoftwareServicesPage from './pages/SoftwareServicesPage';
+import GraphicDesignPage from './pages/GraphicDesignPage';
+import CosmetologyPage from './pages/CosmetologyPage';
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}education/courses/`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setCourses(data);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+// Import Dashboard & Protected Pages - Require Login
+import DashboardPage from './pages/DashboardPage';
+import SoftwareProjectsPage from './pages/SoftwareProjectsPage';
+import GraphicDesignOrdersPage from './pages/GraphicDesignOrdersPage';
 
-    fetchCourses();
-  }, []);
+import './App.css';
+
+// Component to handle the loading state and routing
+function AppContent() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <LoadingSpinner />
+        <p className="mt-4 text-gray-600">Loading application...</p>
+      </div>
+    );
+  }
 
   return (
     <Router>
-      <div className="App">
-        <header className="App-header bg-gray-100 p-4">
-          <nav className="flex gap-4">
-            <Link to="/" className="text-blue-600 hover:underline">Courses</Link>
-            <Link to="/enroll" className="text-blue-600 hover:underline">Enroll</Link>
-            <Link to="/progress" className="text-blue-600 hover:underline">Progress</Link>
-            <Link to="/video/1" className="text-blue-600 hover:underline">Video</Link>
-          </nav>
-        </header>
-
-        <main className="p-6">
-          {loading && <p>Loading courses...</p>}
-          {error && <p>Error: {error.message}</p>}
-
+      <div className="App flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<CourseList courses={courses} />} />
-            <Route path="/course/:id" element={<CourseDetails />} />
-            <Route path="/enroll" element={<EnrollmentForm />} />
-            <Route path="/progress" element={<ProgressTracker />} />
-            <Route path="/video/:id" element={<VideoPlayer />} />
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+
+            {/* Public Module Pages */}
+            <Route path="/education" element={<EducationPage />} />
+            <Route path="/software-services" element={<SoftwareServicesPage />} />
+            <Route path="/graphic-design" element={<GraphicDesignPage />} />
+            <Route path="/cosmetology" element={<CosmetologyPage />} />
+
+            {/* Protected Routes */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/software-projects" 
+              element={
+                <ProtectedRoute>
+                  <SoftwareProjectsPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/design-orders" 
+              element={
+                <ProtectedRoute>
+                  <GraphicDesignOrdersPage />
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* 404 Page */}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
+  );
+}
+
+function NotFoundPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">404 - Page Not Found</h1>
+        <p className="text-gray-600 mb-8">The page you're looking for doesn't exist.</p>
+        <a 
+          href="/" 
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Go Back Home
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
