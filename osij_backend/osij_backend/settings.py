@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 Rest_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ( 
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -91,7 +92,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'osij_backend.wsgi.application'
-AUTH_USER_MODEL = 'core_user.User'
+AUTH_USER_MODEL = 'Authentication.core_user.User'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
