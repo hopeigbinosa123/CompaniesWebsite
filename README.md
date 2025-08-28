@@ -431,3 +431,11 @@ OSIJ is a modular, lore-driven platform for creative exploration and collaborati
 - Use `console.log()` or Django logging to trace integration points.
 - Annotate your code for future teammates.
 - Celebrate small wins — every fix helps the whole system grow.
+
+## Prince's Contribution
+
+- **Graphic Design Module**: Built responsive UI using React + Tailwind, structured components, and integrated routing  
+- **Cosmetology Module**: Designed booking flow, dashboard layout, and gallery components  
+- **Role**: Frontend Developer — collaborated with Tonia, Abel, and Lifa.
+
+
