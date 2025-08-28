@@ -1,30 +1,45 @@
 from django.shortcuts import render
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import BeautyServices, StylistProfile, AppointmentBooking
-from .serializers import BeautyServicesSerializer, StylistProfileSerializer, AppointmentBookingSerializers
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .models import BeautyService, StylistProfile, AppointmentBooking
+from .serializers import (
+    BeautyServiceSerializer, 
+    BeautyServiceDetailsSerializer, 
+    StylistProfileSerializer,
+    StylistDetailsSerializer, 
+    AppointmentBookingSerializer, 
+)
 
 # Create your views here.
-class ServicesList(APIView):
-    def get(self, request):
-        services = BeautyServices.objects.all()
-        serializer = BeautyServicesSerializer(services, many=True)
-        return Response(serializer.data)
 
-class StylistsList(APIView):
-    def get(self, request):
-        stylists_list = StylistProfile.objects.all()
-        serializer = StylistProfileSerializer(stylists_list, many=True)
-        return Response(serializer.data)
+# view for listing all cosmetology services offered
+class ServicesListView(generics.ListAPIView):
+    queryset = BeautyService.objects.all()
+    serializer = BeautyServiceSerializer
+    
+# View for viewwing full details of a specific service, on click
+class ServiceDetailsView(generics.RetrieveAPIView):
+    queryset = BeautyService.objects.all()
+    serializer = BeautyServiceDetailsSerializer
 
-class StylistProfileDetails(APIView):
-    def get(self, request, pk):
-        stylist_details = StylistProfile.objects.get(pk=pk)
-        serializer = StylistProfileSerializer(stylist_details)
-        return Response(serializer.data)
 
-class Booking(APIView):
-    def get(self, request):
-        booking = AppointmentBooking.objects.all()
-        serializer = AppointmentBookingSerializers(booking, many=True)
-        return Response(serializer.data)
+# view for listing all stylists
+class StylistsListView(generics.ListAPIView):
+    queryset = StylistProfile.objects.all()
+    serializer = StylistProfileSerializer
+
+
+# view for viewing full details of a stylist's profile
+class StylistDetailsView(generics.RetrieveAPIView):
+        queryset = StylistProfile.objects.all()
+        serializer = StylistDetailsSerializer
+
+
+# view to allow appointment booking to be made by the logged in (authenticated) user only
+# links the appointment to the logged in user account
+class BookingView(generics.ListAPIView):
+    serializer = AppointmentBookingSerializer
+    permission_classes = (IsAuthenticated)
+
+    def get_queryset(self):
+        return AppointmentBooking.objects.filter(user = self.request.user)
