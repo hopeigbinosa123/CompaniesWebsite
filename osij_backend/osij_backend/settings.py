@@ -49,8 +49,7 @@ INSTALLED_APPS = [
     'Authentication',
     'Authentication.core_user',
     'Authentication.core_auth',
-    'paypal.standard.ipn',
-    'Authentication.zoom_api',
+    'Zoom_api',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 Rest_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ( 
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -103,6 +103,9 @@ DATABASES = {
     }
 }
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "../osij-frontend/build/static"),
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

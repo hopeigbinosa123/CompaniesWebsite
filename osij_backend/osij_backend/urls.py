@@ -18,8 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path  # Added
 from django.views.generic import TemplateView
-from Authentication.paypal.views import payment_view
-from Authentication.zoom_api.views import ZoomMeetings, ZoomAccessToken
+from Zoom_api.views import ZoomMeetings, ZoomAccessToken
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -30,7 +29,6 @@ urlpatterns = [
     path(
         "api/auth/", include("Authentication.routers")
     ),  # Updated to include Authentication URLs
-    path("api/auth/paypal/", payment_view, name="paypal_ipn"),
     path("api/auth/Zoom/", ZoomMeetings.as_view(), name="zoom_api"),
     path(
         "api/auth/ZoomAccessToken/", ZoomAccessToken.as_view(), name="zoom_access_token"
