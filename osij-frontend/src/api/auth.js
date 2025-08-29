@@ -1,5 +1,5 @@
 
-import api from '../axiosConfig';
+ import api from '../axiosConfig';
 
 export const auth = {
   login: async (email, password) => {
