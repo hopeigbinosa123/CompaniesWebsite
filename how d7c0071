@@ -1,0 +1,46 @@
+[33me27be463[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Resolve merge conflicts in package.json and package-lock.json
+[33m324d1d32[m Update dependencies in package.json
+[33mf11c032e[m Update npm dependencies in package-lock.json
+[33m239de33e[m Merge branch 'main' of https://github.com/hopeigbinosa123/CompaniesWebsite
+[33mf0a0adcf[m Update .gitignore
+[33m7cde02ed[m Merge branch 'main' of https://github.com/hopeigbinosa123/CompaniesWebsite
+[33mf7077d1c[m Prince: Added contribution details to README
+[33m9a9e5cb9[m Add core authentication, user, and Zoom API apps
+[33m1c6711d4[m Resolved merge conflict in pycache file
+[33m666ceb07[m Prince: Added frontend modules and updated routing
+[33m721c21a1[m Remove Authentication app and related files
+[33mc6f3a256[m deleted pycache and migrations
+[33mc9d2b072[m chore: Remove venv from tracking
+[33m6d8af60c[m docs: ignore venv directory
+[33m78c5bdce[m Small changes in the backend were made
+[33m6ef46f82[m Create the frontend. needs adjustments. Frontend developers add your own so that you appear on the contribution page
+[33mc60e206a[m Recolved conflict between files and repos
+[33mef8dcc60[m Completed Cosmetology and Graphic_design
+[33m9074a59f[m Remove __pycache__ from tracking and update .gitignore
+[33m4ce3299b[m Add Zoom API endpoints to authentication routers
+[33m7bef8635[m Remove all migration files and update import paths
+[33m31055c5f[m Add Authentication app with custom user and auth endpoints
+[33mc98ec5b9[m graphic_design views
+[33m3fb128ea[m Fixed teh issue of the Pillow extension and add default values
+[33m622c63b4[m Updated the Course Frontend and Backend
+[33m46f3b539[m Remove tracked .pyc files
+[33m311aef94[m changes
+[33m4c3d2152[m new pull-frontend
+[33m295e91ef[m graphic design models
+[33m8ca0a67d[m Resolve merge
+[33ma79bd28e[m[33m ([m[1;31morigin/master[m[33m)[m Initial commit
+[33m5f0dcf09[m cosmetology
+[33mc9e1a773[m admin modifications
+[33m730d082c[m modified cosmetology models
+[33m39c5800c[m created cosmetology models, views, and urls
+[33m5bbaec96[m Updated teh documentation and migration problems
+[33m3fccf961[m Default database
+[33m27d58abd[m Updated the operations error
+[33m75e38092[m Updated the Documentation easy understanding and usage
+[33m13ffaa5b[m docs: update fullstack guide with admin panel layout, API endpoints, and frontend folder structure and edited the Backend and README.md folder and file
+[33m74686097[m Updated the READ me file to commodant both front and back end developers
+[33m26e1cbb0[m refactor: updated backend models and cleaned admin registration
+[33m2a1525f4[m Update the documentation and fixed bugs
+[33m72283530[m Fixing some mistakes
+[33m9086467b[m Create the foundations for you
+[33m821fc47c[m Initial commit

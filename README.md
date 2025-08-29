@@ -438,4 +438,20 @@ OSIJ is a modular, lore-driven platform for creative exploration and collaborati
 - **Cosmetology Module**: Designed booking flow, dashboard layout, and gallery components  
 - **Role**: Frontend Developer — collaborated with Tonia, Abel, and Lifa.
 
+## Contributions
+
+###  Git Conflict Resolution & Repo Cleanup
+
+- Identified and resolved merge conflicts caused by tracked `.pyc` files
+- Updated `.gitignore` to exclude Python cache files (`*.pyc`, `__pycache__/`)
+- Removed unnecessary compiled files from version control using `git rm --cached`
+- Safely completed rebase using `git rebase --skip` to bypass non-essential commits
+- Ensured a clean commit history and smooth push to `main` branch for group submission
+
+This cleanup improves repo clarity, reduces future merge conflicts, and supports a more maintainable codebase for students and collaborators.
+
+Update: Final cleanup completed on August 29, 2025 — all modules rebased and pushed by Prince.
+
+Contribution by Prince: Finalized frontend modules and documented setup steps.
+
 
