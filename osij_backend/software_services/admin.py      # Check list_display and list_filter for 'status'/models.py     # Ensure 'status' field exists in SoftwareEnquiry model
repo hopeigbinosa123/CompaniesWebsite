@@ -1,0 +1,11 @@
+class SoftwareEnquiryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'email', 'phone', 'status')
+    list_filter = ('status',)
+
+# Ensure 'status' field exists in SoftwareEnquiry model
+class SoftwareEnquiry(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    status = models.CharField(max_length=50)  # Add this line if it doesn't exist
