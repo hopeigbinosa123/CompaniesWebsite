@@ -117,7 +117,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS settings
+# CORS settings
 CORS_ALLOWED_ORIGINS = [
+<<<<<<< Updated upstream
     "http://localhost:3000",
 ]
 
@@ -126,6 +128,33 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+=======
+    "http://localhost:3000",  # Default React development server
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+
+
+# JWT settings
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yourprovider.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your@email.com'
+EMAIL_HOST_PASSWORD = 'yourpassword'
+DEFAULT_FROM_EMAIL = 'Course Platform <noreply@yourdomain.com>'
+>>>>>>> Stashed changes
 
 # Email settings (optional - you can comment these out if not needed)
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
