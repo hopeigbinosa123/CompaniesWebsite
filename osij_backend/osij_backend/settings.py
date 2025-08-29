@@ -120,6 +120,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "http://localhost:3000",
 ]
 
@@ -133,6 +134,12 @@ SIMPLE_JWT = {
     "http://127.0.0.1:3000",
 ]
 
+=======
+    "http://localhost:3000",  # Default React development server
+    "http://127.0.0.1:3000",
+]
+
+>>>>>>> Stashed changes
 CORS_ALLOW_CREDENTIALS = True
 
 
