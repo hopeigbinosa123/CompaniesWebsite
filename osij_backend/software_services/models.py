@@ -45,3 +45,34 @@ class SoftwareEnquiryAdmin(admin.ModelAdmin):
         "submitted_at",
     )
     list_filter = ("status", "preferred_contact_method")
+
+from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class SoftwareService(models.Model):
+    SERVICE_CATEGORIES = [
+        ('web', 'Web Development'),
+        ('mobile', 'Mobile Development'),
+        ('api', 'API Development'),
+        ('database', 'Database Design'),
+        ('cloud', 'Cloud Services'),
+        ('ai', 'AI/ML Solutions'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    category = models.CharField(max_length=50, choices=SERVICE_CATEGORIES)
+    icon = models.CharField(max_length=50, default='💻')  # Emoji or icon class
+    price_range = models.CharField(max_length=100, blank=True)  # e.g., "$500-$2000"
+    duration = models.CharField(max_length=100, blank=True)  # e.g., "2-4 weeks"
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['title']

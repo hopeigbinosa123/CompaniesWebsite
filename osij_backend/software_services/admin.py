@@ -13,3 +13,13 @@ class SupportResponseAdmin(admin.ModelAdmin):
     list_display = ('enquiry', 'responder', 'timestamp')
     search_fields = ('responder__username', 'message')
     list_filter = ('timestamp',)
+
+from django.contrib import admin
+from .models import SoftwareService
+
+@admin.register(SoftwareService)
+class SoftwareServiceAdmin(admin.ModelAdmin):
+    list_display = ['title', 'category', 'price_range', 'is_active', 'created_at']
+    list_filter = ['category', 'is_active', 'created_at']
+    search_fields = ['title', 'description']
+    list_editable = ['is_active']

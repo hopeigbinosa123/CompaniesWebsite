@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from .models import Course, Enrollment, Certificate, Video
 from .serializers import (
     CourseSerializer,
@@ -9,58 +10,82 @@ from .serializers import (
     CertificateSerializer,
     VideoSerializer,
 )
-from rest_framework.generics import RetrieveAPIView
-from .models import Course
-from .serializers import CourseSerializer
-from rest_framework.generics import CreateAPIView
-from .models import Enrollment
-from .serializers import EnrollmentSerializer
-from rest_framework.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
-# Create your views here.
-class CourseList(generics.ListCreateAPIView):
+# Course Views
+class CourseListView(generics.ListAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-
-
-class EnrollmentList(generics.ListCreateAPIView):
-    queryset = Enrollment.objects.all()
-    serializer_class = EnrollmentSerializer
-
-
-class CertificateList(generics.ListCreateAPIView):
-    queryset = Certificate.objects.all()
-    serializer_class = CertificateSerializer
-
-
-class CourseListView(APIView):
-    def get(self, request):
-        courses = Course.objects.all()
-        serializer = CourseSerializer(courses, many=True)
-        return Response(serializer.data)
-
+    permission_classes = [permissions.AllowAny]
 
 class CourseDetailView(generics.RetrieveAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    permission_classes = [permissions.AllowAny]
 
-class EnrollmentCreateView(CreateAPIView):
+# Enrollment Views
+class EnrollmentCreateView(generics.CreateAPIView):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         course = serializer.validated_data["course"]
-        email = serializer.validated_data["email"]
+        user = self.request.user
 
         # Check for existing enrollment
-        if Enrollment.objects.filter(course=course, email=email).exists():
+        if Enrollment.objects.filter(course=course, user=user).exists():
             raise ValidationError("You are already enrolled in this course.")
 
-        serializer.save()
+        serializer.save(user=user)
 
+class UserEnrollmentListView(generics.ListAPIView):
+    serializer_class = EnrollmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-class VideoDetailView(RetrieveAPIView):
+    def get_queryset(self):
+        return Enrollment.objects.filter(user=self.request.user)
+
+# Certificate Views
+class CertificateListView(generics.ListAPIView):
+    serializer_class = CertificateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Certificate.objects.filter(user=self.request.user)
+
+# Video Views
+class VideoDetailView(generics.RetrieveAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
-    lookup_field = "pk"
+    permission_classes = [permissions.IsAuthenticated]
+
+# Zoom Integration View
+class ZoomMeetingView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, course_id):
+        """
+        Create a Zoom meeting for a course
+        Requires: course_id, topic, start_time, duration
+        """
+        try:
+            course = Course.objects.get(id=course_id)
+            # Here you would integrate with Zoom API
+            # For now, we'll return a mock response
+            zoom_data = {
+                "join_url": f"https://zoom.us/j/mock-meeting-{course_id}",
+                "meeting_id": f"mock_{course_id}_{request.user.id}",
+                "topic": f"Live Session: {course.title}",
+                "start_time": request.data.get('start_time'),
+                "duration": request.data.get('duration', 60)
+            }
+            return Response(zoom_data, status=status.HTTP_201_CREATED)
+            
+        except Course.DoesNotExist:
+            return Response(
+                {"error": "Course not found"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
