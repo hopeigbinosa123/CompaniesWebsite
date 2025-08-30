@@ -5,9 +5,14 @@ Django settings for osij_backend project.
 from pathlib import Path
 import os
 from datetime import timedelta
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = "django-insecure-!zrm9!1tz$&1=*%4smqedc6^*149@)tj(^m^cz72fk3u-in)8u"
@@ -155,11 +160,19 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For developm
 # EMAIL_HOST_PASSWORD = 'yourpassword'
 # DEFAULT_FROM_EMAIL = 'Your App <noreply@yourdomain.com>'
 
+# PayPal settings
+PAYPAL_CLIENT_ID = env('PAYPAL_CLIENT_ID', default='')
+PAYPAL_SECRET = env('PAYPAL_SECRET', default='')
+PAYPAL_ENVIRONMENT = env('PAYPAL_ENVIRONMENT', default='sandbox')  # or 'live' for production
+PAYPAL_WEBHOOK_ID = env('PAYPAL_WEBHOOK_ID', default='')
+
+# Frontend URLs for redirects
+FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')
+PAYMENT_SUCCESS_URL = f"{FRONTEND_URL}/payment/success/"
+PAYMENT_CANCEL_URL = f"{FRONTEND_URL}/payment/cancel/"
+
 # Zoom settings (optional)
 # ZOOM_CLIENT_ID = "your_client_id"
 # ZOOM_CLIENT_SECRET = "your_client_secret"
 # ZOOM_ACCOUNT_ID = "your_account_id"
 # ZOOM_REDIRECT_URI = "http://localhost:8000/api/zoom/callback/"
-
-# PayPal settings (optional)
-# PAYPAL_TEST = True
