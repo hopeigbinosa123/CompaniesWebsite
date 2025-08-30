@@ -24,6 +24,7 @@ import CosmetologyPage from './pages/CosmetologyPage';
 import DashboardPage from './pages/DashboardPage';
 import SoftwareProjectsPage from './pages/SoftwareProjectsPage';
 import GraphicDesignOrdersPage from './pages/GraphicDesignOrdersPage';
+import PaymentPage from './pages/PaymentPage';
 
 import './App.css';
 
@@ -81,6 +82,7 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <GraphicDesignOrdersPage />
+                <PaymentPage />
               </ProtectedRoute>
             }
           />

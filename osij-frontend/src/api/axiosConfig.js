@@ -3,13 +3,13 @@ import axios from 'axios';
 
 // Create an axios instance with a base URL
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api', // Your Django backend URL
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add a request interceptor to include the auth token
+// Request interceptor to add auth token to requests
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -23,14 +23,18 @@ api.interceptors.request.use(
   }
 );
 
-// Add a response interceptor to handle common errors
+// Response interceptor to handle 401 Unauthorized responses
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Token is invalid, logout the user
+    if (error.response && error.response.status === 401) {
+      // Handle unauthorized access (e.g., redirect to login or refresh token)
+      console.error('Unauthorized access - please log in again');
+      // Optionally clear user session
       localStorage.removeItem('token');
-      window.location.href = '/login'; // Redirect to login
+      localStorage.removeItem('refresh_token');
+      // Optionally redirect to login page
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }

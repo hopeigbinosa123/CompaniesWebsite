@@ -35,4 +35,8 @@ class LoginSerializer(serializers.Serializer):
         if not username or not password:
             raise serializers.ValidationError("Both username and password are required.")
         
+        user = User.objects.filter(username=username).first()
+        if not user or not user.check_password(password):
+            raise serializers.ValidationError("Invalid credentials.")
+        
         return data

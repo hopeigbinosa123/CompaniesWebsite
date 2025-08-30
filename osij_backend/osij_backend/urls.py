@@ -21,6 +21,9 @@ urlpatterns = [
     # Zoom API
     path("api/zoom/meetings/", ZoomMeetings.as_view(), name="zoom-meetings"),
     path("api/zoom/access-token/", ZoomAccessToken.as_view(), name="zoom-access-token"),
+
+    # Payments
+    path("api/payments/", include("payments.urls")),
 ]
 
 # Serve media files in development

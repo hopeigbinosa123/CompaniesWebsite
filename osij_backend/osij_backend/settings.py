@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     "cosmetology",
     "graphic_design",
     "Zoom_api",
-    "Authentication"
+    "Authentication",
+    "payments"
 ]
 
 MIDDLEWARE = [

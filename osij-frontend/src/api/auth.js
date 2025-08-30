@@ -1,5 +1,4 @@
-
- import api from '../axiosConfig';
+import api from './axiosConfig';
 
 export const auth = {
   login: async (email, password) => {
@@ -36,8 +35,8 @@ export const auth = {
       const response = await api.get('/auth/user/');
       return response.data;
     } catch (error) {
-      console.error('Get current user error:', error);
+      console.error('Error fetching user:', error);
       throw error;
     }
-  }
+  },
 };
