@@ -4,7 +4,7 @@ Django settings for osij_backend project.
 
 from pathlib import Path
 import os
-from datetime import timedelta  # ADD THIS FOR JWT
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,7 +14,7 @@ SECRET_KEY = "django-insecure-!zrm9!1tz$&1=*%4smqedc6^*149@)tj(^m^cz72fk3u-in)8u
 DEBUG = True
 ALLOWED_HOSTS = []
 
-# Application definition - FIXED: Removed non-existent apps
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -27,8 +27,9 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework.authtoken",
     
-    # Your apps - ONLY include apps that actually exist
+    # Your apps
     "education",
     "software_services",
     "cosmetology",
@@ -48,14 +49,33 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# FIXED: Corrected typo "Rest_FRAMEWORK" to "REST_FRAMEWORK"
+# REST Framework settings
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
-    # Remove this line if you don't have django_filters installed:
-    # "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
+
+# JWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
+# Custom user model
+AUTH_USER_MODEL = 'Authentication.User'
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 ROOT_URLCONF = "osij_backend.urls"
 
@@ -117,62 +137,24 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS settings
-# CORS settings
 CORS_ALLOWED_ORIGINS = [
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     "http://localhost:3000",
-]
-
-# JWT Settings - ADD THIS
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-}
-=======
-    "http://localhost:3000",  # Default React development server
     "http://127.0.0.1:3000",
 ]
-
-=======
-    "http://localhost:3000",  # Default React development server
-    "http://127.0.0.1:3000",
-]
-
->>>>>>> Stashed changes
 CORS_ALLOW_CREDENTIALS = True
 
-
-
-# JWT settings
-from datetime import timedelta
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-}
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yourprovider.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your@email.com'
-EMAIL_HOST_PASSWORD = 'yourpassword'
-DEFAULT_FROM_EMAIL = 'Course Platform <noreply@yourdomain.com>'
->>>>>>> Stashed changes
-
-# Email settings (optional - you can comment these out if not needed)
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = "smtp.yourprovider.com"
+# Email settings (optional)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+# For production, uncomment and configure these:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.yourprovider.com'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = "your@email.com"
-# EMAIL_HOST_PASSWORD = "yourpassword"
-# DEFAULT_FROM_EMAIL = "Course Platform <noreply@yourdomain.com>"
+# EMAIL_HOST_USER = 'your@email.com'
+# EMAIL_HOST_PASSWORD = 'yourpassword'
+# DEFAULT_FROM_EMAIL = 'Your App <noreply@yourdomain.com>'
 
-# Zoom settings (optional - you can comment these out if not needed)
+# Zoom settings (optional)
 # ZOOM_CLIENT_ID = "your_client_id"
 # ZOOM_CLIENT_SECRET = "your_client_secret"
 # ZOOM_ACCOUNT_ID = "your_account_id"
