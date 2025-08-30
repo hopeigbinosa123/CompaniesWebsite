@@ -30,7 +30,7 @@ const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
     }
 
     return () => {
-      // Cleanup if needed
+      document.body.removeChild(document.querySelector('script[src^="https://www.paypal.com/sdk/js?"]'));
     };
   }, [currency]);
 
