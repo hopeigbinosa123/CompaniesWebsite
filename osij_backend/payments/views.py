@@ -2,9 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
-from paypalcheckoutsdk.orders import OrdersCreateRequest
+from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
+from paypalhttp import HttpError
 import os
 import json
+
 
 # PayPal client setup
 class PayPalClient:
@@ -18,8 +20,7 @@ class PayPalClient:
             client_secret=self.client_secret
         )
         self.client = PayPalHttpClient(self.environment)
-
-
+        
 class CreatePayPalOrder(APIView, PayPalClient):
     def post(self, request):
         try:

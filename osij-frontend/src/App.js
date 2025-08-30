@@ -82,6 +82,13 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <GraphicDesignOrdersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/payment"
+            element={
+              <ProtectedRoute>
                 <PaymentPage />
               </ProtectedRoute>
             }

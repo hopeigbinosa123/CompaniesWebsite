@@ -8,3 +8,5 @@ django-paypal>=1.2.5
 paypalrestsdk>=1.13.3
 python-paypal-sdk==1.0.3
 paypal-checkout-serversdk==1.0.1
+paypal-checkout-serversdk==1.0.1
+python-dotenv==1.0.0
