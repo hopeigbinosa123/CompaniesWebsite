@@ -4,17 +4,22 @@ Django settings for osij_backend project.
 
 from pathlib import Path
 import os
-from datetime import timedelta  # ADD THIS FOR JWT
+from datetime import timedelta
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = "django-insecure-!zrm9!1tz$&1=*%4smqedc6^*149@)tj(^m^cz72fk3u-in)8u"
 DEBUG = True
 ALLOWED_HOSTS = []
 
-# Application definition - FIXED: Removed non-existent apps
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -27,14 +32,16 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework.authtoken",
     
-    # Your apps - ONLY include apps that actually exist
+    # Your apps
     "education",
     "software_services",
     "cosmetology",
     "graphic_design",
     "Zoom_api",
-    "Authentication"
+    "Authentication",
+    "payments"
 ]
 
 MIDDLEWARE = [
@@ -48,14 +55,33 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# FIXED: Corrected typo "Rest_FRAMEWORK" to "REST_FRAMEWORK"
+# REST Framework settings
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
-    # Remove this line if you don't have django_filters installed:
-    # "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
+
+# JWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
+# Custom user model
+AUTH_USER_MODEL = 'Authentication.User'
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 ROOT_URLCONF = "osij_backend.urls"
 
@@ -119,28 +145,34 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
+CORS_ALLOW_CREDENTIALS = True
 
-# JWT Settings - ADD THIS
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-}
-
-# Email settings (optional - you can comment these out if not needed)
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = "smtp.yourprovider.com"
+# Email settings (optional)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+# For production, uncomment and configure these:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.yourprovider.com'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = "your@email.com"
-# EMAIL_HOST_PASSWORD = "yourpassword"
-# DEFAULT_FROM_EMAIL = "Course Platform <noreply@yourdomain.com>"
+# EMAIL_HOST_USER = 'your@email.com'
+# EMAIL_HOST_PASSWORD = 'yourpassword'
+# DEFAULT_FROM_EMAIL = 'Your App <noreply@yourdomain.com>'
 
-# Zoom settings (optional - you can comment these out if not needed)
+# PayPal settings
+PAYPAL_CLIENT_ID = env('PAYPAL_CLIENT_ID', default='')
+PAYPAL_SECRET = env('PAYPAL_SECRET', default='')
+PAYPAL_ENVIRONMENT = env('PAYPAL_ENVIRONMENT', default='sandbox')  # or 'live' for production
+PAYPAL_WEBHOOK_ID = env('PAYPAL_WEBHOOK_ID', default='')
+
+# Frontend URLs for redirects
+FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')
+PAYMENT_SUCCESS_URL = f"{FRONTEND_URL}/payment/success/"
+PAYMENT_CANCEL_URL = f"{FRONTEND_URL}/payment/cancel/"
+
+# Zoom settings (optional)
 # ZOOM_CLIENT_ID = "your_client_id"
 # ZOOM_CLIENT_SECRET = "your_client_secret"
 # ZOOM_ACCOUNT_ID = "your_account_id"
 # ZOOM_REDIRECT_URI = "http://localhost:8000/api/zoom/callback/"
-
-# PayPal settings (optional)
-# PAYPAL_TEST = True

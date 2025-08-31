@@ -6,3 +6,7 @@ Pillow>=10.0.0
 djangorestframework-simplejwt>=5.3.0
 django-paypal>=1.2.5
 paypalrestsdk>=1.13.3
+python-paypal-sdk==1.0.3
+paypal-checkout-serversdk==1.0.1
+paypal-checkout-serversdk==1.0.1
+python-dotenv==1.0.0

@@ -17,6 +17,9 @@ urlpatterns = [
     
     path("api/zoom/meetings/", ZoomMeeting.as_view(), name="zoom-meetings"),
     path("api/zoom/access-token/", ZoomAccessToken.as_view(), name="zoom-access-token"),
+
+    # Payments
+    path("api/payments/", include("payments.urls")),
 ]
 
 if settings.DEBUG:
