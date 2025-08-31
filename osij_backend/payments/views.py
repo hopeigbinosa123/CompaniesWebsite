@@ -8,7 +8,9 @@ from paypalhttp import HttpError
 from .models import Payment
 import os
 import json
+import logging
 
+logger = logging.getLogger(__name__)
 # PayPal client setup
 class PayPalClient:
     def __init__(self):
@@ -24,59 +26,64 @@ class PayPalClient:
         
 class CreatePayPalOrder(APIView, PayPalClient):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request):
-        try:
-            data = request.data
-            amount = data.get('amount')
-            currency = data.get('currency', 'USD')
-            
+       
+            paypal_data = request.data
+            amount = paypal_data.get('amount')
+            currency = paypal_data.get('currency', 'USD')
+            logger.info(f"[CreatePayPalOrder] User: {request.user.id} activate order with Amount: {amount}, Currency: {currency}")
+
             if not amount:
+                logger.warning(f"[CreatePayPalOrder] User: {request.user.id} tried to create order without amount")
                 return Response(
-                    {"error": "Amount is required"},
+                    {"error": "Amount is needed to create an order"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
-            request = OrdersCreateRequest()
-            request.prefer('return=representation')
-            request.request_body({
-                "intent": "CAPTURE",
-                "purchase_units": [{
-                    "amount": {
-                        "currency_code": currency,
-                        "value": str(amount)
-                    }
+                
+            try:
+                paypal_request = OrdersCreateRequest()
+                paypal_request.prefer('return=representation')
+                paypal_request.request_body({
+                       "intent": "CAPTURE",
+                        "purchase_units": [{
+                        "amount": {
+                               "currency_code": currency,
+                               "value": str(amount)
+                       }
                 }],
                 "application_context": {
                     "return_url": "http://localhost:3000/payment/success",
                     "cancel_url": "http://localhost:3000/payment/cancel"
                 }
-            })
+               })
             
-            response = self.client.execute(request)
+                response = self.client.execute(paypal_request)
             
             # Save the payment record
-            Payment.objects.create(
-                user=request.user,
-                amount=amount,
-                currency=currency,
-                paypal_order_id=response.result.id,
-                payment_details=response.result.dict(),
-                status='pending'
+                Payment.objects.create(
+                     user=request.user,
+                     amount=amount,
+                     currency=currency,
+                     paypal_order_id=response.result.id,
+                     payment_details=response.result.dict(),
+                    status='pending'
             )
-            
-            return Response(response.result.dict(), status=status.HTTP_201_CREATED)
-            
-        except HttpError as e:
-            error_data = json.loads(e.message)
-            return Response(
-                {"error": error_data.get("details", [{"description": "Payment processing failed"}])},
+                logger.info(f"[CreatePayPalOrder] User: {request.user.id} successfully created an order {response.result.id}") 
+                return Response(response.result.dict(), status=status.HTTP_201_CREATED)
+                
+            except HttpError as e:
+                 error_data = json.loads(e.message)
+                 logger.error(f"[CreatePayPalOrder] PayPal HttpError for  user {request.user.id}: {error_data}")
+                 return Response(
+                {"error": error_data.get("details", [{"description": "Unable to proccess payment because failed"}])},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        except Exception as e:
-            return Response(
-                {"error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST
+            except Exception as e:
+                 logger.exception(f"[CreatePayPalOrder] Unexpected error for user {request.user.id}: {str(e)}")
+                 return Response(
+                    {"error": str(e)},
+                    status=status.HTTP_400_BAD_REQUEST
             )
 
 class CapturePayPalOrder(APIView, PayPalClient):
@@ -86,16 +93,17 @@ class CapturePayPalOrder(APIView, PayPalClient):
         try:
             # Get the payment record
             try:
+                logger.info(f"[CapturePayPalOrder] user {request.user.id} trying to capture order {order_id}")
                 payment = Payment.objects.get(paypal_order_id=order_id, user=request.user)
             except Payment.DoesNotExist:
                 return Response(
-                    {"error": "Payment not found"},
+                    {"error": "Payment was not found"},
                     status=status.HTTP_404_NOT_FOUND
                 )
             
             # Process the capture
-            request = OrdersCaptureRequest(order_id)
-            response = self.client.execute(request)
+            capture_request = OrdersCaptureRequest(order_id)
+            response = self.client.execute(capture_request)
             
             # Update payment status
             payment.status = 'completed'
@@ -103,7 +111,7 @@ class CapturePayPalOrder(APIView, PayPalClient):
             payment.save()
             
             # Here you can add additional logic like sending confirmation emails, etc.
-            
+            logger.info(f"[CapturePayPalOrder] Payment captured successfully for order {order_id}")
             return Response(response.result.dict(), status=status.HTTP_200_OK)
             
         except HttpError as e:
@@ -113,12 +121,14 @@ class CapturePayPalOrder(APIView, PayPalClient):
             if 'payment' in locals():
                 payment.status = 'failed'
                 payment.save()
-            
+            logger.warning(f"[CapturePayPalOrder] Payment was not found for user {request.user.id} and order {order_id}")
+            logger.error(f"[CapturePayPalOrder] PayPal HttpError during capture for user {request.user.id}: {error_data}")
             return Response(
-                {"error": error_data.get("details", [{"description": "Payment capture failed"}])},
+                {"error": error_data.get("details", [{"description": "Unable to capture Payment"}])},
                 status=status.HTTP_400_BAD_REQUEST
             )
         except Exception as e:
+            logger.exception(f"[CapturePayPalOrder] unexpected error for user  {request.user.id}: {str(e)}")
             return Response(
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST

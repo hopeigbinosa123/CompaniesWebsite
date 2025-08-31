@@ -2,29 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import axios from 'axios';
 
-const PayPal_Button = ({ amount, currency, onSuccess, onError }) => {
+const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
   const [error, setError] = useState(null);
   const [succeeded, setSucceeded] = useState(false);
   const [orderID, setOrderID] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
-  // Load PayPal script
+  // Inject PayPal script
   useEffect(() => {
-              const load_PayPal_Script = () => {
+              const Insert_PayPal_Script = () => {
                 const script = document.createElement('script');
-                script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}&currency=${currency || 'USD'}`;
+                script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.REACT_APP_PAYPAL_CLIENT_ID}&currency=${currency ?? 'USD'}`;
                 script.async = true;
                 script.onload = () => setScriptLoaded(true);
                 script.onerror = () => {
-                  setError('Failed to load PayPal');
+                  setError('Oops! wecould not load paypal script');
                   setIsLoading(false);
                 };
                 document.body.appendChild(script);
               };
 
                if (!window.paypal) {
-                 load_PayPal_Script();
+                 Insert_PayPal_Script();
                } else {
                  setScriptLoaded(true);
              }
@@ -34,36 +34,37 @@ const PayPal_Button = ({ amount, currency, onSuccess, onError }) => {
            };
          }, [currency]);
 
-             const create_Order = async (data, actions) => {
+              const create_Order = async (PaypalData, PaypalActions) => {
                try {
                   const response = await axios.post('/api/payments/create-order/', {
                     amount: amount,
-                    currency: currency || 'USD'
+                    currency: currency ?? 'USD'
            });
-               setOrderID(response.data.id);
-               return response.data.id;
+               setOrderID(response.Paypaldata.id);
+               return response.PapalData.id;
              } catch (err) {
                setError('Failed to create order');
-              onError && onError(err);
+               onError?.(err);
               throw err;
             }
            };
 
-             const on_Approval = async (data, actions) => {
+              const Handle_Approval = async (PaypalData, PaypalActions) => {
+                //Pull in the order from your server to finalize the transaction
                     try {
-                        const response = await axios.post(`/api/payments/capture-order/${data.orderID}/`);
+                        const response = await axios.post(`/api/payments/capture-order/${PaypalData.orderID}/`);
                         setSucceeded(true);
-                        onSuccess && onSuccess(response.data);
-                        return response.data;
+                        onSuccess && onSuccess(response.PaypalData);
+                        return response.PaypalData;
                        }catch (err) {
-                        setError('Payment failed. Please try again.');
-                        onError && onError(err);
+                        setError('Something went wrong while creating you order. Please try again.');
+                        onError?.(err);
                         throw err;
                          }
                        };
 
                     if (!scriptLoaded) {
-                       return <div>Loading payment options...</div>;
+                       return <div>Hang on tight! We are Loading your payment options...</div>;
                     }
 
   return (
@@ -84,7 +85,7 @@ const PayPal_Button = ({ amount, currency, onSuccess, onError }) => {
         <PayPalScriptProvider
           options={{
             'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
-            currency: currency || 'USD',
+            currency: currency ?? 'USD',
             'disable-funding': 'card,paylater',
             'data-sdk-integration-source': 'integrationbuilder_sc'
           }}
@@ -92,7 +93,7 @@ const PayPal_Button = ({ amount, currency, onSuccess, onError }) => {
           <PayPalButtons
             style={{ layout: 'vertical' }}
             createOrder={create_Order}
-            onApprove={on_Approval}
+            onApprove={Handle_Approval}
             onError={(err) => {
               setError('An error occurred with PayPal');
               onError && onError(err);
@@ -105,4 +106,4 @@ const PayPal_Button = ({ amount, currency, onSuccess, onError }) => {
   );
 };
 
-export default PayPal_Button;
+export default PayPalButton;
