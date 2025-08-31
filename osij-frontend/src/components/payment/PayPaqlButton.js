@@ -2,34 +2,37 @@ import React, { useState } from 'react';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import axios from 'axios';
 
-const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
-  const [error, setError] = useState(null);
-  const [succeeded, setSucceeded] = useState(false);
-  const [orderID, setOrderID] = useState(false);
+const PayPal_Button = ({ amount, currency, onSuccess, onError }) => {
+  //  state variables that handle payment status
+         const [error, setError] = useState(null);
+         const [succeeded, setSucceeded] = useState(false);
+         const [orderID, setOrderID] = useState(false);
 
-  const createOrder = async (data, actions) => {
+  const create_Order = async (data, actions) => {
+    
     try {
-      const response = await axios.post('/api/payments/create-order/', {
-        amount: amount,
-        currency: currency || 'USD'
-      });
-      setOrderID(response.data.id);
-      return response.data.id;
-    } catch (err) {
-      setError('Failed to create order');
-      return '';
+             const response = await axios.post('/api/payments/create-order/', {
+                     amount: amount,
+                     currency: currency || 'USD'
+                      });
+              setOrderID(response.data.id);
+              return response.data.id;
+       }      catch (err) {
+              setError('Failed to create order');
+              return '';
     }
   };
 
-  const onApprove = async (data, actions) => {
+  const on_Approval = async (data, actions) => {
+    // Approves the payment if is successful or not
     try {
-      const response = await axios.post(`/api/payments/capture-order/${data.orderID}/`);
-      setSucceeded(true);
-      if (onSuccess) onSuccess(response.data);
-      return response.data;
-    } catch (err) {
-      setError('Payment failed');
-      if (onError) onError(err);
+            const response = await axios.post(`/api/payments/capture-order/${data.orderID}/`);
+            setSucceeded(true);
+            if (onSuccess) onSuccess(response.data);
+            return response.data;
+    }       catch (err) {
+            setError('Payment failed');
+            if (onError) onError(err);
     }
   };
 
@@ -37,7 +40,7 @@ const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
     <div className="paypal-button-container">
       {error && <div className="error-message">{error}</div>}
       {succeeded ? (
-        <div className="success-message">Payment successful!</div>
+        <div className="success-message">Success payment!</div>
       ) : (
         <PayPalScriptProvider
           options={{
@@ -47,8 +50,8 @@ const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
         >
           <PayPalButtons
             style={{ layout: 'vertical' }}
-            createOrder={createOrder}
-            onApprove={onApprove}
+            createOrder={create_Order}
+            onApprove={on_Approval}
             onError={onError}
           />
         </PayPalScriptProvider>
@@ -57,4 +60,4 @@ const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
   );
 };
 
-export default PayPalButton;
+export default PayPal_Button;
