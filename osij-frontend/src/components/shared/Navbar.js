@@ -1,12 +1,26 @@
-import { useState } from 'react';
+import { useState,useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const servicesRef = useRef();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (servicesRef.current && !servicesRef.current.contains(event.target)) {
+      setIsServicesOpen(false);
+    }
+  }
+
+  document.addEventListener('mousedown', handleClickOutside, 400);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -39,16 +53,17 @@ const Navbar = () => {
             </Link>
             
             {/* Services Dropdown */}
-            <div className="relative group">
-              <button className="text-gray-700 hover:text-blue-600 focus:outline-none">
-                Services ▼
+            <div className="relative group" ref={servicesRef} onMouseEnter={() => setIsServicesOpen(true)} onMouseLeave={() => setIsServicesOpen(false)}>
+              <button className="text-gray-700 hover:text-blue-600 focus:outline-none" onClick={() => setIsServicesOpen((open) => !open)} type='button'>
+                
+                Services 
               </button>
               <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-lg mt-2 p-2 w-48 z-50">
                 {services.map((service) => (
                   <Link
                     key={service.path}
                     to={service.path}
-                    className="block px-4 py-2 text-gray-700 hover:bg-blue-100 rounded"
+                    className="block px-4 py-2 text-gray-700 hover:bg-blue-100 rounded" onClick={() => setIsServicesOpen(false)}
                   >
                     {service.name}
                   </Link>
@@ -84,12 +99,6 @@ const Navbar = () => {
                   className="text-gray-700 hover:text-blue-600"
                 >
                   Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Sign Up
                 </Link>
               </div>
             )}
