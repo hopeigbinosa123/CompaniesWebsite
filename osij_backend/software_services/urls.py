@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import EnquiryList, ResponseList
+from . import views
 
 urlpatterns = [
-    path('enquiries/', EnquiryList.as_view()),
-    path('responses/', ResponseList.as_view()),
+    path('services/', views.SoftwareServiceListView.as_view(), name='service-list'),
+    path('requests/', views.ServiceRequestCreateView.as_view(), name='service-request-create'),
+    path('my-requests/', views.UserServiceRequestsView.as_view(), name='user-service-requests'),
+    path('requests/<int:pk>/', views.ServiceRequestDetailView.as_view(), name='service-request-detail'),
 ]

@@ -1,21 +1,20 @@
 from django.contrib import admin
-from cosmetology.models import BeautyService, StylistProfile, AppointmentBooking
+from .models import BeautyService, StylistProfile, AppointmentBooking
 
-# Register your models here.
-
+@admin.register(BeautyService)
 class BeautyServiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'price', 'image')
-    search_fields = ('name', 'description')
-    ordering = ('-price', 'name')
-admin.site.register(BeautyService, BeautyServiceAdmin)
+    list_display = ['name', 'category', 'price', 'duration', 'is_available']
+    list_filter = ['category', 'is_available', 'price']
+    search_fields = ['name', 'description']
 
+@admin.register(StylistProfile)
 class StylistProfileAdmin(admin.ModelAdmin):
-    list_display = ('name', 'services', 'availability')
-    list_filter = ['availability']
-    search_fields = ('name', 'services')
-admin.site.register(StylistProfile, StylistProfileAdmin)
+    list_display = ['user', 'specialization', 'experience', 'is_available']
+    list_filter = ['specialization', 'is_available']
+    search_fields = ['user__username', 'specialization']
 
+@admin.register(AppointmentBooking)
 class AppointmentBookingAdmin(admin.ModelAdmin):
-    list_display = ('name', 'appointment_date', 'booked_at', 'service', 'stylist')
-    list_filter = ['booked_at']
-admin.site.register(AppointmentBooking, AppointmentBookingAdmin)
+    list_display = ['user', 'service', 'stylist', 'appointment_date', 'status']
+    list_filter = ['status', 'appointment_date']
+    search_fields = ['user__username', 'service__name', 'stylist__user__username']

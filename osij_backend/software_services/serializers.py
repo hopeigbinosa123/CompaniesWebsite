@@ -1,12 +1,20 @@
 from rest_framework import serializers
-from .models import SoftwareEnquiry, SupportResponse
+from .models import SoftwareService, ServiceRequest, ProjectUpdate
 
-class SoftwareEnquirySerializer(serializers.ModelSerializer):
+class SoftwareServiceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SoftwareEnquiry
-        fields = "__all__"
+        model = SoftwareService
+        fields = '__all__'
 
-class SupportResponseSerializer(serializers.ModelSerializer):
+class ServiceRequestSerializer(serializers.ModelSerializer):
+    service_name = serializers.CharField(source='service.name', read_only=True)
+    
     class Meta:
-        model = SupportResponse
-        fields = "__all__"
+        model = ServiceRequest
+        fields = '__all__'
+        read_only_fields = ('user', 'status', 'created_at', 'updated_at')
+
+class ProjectUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectUpdate
+        fields = '__all__'
