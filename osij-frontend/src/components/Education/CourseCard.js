@@ -34,9 +34,9 @@ const CourseCard = ({ course }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="h-48 bg-gray-200">
-        {course.image ? (
+        {course.thumbnail ? (
           <img 
-            src={course.image} 
+            src={course.thumbnail} 
             alt={course.title}
             className="w-full h-full object-cover"
           />

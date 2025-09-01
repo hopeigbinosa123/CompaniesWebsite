@@ -60,3 +60,12 @@ class LiveSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LiveSession
         fields = "__all__"
+
+# serializers.py
+from rest_framework import serializers
+from .models import Course
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ['id', 'title', 'description', 'thumbnail', 'duration']

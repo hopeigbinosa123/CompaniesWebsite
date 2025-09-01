@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 import environ
+from corsheaders.defaults import default_headers  # Optional: for custom header support
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,13 +28,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    
+
     # Third-party apps
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
-    
+
     # Your apps
     "education",
     "software_services",
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # Must be high in the list
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -59,8 +60,8 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -69,18 +70,18 @@ REST_FRAMEWORK = {
 
 # JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=24),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 # Custom user model
-AUTH_USER_MODEL = 'Authentication.User'
+AUTH_USER_MODEL = "Authentication.User"
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 ROOT_URLCONF = "osij_backend.urls"
@@ -112,44 +113,36 @@ DATABASES = {
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-
+# Logging
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
         },
     },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
         },
-        '__main__': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
+        "__main__": {
+            "handlers": ["console"],
+            "level": "DEBUG",
         },
     },
 }
@@ -174,33 +167,24 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:3001",
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "authorization",
+    "content-type",
+]
 
 # Email settings (optional)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
-# For production, uncomment and configure these:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.yourprovider.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your@email.com'
-# EMAIL_HOST_PASSWORD = 'yourpassword'
-# DEFAULT_FROM_EMAIL = 'Your App <noreply@yourdomain.com>'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # PayPal settings
-PAYPAL_CLIENT_ID = env('PAYPAL_CLIENT_ID', default='')
-PAYPAL_SECRET = env('PAYPAL_SECRET', default='')
-PAYPAL_ENVIRONMENT = env('PAYPAL_ENVIRONMENT', default='sandbox')  # or 'live' for production
-PAYPAL_WEBHOOK_ID = env('PAYPAL_WEBHOOK_ID', default='')
+PAYPAL_CLIENT_ID = env("PAYPAL_CLIENT_ID", default="")
+PAYPAL_SECRET = env("PAYPAL_SECRET", default="")
+PAYPAL_ENVIRONMENT = env("PAYPAL_ENVIRONMENT", default="sandbox")
+PAYPAL_WEBHOOK_ID = env("PAYPAL_WEBHOOK_ID", default="")
 
 # Frontend URLs for redirects
-FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')
+FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")
 PAYMENT_SUCCESS_URL = f"{FRONTEND_URL}/payment/success/"
 PAYMENT_CANCEL_URL = f"{FRONTEND_URL}/payment/cancel/"
-
-# Zoom settings (optional)
-# ZOOM_CLIENT_ID = "your_client_id"
-# ZOOM_CLIENT_SECRET = "your_client_secret"
-# ZOOM_ACCOUNT_ID = "your_account_id"
-# ZOOM_REDIRECT_URI = "http://localhost:8000/api/zoom/callback/"

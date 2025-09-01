@@ -1,16 +1,9 @@
+// src/api/education.js
 import api from './axiosConfig';
 
-// Fetch all courses
-export const fetchCourses = () => {
-  return api.get('/education/courses/'); // Now calls /api/education/courses/
-};
+export const fetchCourses = () => api.get('/education/courses/');
+export const enrollInCourse = (courseId) => api.post('/enroll/', { course_id: courseId });
+export const getMyEnrollments = () => api.get('/my-enrollments/');
+export const fetchCourseDetail = (id) => api.get(`/courses/${id}/`);
+export const fetchCourseLessons = (id) => api.get(`/courses/${id}/lessons/`);
 
-// Enroll in a course
-export const enrollInCourse = (courseId) => {
-  return api.post('/education/enrollments/', { course: courseId });
-};
-
-// Get user's enrollments
-export const getMyEnrollments = () => {
-  return api.get('/education/my-enrollments/');
-};

@@ -1,21 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { getMyEnrollments } from '../../api/education';
 
 const EnrolledCoursesList = () => {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
-  useEffect(() => {
-    // Simulate API call - replace with actual API call
-    setTimeout(() => {
-      setEnrollments([
-        { id: 1, course_title: 'Web Development Basics', progress: 75, enrolled_at: '2024-01-15' },
-        { id: 2, course_title: 'Advanced React', progress: 30, enrolled_at: '2024-02-01' }
-      ]);
+useEffect(() => {
+  getMyEnrollments()
+    .then(res => {
+      setEnrollments(res.data);
       setLoading(false);
-    }, 1000);
-  }, [token]);
+    })
+    .catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
+}, [token]);
+
 
   const getProgressColor = (progress) => {
     if (progress >= 90) return 'bg-green-100 text-green-800';
