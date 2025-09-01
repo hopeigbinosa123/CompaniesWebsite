@@ -53,6 +53,7 @@ class CourseListView(generics.ListAPIView):
     queryset = Course.objects.filter(is_active=True)
     serializer_class = CourseSerializer
     permission_classes = [permissions.AllowAny]
+    
 
 class CourseDetailView(generics.RetrieveAPIView):
     queryset = Course.objects.filter(is_active=True)
