@@ -185,7 +185,8 @@ Contributions are welcome! Please follow these guidelines when contributing to t
 Here are some suggestions for future development:
 
 *   **Implement user profiles:** Add a user profile page where users can view their enrolled courses, service requests, and other information.
-*   **Add payment integration:** Integrate a payment gateway to allow users to pay for courses and services.
+*   **Add payment integration:** Integrate a payment gateway to allow users to pay for courses and services. And also add PAYPAL_CLIENT_ID and PAYPAL_SECRET key.
 *   **Improve the UI/UX:** Improve the user interface and user experience of the application.
 *   **Write more tests:** Write more unit and integration tests to improve the code quality and prevent regressions.
 *   **Deploy the application:** Deploy the application to a cloud platform like AWS, Google Cloud, or Heroku.
+

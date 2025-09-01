@@ -6,7 +6,7 @@ import Footer from './components/shared/Footer';
 import LoadingSpinner from './components/shared/LoadingSpinner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
-// Import Page Components - Public
+// Public Pages
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
@@ -14,21 +14,42 @@ import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
-// Import Module Pages - Public
+// Public Module Pages
 import EducationPage from './pages/EducationPage';
 import SoftwareServicesPage from './pages/SoftwareServicesPage';
 import GraphicDesignPage from './pages/GraphicDesignPage';
 import CosmetologyPage from './pages/CosmetologyPage';
 
-// Import Dashboard & Protected Pages - Require Login
+// Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
 import SoftwareProjectsPage from './pages/SoftwareProjectsPage';
 import GraphicDesignOrdersPage from './pages/GraphicDesignOrdersPage';
 import PaymentPage from './pages/PaymentPage';
 
-import './App.css';
+// Education Module Extensions
+import CourseDetailPage from './pages/CourseDetailPage';
+import CourseLessonsPage from './pages/CourseLessionsPage';
+import EnrolledCoursesList from './pages/EnrolledCourseList';
 
-// Component to handle the loading state and routing
+// 404 Page
+function NotFoundPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">404 - Page Not Found</h1>
+        <p className="text-gray-600 mb-8">The page you're looking for doesn't exist.</p>
+        <a
+          href="/"
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Go Back Home
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// Main App Content
 function AppContent() {
   const { loading } = useAuth();
 
@@ -60,7 +81,11 @@ function AppContent() {
           <Route path="/graphic-design" element={<GraphicDesignPage />} />
           <Route path="/cosmetology" element={<CosmetologyPage />} />
 
-          {/* Protected Routes */}
+          {/* Education Module Extensions */}
+          <Route path="/education/courses/:id" element={<CourseDetailPage />} />
+          <Route path="/education/courses/:id/lessons" element={<CourseLessonsPage />} />
+
+          {/* Protected Dashboard Routes */}
           <Route
             path="/dashboard"
             element={
@@ -93,8 +118,16 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/dashboard/my-courses"
+            element={
+              <ProtectedRoute>
+                <EnrolledCoursesList />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* 404 Page */}
+          {/* 404 Fallback */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
@@ -103,23 +136,7 @@ function AppContent() {
   );
 }
 
-function NotFoundPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">404 - Page Not Found</h1>
-        <p className="text-gray-600 mb-8">The page you're looking for doesn't exist.</p>
-        <a
-          href="/"
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Go Back Home
-        </a>
-      </div>
-    </div>
-  );
-}
-
+// App Wrapper with Auth Context
 function App() {
   return (
     <AuthProvider>
