@@ -1,0 +1,15 @@
+# SQLite database
+db.sqlite3
+
+# VS Code settings
+# .vscode/
+
+# Environment variables
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+
+.env

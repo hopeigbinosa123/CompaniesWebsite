@@ -112,3 +112,4 @@ class MyEnrollmentsView(generics.ListAPIView):
 
     def get_queryset(self):
         return Enrollment.objects.filter(user=self.request.user)
+

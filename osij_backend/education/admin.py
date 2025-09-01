@@ -35,3 +35,4 @@ class LessonAdmin(admin.ModelAdmin):
 class LessonProgressAdmin(admin.ModelAdmin):
     list_display = ('enrollment', 'lesson', 'completed', 'time_spent_minutes')
     list_filter = ['completed']
+

@@ -188,3 +188,10 @@ PAYPAL_WEBHOOK_ID = env("PAYPAL_WEBHOOK_ID", default="")
 FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")
 PAYMENT_SUCCESS_URL = f"{FRONTEND_URL}/payment/success/"
 PAYMENT_CANCEL_URL = f"{FRONTEND_URL}/payment/cancel/"
+
+# Zoom settings
+ZOOM_CLIENT_ID = env("ZOOM_CLIENT_ID", default="")
+ZOOM_CLIENT_SECRET = env("ZOOM_CLIENT_SECRET", default="")
+ZOOM_ACCOUNT_ID = env("ZOOM_ACCOUNT_ID", default="")
+ZOOM_REDIRECT_URI = env("ZOOM_REDIRECT_URI", default="http://localhost:8000/api/zoom/callback/")
+ZOOM_API_BASE_URL = env("ZOOM_API_BASE_URL", default="https://api.zoom.us/v2")

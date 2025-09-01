@@ -14,5 +14,5 @@ urlpatterns = [
     path('enroll/', views.EnrollView.as_view(), name='enroll'),
     # urls.py
     path('education/courses/', views.CourseListView.as_view(), name='course-list'),
-
+    
 ]
