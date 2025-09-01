@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from Zoom_api.views import ZoomAccessTokenView, CreateZoomMeetingView  # ✅ Correct imports
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -15,9 +15,7 @@ urlpatterns = [
     # TEMPORARILY COMMENTED OUT
     # path("api/auth/", include("authentication.urls")),
 
-    # ✅ Zoom endpoints
-    path("api/zoom/token/", ZoomAccessTokenView.as_view(), name="zoom-access-token"),
-    path("api/zoom/meetings/", CreateZoomMeetingView.as_view(), name="zoom-meetings"),
+    
 
     # Payments
     path("api/payments/", include("payments.urls")),

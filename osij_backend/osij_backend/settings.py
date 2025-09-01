@@ -40,9 +40,9 @@ INSTALLED_APPS = [
     "software_services",
     "cosmetology",
     "graphic_design",
-    "Zoom_api",
     "Authentication",
-    "payments"
+    "payments",
+    "notifications"
 ]
 
 MIDDLEWARE = [
@@ -178,6 +178,18 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 # Email settings (optional)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'hopeigbinosa063@gmail.com'           # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = 'blxj sqwf pcss xwmk'     # Use an App Password, not your Gmail login
+
+DEFAULT_FROM_EMAIL = 'Osij Platforms <hopeigbinosa063@gmail.com>'
+
 # PayPal settings
 PAYPAL_CLIENT_ID = env("PAYPAL_CLIENT_ID", default="")
 PAYPAL_SECRET = env("PAYPAL_SECRET", default="")
@@ -189,9 +201,4 @@ FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")
 PAYMENT_SUCCESS_URL = f"{FRONTEND_URL}/payment/success/"
 PAYMENT_CANCEL_URL = f"{FRONTEND_URL}/payment/cancel/"
 
-# Zoom settings
-ZOOM_CLIENT_ID = env("ZOOM_CLIENT_ID", default="")
-ZOOM_CLIENT_SECRET = env("ZOOM_CLIENT_SECRET", default="")
-ZOOM_ACCOUNT_ID = env("ZOOM_ACCOUNT_ID", default="")
-ZOOM_REDIRECT_URI = env("ZOOM_REDIRECT_URI", default="http://localhost:8000/api/zoom/callback/")
-ZOOM_API_BASE_URL = env("ZOOM_API_BASE_URL", default="https://api.zoom.us/v2")
+
