@@ -88,7 +88,7 @@ useEffect(() => {
               className="text-blue-700 font-bold ml-2"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              whileHover={{scale: 1.05, color: '#1d4ed8'}}
+              whileHover={{scale: 1.05, color: 'red'}}
               transition={{ duration: 0.5 }}
               onClick={() => navigate('/profile')}
                 >
