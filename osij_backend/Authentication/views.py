@@ -16,39 +16,59 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            # Hash the password before saving
-            user = User.objects.create_user(
-                username=serializer.validated_data['username'],
-                email=serializer.validated_data['email'],
-                password=serializer.validated_data['password'],
-                first_name=serializer.validated_data.get('first_name', ''),
-                last_name=serializer.validated_data.get('last_name', '')
+            user = serializer.save()
+            return Response(
+                {
+                    "message": "User created successfully",
+                    "user": {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name
+                    }
+                },
+                status=status.HTTP_201_CREATED
             )
-            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
     
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print("Request data:", request.data)  # Debug log
+        try:
+            serializer = LoginSerializer(data=request.data)
+            if not serializer.is_valid():
+                print("Validation errors:", serializer.errors)  # Debug log
+                print("Raw request data:", request.body)  # Add this line
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+            # Get the validated user from the serializer
+            user = serializer.validated_data.get('user')
+            if not user:
+                return Response(
+                    {"error": "User not found in validated data"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             
-        user = authenticate(
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password']
-        )
-        
-        if user is not None:
-            login(request, user)
             token, created = Token.objects.get_or_create(user=user)
+            
             return Response({
                 'token': token.key,
-                'user': UserSerializer(user).data
+                'user': UserSerializer(user).data,
+                'access': token.key
             })
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-
+            
+        except Exception as e:
+            import traceback
+            print("Unexpected error:", str(e))
+            print("Traceback:", traceback.format_exc())
+            return Response(
+                {"error": "An unexpected error occurred", "detail": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
 class LogoutView(APIView):
     def post(self, request):
         # Delete the token if using token authentication

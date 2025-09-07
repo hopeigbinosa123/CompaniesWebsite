@@ -19,10 +19,12 @@ urlpatterns = [
     path("api/payments/", include("payments.urls")),
 ]
 
-# Static/media files in debug mode
+# Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# Serve static files in production
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # Frontend entry point
 urlpatterns += [

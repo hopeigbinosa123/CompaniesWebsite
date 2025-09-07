@@ -29,24 +29,31 @@ const RegisterForm = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
+  
     if (formData.password !== formData.password2) {
       setError('Passwords do not match');
       setLoading(false);
       return;
     }
-
+  
     try {
-      // Simulate registration - replace with actual API call
-      setTimeout(() => {
-        login({ username: formData.username, first_name: formData.first_name }, 'mock-token');
-        navigate('/');
-        setLoading(false);
-      }, 1500);
+      // Remove password2 from the data sent to the server
+      const { password2, ...registrationData } = formData;
       
+      // Call the actual registration API
+      const response = await auth.register(registrationData);
+      
+      // If registration is successful, log the user in
+      if (response.user) {
+        login(response.user, response.access);
+        navigate('/');
+      }
     } catch (err) {
-      setError('Registration failed. Please try again.');
+      // Handle specific error messages from the API if available
+      const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
+      setError(errorMessage);
       console.error('Registration error:', err);
+    } finally {
       setLoading(false);
     }
   };

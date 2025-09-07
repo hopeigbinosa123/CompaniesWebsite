@@ -32,13 +32,13 @@ useEffect(() => {
   verifyToken();
 }, []);
   // Function to handle login
-  const login = (authToken, userData) => {
+  // In your AuthContext.js
+  const login = async (userData, token) => {
+    localStorage.setItem('token', token);
     setUser(userData);
-    setToken(authToken);
-    localStorage.setItem('token', authToken);
-    axios.defaults.headers.common['Authorization'] = `Token ${authToken}`;
+    setToken(token);
   };
-
+  
   // Function to handle logout
   const logout = () => {
     setUser(null);

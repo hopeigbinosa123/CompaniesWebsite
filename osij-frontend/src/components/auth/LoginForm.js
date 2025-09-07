@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-
+import { auth } from '../../api/auth';
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -27,59 +27,19 @@ const LoginForm = () => {
     setError('');
   
     try {
-      // First, get the CSRF token
-      const csrfResponse = await fetch('http://localhost:8000/api/auth/csrf/', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-      
-      if (!csrfResponse.ok) {
-        throw new Error('Failed to get CSRF token');
-      }
-
-      // Get CSRF token from cookies
-      const getCookie = (name) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-      };
-      
-      const csrfToken = getCookie('csrftoken');
-      
-      if (!csrfToken) {
-        throw new Error('CSRF token not found in cookies');
-      }
-  
-      // Now make the login request with CSRF token
-      const response = await fetch('http://localhost:8000/api/auth/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken,
-        },
-        credentials: 'include',
-        body: JSON.stringify(formData),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        login(data.user, data.token);
-        navigate('/');
-      } else {
-        setError(data.detail || data.message || 'Login failed. Please check your credentials.');
-      }
+      console.log('Login payload:', { username: formData.username, password: formData.password });
+      const response = await auth.login(formData.username, formData.password);
+      login(response.user, response.access);
+      navigate('/');
     } catch (err) {
-      setError(err.message || 'An error occurred during login. Please try again.');
+      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
       console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
   };
+
+
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       {error && (
