@@ -12,21 +12,19 @@ urlpatterns = [
     path("api/cosmetology/", include("cosmetology.urls")),
     path("api/graphic-design/", include("graphic_design.urls")),
     
-    # TEMPORARILY COMMENTED OUT
-    # path("api/auth/", include("authentication.urls")),
-
-    
+    # Authentication
+    path("api/auth/", include("Authentication.urls")),
 
     # Payments
     path("api/payments/", include("payments.urls")),
 ]
 
-# ✅ Static/media files in debug mode
+# Static/media files in debug mode
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-# ✅ Frontend entry point
+# Frontend entry point
 urlpatterns += [
     path('', TemplateView.as_view(template_name='index.html')),
 ]

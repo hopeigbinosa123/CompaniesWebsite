@@ -1,35 +1,42 @@
-// src/context/AuthContext.js
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import api from '../api/axiosConfig'; // Import the configured axios instance
+import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import api from '../api/axiosConfig';
 
-const AuthContext = createContext();
-
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
-  // Function to fetch user profile using the token
-  const fetchUserProfile = async (authToken) => {
-    try {
-      const response = await api.get('/auth/profile/'); // Adjust endpoint to match your API
-      setUser(response.data);
-    } catch (error) {
-      console.error('Failed to fetch user profile:', error);
-      logout(); // Logout if token is invalid
+  // In AuthContext.js
+useEffect(() => {
+  const verifyToken = async () => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      try {
+        // Set the auth header before making the request
+        api.defaults.headers.common['Authorization'] = `Token ${storedToken}`;
+        const response = await api.get('/auth/profile/');
+        setUser(response.data);
+      } catch (error) {
+        console.error('Session verification failed:', error);
+        // Clear invalid token
+        localStorage.removeItem('token');
+        delete api.defaults.headers.common['Authorization'];
+      }
     }
+    setLoading(false);
   };
 
+  verifyToken();
+}, []);
   // Function to handle login
-  const login = async (userData, authToken) => {
+  const login = (authToken, userData) => {
     setUser(userData);
     setToken(authToken);
     localStorage.setItem('token', authToken);
-    // The axios interceptor in axiosConfig.js will now automatically add this token to requests
+    axios.defaults.headers.common['Authorization'] = `Token ${authToken}`;
   };
 
   // Function to handle logout
@@ -37,41 +44,23 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
-    // The axios interceptor will stop adding the token to requests
-  };
-
-  // Check if we have a token on app start
-  useEffect(() => {
-    const initAuth = async () => {
-      const storedToken = localStorage.getItem('token');
-      
-      if (storedToken) {
-        setToken(storedToken);
-        try {
-          await fetchUserProfile(storedToken);
-        } catch (error) {
-          console.error('Authentication initialization failed:', error);
-          logout();
-        }
-      }
-      setLoading(false);
-    };
-
-    initAuth();
-  }, []);
-
-  const value = {
-    user,
-    token,
-    login,
-    logout,
-    loading,
-    isAuthenticated: !!user && !!token,
+    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (
-    <AuthContext.Provider value={value}>
-      {children}
+    <AuthContext.Provider value={{ 
+      user, 
+      token, 
+      login, 
+      logout, 
+      loading,
+      isAuthenticated: !!user && !!token
+    }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  return React.useContext(AuthContext);
 };

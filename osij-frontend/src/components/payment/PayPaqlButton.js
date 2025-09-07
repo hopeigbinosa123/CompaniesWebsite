@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import axios from 'axios';
 
-const PayPal_Button = ({ amount, currency, onSuccess, onError }) => {
+const PayPal_Button = ({ amount, currency, onSuccess, onError, isAuthenticated }) => {
   //  state variables that handle payment status
          const [error, setError] = useState(null);
          const [succeeded, setSucceeded] = useState(false);
@@ -41,17 +41,16 @@ const PayPal_Button = ({ amount, currency, onSuccess, onError }) => {
       {error && <div className="error-message">{error}</div>}
       {succeeded ? (
         <div className="success-message">Success payment!</div>
+      ) : !isAuthenticated ? (
+        <div>Please log in to make a payment</div>
       ) : (
-        <PayPalScriptProvider
-          options={{
-            'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID,
-            currency: currency || 'USD'
-          }}
-        >
+        <PayPalScriptProvider options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID }}>
           <PayPalButtons
-            style={{ layout: 'vertical' }}
             createOrder={create_Order}
             onApprove={on_Approval}
+            amount={amount}
+            currency={currency}
+            onSuccess={onSuccess}
             onError={onError}
           />
         </PayPalScriptProvider>

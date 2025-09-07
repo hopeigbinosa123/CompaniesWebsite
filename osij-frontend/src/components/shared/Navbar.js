@@ -84,7 +84,7 @@ useEffect(() => {
                 >
                   Dashboard
                 </Link>
-                <span className="text-gray-700">Welcome, {user?.username}</span>
+                <span className="text-blue-700 font-bold"> {user?.username}</span>
                 <button
                   onClick={handleLogout}
                   className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"

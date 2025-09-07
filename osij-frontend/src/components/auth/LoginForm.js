@@ -25,34 +25,61 @@ const LoginForm = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
+  
     try {
-      // This would call your Django login endpoint
+      // First, get the CSRF token
+      const csrfResponse = await fetch('http://localhost:8000/api/auth/csrf/', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+      
+      if (!csrfResponse.ok) {
+        throw new Error('Failed to get CSRF token');
+      }
+
+      // Get CSRF token from cookies
+      const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+      };
+      
+      const csrfToken = getCookie('csrftoken');
+      
+      if (!csrfToken) {
+        throw new Error('CSRF token not found in cookies');
+      }
+  
+      // Now make the login request with CSRF token
       const response = await fetch('http://localhost:8000/api/auth/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
-        // Assuming your Django backend returns { user: {...}, token: '...' }
         login(data.user, data.token);
-        navigate('/'); // Redirect to home page after successful login
+        navigate('/');
       } else {
-        setError(data.message || 'Login failed. Please check your credentials.');
+        setError(data.detail || data.message || 'Login failed. Please check your credentials.');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err.message || 'An error occurred during login. Please try again.');
       console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       {error && (
