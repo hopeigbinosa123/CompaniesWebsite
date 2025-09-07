@@ -1,7 +1,7 @@
 import { useState,useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-
+import { motion } from 'framer-motion';
 const Navbar = () => {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const servicesRef = useRef();
@@ -84,7 +84,16 @@ useEffect(() => {
                 >
                   Dashboard
                 </Link>
-                <span className="text-blue-700 font-bold"> {user?.username}</span>
+                <motion.span 
+              className="text-blue-700 font-bold ml-2"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              whileHover={{scale: 1.05, color: '#1d4ed8'}}
+              transition={{ duration: 0.5 }}
+              onClick={() => navigate('/profile')}
+                >
+                {user?.username}
+                </motion.span>
                 <button
                   onClick={handleLogout}
                   className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"

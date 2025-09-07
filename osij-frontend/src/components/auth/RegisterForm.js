@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ const RegisterForm = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -41,7 +41,7 @@ const RegisterForm = () => {
       const { password2, ...registrationData } = formData;
       
       // Call the actual registration API
-      const response = await auth.register(registrationData);
+      const response = await register(registrationData);
       
       // If registration is successful, log the user in
       if (response.user) {
