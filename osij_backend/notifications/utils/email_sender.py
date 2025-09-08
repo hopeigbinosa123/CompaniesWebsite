@@ -20,3 +20,24 @@ def send_bulk_email(subject, message, recipient_list):
             [email],
             fail_silently=False,
         )
+
+def send_welcome_email(user):
+    subject = 'Welcome to OSIJ Platform!'
+    message = f'Hi {user.username},
+
+Thank you for registering on our platform. We are excited to have you!'
+    recipient_email = user.email
+    send_custom_email(subject, message, recipient_email)
+
+def send_enrollment_confirmation_email(enrollment):
+    subject = f'Enrollment Confirmation for {enrollment.course.title}'
+    message = (
+        f'Hi {enrollment.user.username},
+
+'        f'This email confirms your enrollment in the course: "{enrollment.course.title}".
+'        f'You can now access the course materials and start learning.
+
+'        f'Thank you for choosing our platform!'
+    )
+    recipient_email = enrollment.user.email
+    send_custom_email(subject, message, recipient_email)

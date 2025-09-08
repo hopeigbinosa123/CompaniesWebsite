@@ -19,6 +19,7 @@ import EducationPage from './pages/EducationPage';
 import SoftwareServicesPage from './pages/SoftwareServicesPage';
 import GraphicDesignPage from './pages/GraphicDesignPage';
 import CosmetologyPage from './pages/CosmetologyPage';
+import RequestServicePage from './pages/RequestServicePage'; // New import
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -78,6 +79,7 @@ function AppContent() {
           {/* Public Module Pages */}
           <Route path="/education" element={<EducationPage />} />
           <Route path="/software-services" element={<SoftwareServicesPage />} />
+          <Route path="/software-services/request" element={<RequestServicePage />} /> {/* New route */}
           <Route path="/graphic-design" element={<GraphicDesignPage />} />
           <Route path="/cosmetology" element={<CosmetologyPage />} />
 

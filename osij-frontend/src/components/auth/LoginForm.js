@@ -29,7 +29,7 @@ const LoginForm = () => {
     try {
       console.log('Login payload:', { username: formData.username, password: formData.password });
       const response = await auth.login(formData.username, formData.password);
-      login(response.user, response.access);
+      login(response.user, response.token);
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Please check your credentials.');

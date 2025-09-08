@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axiosConfig'; // Import the configured axios instance
 
 const DesignersList = () => {
   const [designers, setDesigners] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/designers/')
+    api.get('/graphic-design/designers/') // Use api instance and relative path
       .then(response => setDesigners(response.data))
       .catch(error => console.error('Error fetching designers:', error));
   }, []);

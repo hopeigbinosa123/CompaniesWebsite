@@ -33,7 +33,7 @@ class Order(models.Model):
         ("COMPLETED", "Completed"),
     ]
 
-    name = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     email = models.EmailField()
     title = models.CharField(max_length=200)
     design_type = models.CharField(max_length=200)
