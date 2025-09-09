@@ -19,14 +19,18 @@ export const auth = {
       await fetchCSRFToken();
       
       const response = await api.post('/auth/login/', { username, password });
+      console.log('Login response:', response.data); // Log the response
       
       // Store the token and user data
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+      if (response.data && response.data.access) {
+        localStorage.setItem('token', response.data.access);
+        if (response.data.user) {
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+        }
+        return response.data;
+      } else {
+        throw new Error('No access token received');
       }
-      
-      return response.data;
     } catch (error) {
       console.error('Login error:', error.response?.data || error.message);
       throw error;

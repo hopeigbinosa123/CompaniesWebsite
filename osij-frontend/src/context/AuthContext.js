@@ -33,12 +33,40 @@ useEffect(() => {
   verifyToken();
 }, []);
   // Function to handle login
-  // In your AuthContext.js
-  const login = async (userData, token) => {
-    localStorage.setItem('token', token);
-    setUser(userData);
-    setToken(token);
-  };
+  // In AuthContext.js
+const login = async (userData, token) => {
+  // Set the token in localStorage
+  localStorage.setItem('token', token);
+  
+  // Set the default Authorization header for all axios requests
+  api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  
+  // Set user data in state
+  setUser(userData);
+  setToken(token);
+};
+
+// Update the verifyToken function in useEffect
+const verifyToken = async () => {
+  const storedToken = localStorage.getItem('token');
+  if (storedToken) {
+    try {
+      // Set the auth header before making the request
+      api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+      const response = await api.get('/auth/profile/');
+      setUser(response.data);
+      setToken(storedToken); // Make sure to set the token in state
+    } catch (error) {
+      console.error('Session verification failed:', error);
+      // Clear invalid token
+      localStorage.removeItem('token');
+      delete api.defaults.headers.common['Authorization'];
+      setUser(null);
+      setToken(null);
+    }
+  }
+  setLoading(false);
+};
 
   const register = async (userData) => {
     const response = await auth.register(userData);
