@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import api from '../api/axiosConfig';
+import { auth } from '../api/auth';
 
 export const AuthContext = createContext();
 
@@ -16,7 +17,7 @@ useEffect(() => {
     if (storedToken) {
       try {
         // Set the auth header before making the request
-        api.defaults.headers.common['Authorization'] = `Token ${storedToken}`;
+        api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
         const response = await api.get('/auth/profile/');
         setUser(response.data);
       } catch (error) {
@@ -38,6 +39,14 @@ useEffect(() => {
     setUser(userData);
     setToken(token);
   };
+
+  const register = async (userData) => {
+    const response = await auth.register(userData);
+    if (response.token) {
+      login(response.user, response.token);
+    }
+    return response;
+  };
   
   // Function to handle logout
   const logout = () => {
@@ -53,6 +62,7 @@ useEffect(() => {
       token, 
       login, 
       logout, 
+      register,
       loading,
       isAuthenticated: !!user && !!token
     }}>

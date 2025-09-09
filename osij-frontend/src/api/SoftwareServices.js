@@ -7,11 +7,11 @@ export const getSoftwareServices = () => {
 
 // Keep your existing functions
 export const submitServiceRequest = (requestData) => {
-  return api.post('/software-services/requests/', requestData);
+  return api.post('/software-services/requests/create/', requestData);
 };
 
 export const getMyServiceRequests = () => {
-  return api.get('/software-services/my-requests/');
+  return api.get('/software-services/requests/me/');
 };
 
 export const getMyProjects = () => {

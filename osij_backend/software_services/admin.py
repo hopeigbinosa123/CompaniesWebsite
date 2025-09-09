@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SoftwareService, ServiceRequest, ProjectUpdate  # Import what ACTUALLY exists
+from .models import SoftwareService, ServiceRequest, ProjectUpdate, SoftwareEnquiry, SupportResponse
 
 @admin.register(SoftwareService)
 class SoftwareServiceAdmin(admin.ModelAdmin):
@@ -18,12 +18,13 @@ class ProjectUpdateAdmin(admin.ModelAdmin):
     list_display = ['service_request', 'title', 'created_at']
     list_filter = ['created_at']
 
-# REMOVE THESE LINES - these models don't exist yet!
-# from .models import SoftwareEnquiry, SupportResponse
-# @admin.register(SoftwareEnquiry)
-# class SoftwareEnquiryAdmin(admin.ModelAdmin):
-#     pass
-# 
-# @admin.register(SupportResponse)
-# class SupportResponseAdmin(admin.ModelAdmin):
-#     pass
+from .models import SoftwareEnquiry, SupportResponse
+
+@admin.register(SoftwareEnquiry)
+class SoftwareEnquiryAdmin(admin.ModelAdmin):
+    list_display = ['problem_title', 'user', 'status', 'submitted_at']
+    list_filter = ['status', 'submitted_at']
+
+@admin.register(SupportResponse)
+class SupportResponseAdmin(admin.ModelAdmin):
+    pass

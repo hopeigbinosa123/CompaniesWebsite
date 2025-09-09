@@ -17,9 +17,11 @@ class RegisterView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            token, created = Token.objects.get_or_create(user=user)
             return Response(
                 {
                     "message": "User created successfully",
+                    "token": token.key,
                     "user": {
                         "id": user.id,
                         "username": user.username,
@@ -30,6 +32,7 @@ class RegisterView(APIView):
                 },
                 status=status.HTTP_201_CREATED
             )
+        print("Serializer errors:", serializer.errors)  # Debug log
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):

@@ -1,3 +1,4 @@
+import api from '../../api/axiosConfig'; // Add this import
 import React, { useState } from 'react';
 import OsijButton from './OsijButton';
 
@@ -19,11 +20,11 @@ function DesignOrderForm() {
     setFormErrors(prev => ({ ...prev, [name]: '' }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) { // Make it async
     e.preventDefault();
 
     const errors = {};
-    if (!formData.name) errors.name = 'Name is required';
+    if (!formData.name) errors.name = 'Name is required'; // This 'name' is for display, backend uses authenticated user
     if (!formData.email) errors.email = 'Email is required';
     if (!formData.type) errors.type = 'Design type is required';
     if (!formData.details) errors.details = 'Details are required';
@@ -36,18 +37,30 @@ function DesignOrderForm() {
     setIsLoading(true);
     setFormErrors({});
 
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
+    try {
+      const payload = {
+        email: formData.email,
+        title: formData.name, // Using name as title for now, can be changed
+        design_type: formData.type,
+        description: formData.details,
+      };
+      
+      await api.post('/graphic-design/orders/', payload); // Send to backend
       setSubmitted(true);
-      setIsLoading(false);
-
+      // Clear form after successful submission
       setFormData({
         name: '',
         email: '',
         type: '',
         details: '',
       });
-    }, 1500);
+    } catch (error) {
+      console.error('Error submitting design request:', error.response?.data || error);
+      setFormErrors({ general: error.response?.data?.detail || 'Failed to submit request.' });
+      setSubmitted(false); // Reset submitted state on error
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
