@@ -1,5 +1,5 @@
 import React from 'react';
-import ServiceRequestForm from '../components/SoftwareServices/ServiceRequestForm';
+import ServiceRequestForm from '../components/Softwareservices/ServiceRequestForm';
 
 const RequestServicePage = () => {
   return (
