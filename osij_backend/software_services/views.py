@@ -29,3 +29,13 @@ class ServiceRequestDetailView(generics.RetrieveAPIView):
     
     def get_queryset(self):
         return ServiceRequest.objects.filter(user=self.request.user)
+
+class ProjectListView(generics.ListAPIView):
+    serializer_class = ProjectUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        # Return projects where the current user has a service request
+        return ProjectUpdate.objects.filter(
+            service_request__user=self.request.user
+        ).order_by('-created_at')
