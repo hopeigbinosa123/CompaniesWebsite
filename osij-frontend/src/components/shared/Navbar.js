@@ -58,7 +58,7 @@ useEffect(() => {
                 
                 Services 
               </button>
-              <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-lg mt-2 p-2 w-48 z-50">
+              <div className={`absolute ${isServicesOpen ? 'block' : 'hidden'} bg-white shadow-lg rounded-lg mt-2 p-2 w-48 z-50`}>
                 {services.map((service) => (
                   <Link
                     key={service.path}

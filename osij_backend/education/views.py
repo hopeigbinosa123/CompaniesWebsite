@@ -14,21 +14,7 @@ from .serializers import LessonSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Enrollment
-from rest_framework.response import Response
-# views.py
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from .models import Enrollment
 from .serializers import CourseSerializer
-
-class MyEnrollmentsView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        enrollments = Enrollment.objects.filter(user=request.user).select_related('course')
-        courses = [en.course for en in enrollments]
-        serializer = CourseSerializer(courses, many=True, context={'request': request})
-        return Response(serializer.data)
 
 class EnrollView(APIView):
     permission_classes = [IsAuthenticated]
@@ -38,17 +24,7 @@ class EnrollView(APIView):
         Enrollment.objects.get_or_create(user=request.user, course_id=course_id)
         return Response({'status': 'enrolled'})
 
-class CourseLessonsView(APIView):
-    def get(self, request, pk):
-        lessons = Lesson.objects.filter(course_id=pk)
-        serializer = LessonSerializer(lessons, many=True)
-        return Response(serializer.data)
-
-class CourseDetailView(RetrieveAPIView):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
-
-class CourseListView(generics.ListAPIView):
+class CourseListCreateView(generics.ListCreateAPIView):
     queryset = Course.objects.filter(is_active=True)
     serializer_class = CourseSerializer
     permission_classes = [permissions.AllowAny]

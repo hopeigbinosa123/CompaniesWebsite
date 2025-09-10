@@ -9,7 +9,7 @@ class DesignerAdmin(admin.ModelAdmin):
 admin.site.register(Designer, DesignerAdmin)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'title', 'design_type', 'description', 'ordered_at', 'status')
+    list_display = ('id', 'email', 'title', 'design_type', 'description', 'ordered_at', 'status')
     list_filter = ['ordered_at', 'status', ]
     search_fields = ('name', 'title')
 admin.site.register(Order, OrderAdmin)
