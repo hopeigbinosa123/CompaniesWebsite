@@ -29,16 +29,17 @@ const LoginForm = () => {
     try {
       console.log('Login payload:', { username: formData.username, password: formData.password });
       const response = await auth.login(formData.username, formData.password);
-      login(response.user, response.token);
+      console.log('Login response in handleSubmit:', response); // Add this line
+      login(response.user, response.access);  // Changed from response.token to response.access
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.error || err.message || 'Login failed. Please check your credentials.');
       console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
   };
-
+  
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

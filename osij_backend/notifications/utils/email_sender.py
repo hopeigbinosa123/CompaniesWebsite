@@ -43,11 +43,16 @@ def send_welcome_email(user):
     Sends a welcome email to a new user.
     """
     subject = 'Welcome to OSIJ Platform!'
+<<<<<<< HEAD
     message = f"""
     Hi {user.username},
 
     Thank you for registering on our platform. We are excited to have you!
     """
+=======
+    message = f'Hi {user.username},'
+    message += '\n\nThank you for registering on our platform. We are excited to have you!'
+>>>>>>> 522c70507cd174da0716939968338d26db015389
     recipient_email = user.email
     send_custom_email(subject, message, recipient_email)
 
@@ -56,6 +61,7 @@ def send_enrollment_confirmation_email(enrollment):
     Sends an enrollment confirmation email.
     """
     subject = f'Enrollment Confirmation for {enrollment.course.title}'
+<<<<<<< HEAD
     message = f"""
     Hi {enrollment.user.username},
 
@@ -64,5 +70,10 @@ def send_enrollment_confirmation_email(enrollment):
 
     Thank you for choosing our platform!
     """
+=======
+    message = f'Hi {enrollment.user.username},\n\n'
+    message += 'You can now access the course materials and start learning.\n\n'
+    message += 'Thank you for choosing our platform!'
+>>>>>>> 522c70507cd174da0716939968338d26db015389
     recipient_email = enrollment.user.email
     send_custom_email(subject, message, recipient_email)

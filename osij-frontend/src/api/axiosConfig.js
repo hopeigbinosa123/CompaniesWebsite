@@ -1,24 +1,20 @@
-// src/api/axiosConfig.js
+// In axiosConfig.js
 import axios from 'axios';
 
-// Configure axios defaults
-axios.defaults.withCredentials = true;
-
-
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api/',
+  baseURL: 'http://localhost:8000/api', // Make sure this matches your Django backend URL
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
 });
 
-// Add a request interceptor to include the token
+// Add a request interceptor to add the auth token to requests
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -26,7 +22,5 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-
 
 export default api;
