@@ -9,11 +9,13 @@ const contactAPI = axios.create({
   },
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token (only for protected endpoints)
 contactAPI.interceptors.request.use(
   (config) => {
+    // Get token from localStorage
     const token = localStorage.getItem('access_token');
-    if (token) {
+    // Only add token for protected endpoints (not for contact/submit/)
+    if (token && !config.url.includes('contact/submit/')) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
