@@ -203,4 +203,87 @@ Here are some suggestions for future development:
 * **Write more tests:** Write more unit and integration tests to improve the code quality and prevent regressions.
 * **Deploy the application:** Deploy the application to a cloud platform like AWS, Google Cloud, or Heroku.
 * **Expand notification system:** Add custom admin messages, delivery logs, and HTML email templates for a more personalized experience.
+
+# PayPal Setup Instructions
+
+## Prerequisites
+
+Before you can use PayPal payments in your application, you need to set up a PayPal Developer account and get your API credentials.
+
+## Step 1: Create PayPal Developer Account
+
+1. Go to [PayPal Developer Dashboard](https://developer.paypal.com/developer/applications/)
+2. Sign in with your PayPal account or create a new one
+3. Navigate to "My Apps & Credentials"
+
+## Step 2: Create a New App
+
+1. Click "Create App"
+2. Give your app a name (e.g., "OSIJ Course Payments")
+3. Select "Merchant" as the app type
+4. Click "Create App"
+
+## Step 3: Get Your Client ID
+
+1. After creating the app, you'll see your **Client ID** and **Client Secret**
+2. Copy the **Client ID** - this is what you need for the frontend
+
+## Step 4: Set Up Environment Variable
+
+Create a `.env.local` file in your `osij-frontend` directory with the following content:
+
+```bash
+REACT_APP_PAYPAL_CLIENT_ID=your_paypal_client_id_here
+```
+
+Replace `your_paypal_client_id_here` with the actual Client ID you copied from PayPal.
+
+## Step 5: Restart Your Development Server
+
+After creating the `.env.local` file, you need to restart your React development server:
+
+```bash
+cd osij-frontend
+npm start
+```
+
+## Step 6: Test the Integration
+
+1. Navigate to a course and click "Enroll Now"
+2. You should be redirected to the payment page
+3. The PayPal button should now load properly
+4. You can test with PayPal's sandbox environment
+
+## Important Notes
+
+- **Sandbox Mode**: By default, PayPal uses sandbox mode for testing. You don't need real money to test.
+- **Environment Variables**: Make sure your `.env.local` file is in the root of your frontend directory.
+- **Security**: Never commit your `.env.local` file to version control. It's already in `.gitignore`.
+- **Backend Configuration**: You also need to configure PayPal credentials in your Django backend settings.
+
+## Backend Configuration
+
+In your Django backend (`osij_backend`), make sure you have the following environment variables set:
+
+```bash
+PAYPAL_CLIENT_ID=your_paypal_client_id_here
+PAYPAL_SECRET=your_paypal_secret_here
+PAYPAL_RETURN_URL=http://localhost:3000/dashboard/payment/success
+PAYPAL_CANCEL_URL=http://localhost:3000/dashboard/payment/cancel
+```
+
+## Troubleshooting
+
+If you still see the "PayPal client ID is not configured" error:
+
+1. Double-check that you created the `.env.local` file in the correct directory (`osij-frontend/`)
+2. Make sure the variable name is exactly `REACT_APP_PAYPAL_CLIENT_ID`
+3. Restart your development server after making changes
+4. Check the browser console for any additional errors
+
+## PayPal SDK Documentation
+
+For more information about the PayPal React SDK, visit:
+- [PayPal React SDK Documentation](https://developer.paypal.com/docs/business/checkout/react-integration/)
+- [PayPal Developer Portal](https://developer.paypal.com/)
 ```

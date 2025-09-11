@@ -17,6 +17,9 @@ urlpatterns = [
 
     # Payments
     path("api/payments/", include("payments.urls")),
+    
+    # Notifications and Contact
+    path("api/notifications/", include("notifications.urls")),
 ]
 
 # Serve media files in development

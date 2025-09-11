@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 
-class Course(models.Model):
+class Course(models.Model): # handles course
     title = models.CharField(max_length=200)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -15,8 +15,8 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-class Lesson(models.Model):
-    class LessonType(models.TextChoices):
+class Lesson(models.Model): # handles lesson
+    class LessonType(models.TextChoices): 
         VIDEO = 'video', 'YouTube Video'
         LIVE = 'live', 'Live Zoom Session'
         TEXT = 'text', 'Text Content'
@@ -25,7 +25,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
     title = models.CharField(max_length=200)
     lesson_type = models.CharField(max_length=20, choices=LessonType.choices)
-    youtube_url = models.URLField(blank=True, null=True)
+    youtube_url = models.URLField(blank=True, null=True) 
     zoom_meeting_id = models.CharField(max_length=100, blank=True, null=True)
     content = models.TextField(blank=True)
     order = models.IntegerField(default=0)
@@ -35,11 +35,11 @@ class Lesson(models.Model):
     class Meta:
         ordering = ['order']
     
-    def __str__(self):
+    def __str__(self): 
         return f"{self.course.title} - {self.title}"
 
-class LiveSession(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='live_sessions')
+class LiveSession(models.Model): # handles live session
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='live_sessions') 
     title = models.CharField(max_length=200)
     zoom_meeting_id = models.CharField(max_length=100, blank=True, null=True)
     zoom_meeting_url = models.URLField(blank=True, null=True)
@@ -90,7 +90,7 @@ class LessonProgress(models.Model):
         status = "Completed" if self.completed else "In Progress"
         return f"{self.enrollment.user.username} - {self.lesson.title} ({status})"
 
-class Certificate(models.Model):
+class Certificate(models.Model): # handles certificate
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1) # FIXME: Provide a valid default user id
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
     issued_at = models.DateTimeField(auto_now_add=True)
@@ -99,5 +99,5 @@ class Certificate(models.Model):
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        course_name = self.course.title if self.course else "No Course"
+        course_name = self.course.title if self.course else "No Course" 
         return f"Certificate for {self.user.username} - {course_name}"
