@@ -14,7 +14,7 @@ export default function StylistList() {
         const response = await api.get('/cosmetology/stylists/');
         setStylists(response.data);
       } catch (err) {
-        setError('Failed to load stylists.');
+        setError('Something went wrong. Was unable to load stylists.');
         console.error('Error fetching stylists:', err);
       } finally {
         setLoading(false);

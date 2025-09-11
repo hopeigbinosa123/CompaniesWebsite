@@ -68,18 +68,18 @@ const LoginForm = () => {
             setError('Invalid username or password. Please check your credentials.');
           }
         } else if (err.response.status === 401) {
-          setError('Invalid username or password.');
+          setError('Incorrect username or password.');
         } else if (err.response.status === 500) {
           setError('Server error. Please try again later.');
         } else {
-          setError(`Login failed: ${err.response.statusText}`);
+          setError(`Unable to login: ${err.response.statusText}`);
         }
       } else if (err.request) {
         // The request was made but no response was received
         setError('No response from server. Please check your connection.');
       } else {
         // Something happened in setting up the request that triggered an Error
-        setError(`Login failed: ${err.message}`);
+        setError(`Unable to login: ${err.message}`);
       }
     } finally {
       setLoading(false);

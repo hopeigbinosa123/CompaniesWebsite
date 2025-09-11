@@ -55,7 +55,7 @@ const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
       setOrderID(response.data.id);
       return response.data.id;
     } catch (err) {
-      setError('Failed to create order');
+      setError('Something went wrong. Was unable to create order');
       onError?.(err);
       throw err;
     }
@@ -67,7 +67,7 @@ const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
       setSucceeded(true);
       onSuccess?.(response.data);
     } catch (err) {
-      setError('Failed to capture payment');
+      setError('Something went wrong. Was unable to capture payment');
       onError?.(err);
       throw err;
     }

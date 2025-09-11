@@ -121,3 +121,66 @@ def notify_student(request):
         return render(request, 'notification_success.html')
 
     return render(request, 'send_notification.html')
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def submit_software_service_request(request):
+    """
+    Submit a software service request form
+    """
+    try:
+        data = request.data
+        
+        # Create a contact message for the software service request
+        contact_message = ContactMessage.objects.create(
+            name=data.get('name', ''),
+            email=data.get('email', ''),
+            phone=data.get('phone', ''),
+            contact_type='software',
+            subject=f"Software Service Request: {data.get('project_type', '')}",
+            message=f"""
+Project Type: {data.get('project_type', '')}
+Company: {data.get('company', '')}
+Budget: {data.get('budget', '')}
+Timeline: {data.get('timeline', '')}
+
+Description:
+{data.get('description', '')}
+            """
+        )
+        
+        # Send email notification
+        try:
+            subject = f"New Software Service Request: {data.get('project_type', '')}"
+            message = f"""
+            New software service request received:
+            
+            From: {contact_message.name}
+            Email: {contact_message.email}
+            Phone: {contact_message.phone}
+            Company: {data.get('company', 'N/A')}
+            
+            Project Type: {data.get('project_type', '')}
+            Budget: {data.get('budget', 'N/A')}
+            Timeline: {data.get('timeline', 'N/A')}
+            
+            Description:
+            {data.get('description', '')}
+            
+            Received at: {contact_message.created_at}
+            """
+            
+            # Send to admin email (you can configure this in settings)
+            send_custom_email(subject, message, 'admin@yourcompany.com')
+        except Exception as e:
+            print(f"Error sending email notification: {e}")
+        
+        serializer = ContactMessageSerializer(contact_message)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )

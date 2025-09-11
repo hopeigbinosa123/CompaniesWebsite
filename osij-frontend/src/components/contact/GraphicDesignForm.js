@@ -53,7 +53,7 @@ const GraphicDesignForm = () => {
     try {
       setLoading(true);
       const response = await graphicDesignAPI.createOrder(formData);
-      console.log('Order created successfully:', response);
+      console.log('Order was created successfully:', response);
       setSuccess(true);
       
       // Reset form
@@ -79,7 +79,7 @@ const GraphicDesignForm = () => {
       } else if (err.code === 'ERR_NETWORK') {
         setError('Unable to connect to the server. Please check your internet connection.');
       } else {
-        setError(err.message || 'Failed to submit order. Please try again.');
+        setError(err.message || 'Something went wrong. Was unable to submit order. Please try again.');
       }
     } finally {
       setLoading(false);

@@ -5,14 +5,14 @@ from .models import ContactMessage, EmailNotification
 class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessage
-        fields = ['id', 'name', 'email', 'subject', 'message', 'contact_type', 'created_at', 'is_read']
+        fields = ['id', 'name', 'email', 'phone', 'subject', 'message', 'contact_type', 'created_at', 'is_read']
         read_only_fields = ['id', 'created_at', 'is_read']
 
  # serializes contact message objects into JSON
 class ContactMessageCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessage
-        fields = ['name', 'email', 'subject', 'message', 'contact_type']
+        fields = ['name', 'email', 'phone', 'subject', 'message', 'contact_type']
 
  # serializes email notification objects into JSON
 class EmailNotificationSerializer(serializers.ModelSerializer):

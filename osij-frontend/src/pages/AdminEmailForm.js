@@ -15,7 +15,7 @@ const AdminEmailForm = () => {
         const response = await axios.get("/api/students/");
         setStudents(response.data);
       } catch {
-        setStatus("Failed to load students.");
+        setStatus("Unable to load students.");
       }
     };
     fetchStudents();
@@ -38,7 +38,7 @@ const AdminEmailForm = () => {
       setMessage("");
       setSelected([]);
     } catch {
-      setStatus("❌ Failed to send emails.");
+      setStatus("❌ Unable to send emails.");
     }
   };
 

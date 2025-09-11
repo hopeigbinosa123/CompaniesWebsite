@@ -1,11 +1,10 @@
 import api from './axiosConfig';
 
-// Add this function to fetch services from database
+
 export const getSoftwareServices = () => {
   return api.get('/software-services/services/');
 };
 
-// Keep your existing functions
 export const submitServiceRequest = (requestData) => {
   return api.post('/software-services/requests/create/', requestData);
 };

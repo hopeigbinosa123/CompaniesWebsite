@@ -12,7 +12,7 @@ const CourseCard = ({ course }) => {
   const handleEnroll = async () => {
     // Wait for auth to finish loading
     if (authLoading) {
-      setError('Please wait while we verify your authentication...');
+      setError('Please be patient with us while we verify your authentication...');
       return;
     }
 
@@ -23,7 +23,7 @@ const CourseCard = ({ course }) => {
           courseData: {
             id: course.id,
             title: course.title,
-            price: course.price || 10.00,
+            price: course.price,
             description: course.description
           }
         } 
@@ -42,7 +42,7 @@ const CourseCard = ({ course }) => {
           course: {
             id: course.id,
             title: course.title,
-            price: course.price || 10.00,
+            price: course.price,
             description: course.description
           }
         } 

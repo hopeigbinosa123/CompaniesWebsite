@@ -57,7 +57,7 @@ const verifyToken = async () => {
       setUser(response.data);
       setToken(storedToken); // Make sure to set the token in state
     } catch (error) {
-      console.error('Session verification failed:', error);
+      console.error('unable to verify session', error);
       // Clear invalid token
       localStorage.removeItem('token');
       delete api.defaults.headers.common['Authorization'];

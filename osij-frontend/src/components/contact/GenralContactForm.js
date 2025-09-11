@@ -79,7 +79,7 @@ const GeneralContactForm = () => {
       } else if (err.code === 'ERR_NETWORK') {
         setError('Unable to connect to the server. Please check your internet connection.');
       } else {
-        setError(err.message || 'Failed to submit message. Please try again.');
+        setError(err.message || 'Something went wrong. Was unable to submit message. So Please try again.');
       }
     } finally {
       setLoading(false);
