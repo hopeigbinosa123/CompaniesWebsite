@@ -1,42 +1,29 @@
-from rest_framework import generics, permissions
-from .models import Designer, Order
-from .serializers import DesignerSerializer, OrderSerializer, UpdateStatusSerializer # Import UpdateStatusSerializer
+# graphic_design/views.py
+from rest_framework import viewsets, permissions, filters
+from .models import Designer, DesignOrder
+from .serializers import DesignerSerializer, DesignOrderSerializer
 
-class DesignerListView(generics.ListAPIView):
-    queryset = Designer.objects.all()
+class IsAuthenticatedOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
+    pass
+
+
+class DesignerViewSet(viewsets.ModelViewSet):
+    queryset = Designer.objects.filter(is_active=True).order_by("name")
     serializer_class = DesignerSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["name", "specialties"]
+    ordering_fields = ["name"]
 
-class DesignerDetailView(generics.RetrieveAPIView):
-    queryset = Designer.objects.all()
-    serializer_class = DesignerSerializer
-    permission_classes = [permissions.AllowAny]
 
-class OrderCreateView(generics.CreateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
+class DesignOrderViewSet(viewsets.ModelViewSet):
+    queryset = DesignOrder.objects.select_related("client", "designer").order_by("-created_at")
+    serializer_class = DesignOrderSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["title", "brief", "status"]
+    ordering_fields = ["created_at", "status"]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-class UserOrderListView(generics.ListAPIView):
-    serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
-
-class OrderDetailView(generics.RetrieveAPIView):
-    serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
-
-# Admin/Staff View
-class OrderUpdateView(generics.RetrieveUpdateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = UpdateStatusSerializer
-    permission_classes = [permissions.IsAdminUser]
-    lookup_field = 'pk' # Assuming primary key for lookup
+        # Client is the authenticated user by default
+        serializer.save(client=self.request.user)

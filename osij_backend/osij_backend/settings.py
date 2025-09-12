@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'graphic_design',
     'cosmetology',
     'payments',
-    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -208,14 +207,10 @@ CORS_ALLOW_METHODS = [
 ]
 
 # Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# For production, you might want to use SMTP or other email services
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = env('EMAIL_HOST')
-# EMAIL_PORT = env('EMAIL_PORT')
-# EMAIL_USE_TLS = env('EMAIL_USE_TLS')
-# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-# DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
-
+DEFAULT_FROM_EMAIL = 'noreply@osijplatform.com'
 # PayPal Settings
 PAYPAL_RETURN_URL = env('PAYPAL_RETURN_URL', default='http://localhost:3000/paypal-success')
 PAYPAL_CANCEL_URL = env('PAYPAL_CANCEL_URL', default='http://localhost:3000/paypal-cancel')

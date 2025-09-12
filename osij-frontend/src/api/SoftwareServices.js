@@ -1,23 +1,10 @@
-import api from './axiosConfig';
+import api from "./axiosConfig";
 
-// Add this function to fetch services from database
-export const getSoftwareServices = () => {
-  return api.get('/software-services/services/');
-};
+// Get all software services
+export const getSoftwareServices = () => api.get("/api/software_services/services/");
 
-// Keep your existing functions
-export const submitServiceRequest = (requestData) => {
-  return api.post('/software-services/requests/create/', requestData);
-};
+// Get one software service
+export const getSoftwareService = (id) => api.get(`/api/software_services/services/${id}/`);
 
-export const getMyServiceRequests = () => {
-  return api.get('/software-services/requests/me/');
-};
-
-export const getMyProjects = () => {
-  return api.get('/software-services/projects/');
-};
-
-export const getProjectDetails = (projectId) => {
-  return api.get(`/software-services/projects/${projectId}/`);
-};
+// Create a new service request
+export const createServiceRequest = (data) => api.post("/api/software_services/requests/", data);

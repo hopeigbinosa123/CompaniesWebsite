@@ -1,35 +1,28 @@
+# cosmetology/serializers.py
 from rest_framework import serializers
-from .models import BeautyService, StylistProfile, AppointmentBooking
+from .models import Stylist, Appointment
+from django.utils import timezone
 
-# serializer for retrieving all services
-class BeautyServiceSerializer(serializers.ModelSerializer):
+class StylistSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BeautyService
-        fields = ['name', 'price', 'image']
+        model = Stylist
+        fields = "__all__"
 
 
-# serializer for viewing a service in details
-class BeautyServiceDetailsSerializer(serializers.ModelSerializer):
+class AppointmentSerializer(serializers.ModelSerializer):
+    client_username = serializers.CharField(source="client.username", read_only=True)
+    stylist_name = serializers.CharField(source="stylist.name", read_only=True)
+
     class Meta:
-        model = BeautyService
-        fields = '__all__'
+        model = Appointment
+        fields = [
+            "id", "client", "client_username", "stylist", "stylist_name",
+            "service", "notes", "start_time", "duration_minutes",
+            "status", "created_at", "updated_at",
+        ]
+        read_only_fields = ("status", "created_at", "updated_at")
 
-# serializer for retrieving a list of stylists profiles
-class StylistProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StylistProfile
-        fields = ['name', 'services']
-
-
-# serializer for viewing details of a stylist profile on_click
-class StylistDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StylistProfile
-        fields = '__all__'
-
-
-# serializer for viewing appointments made by the user
-class AppointmentBookingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AppointmentBooking
-        fields = '__all__'
+    def validate_start_time(self, value):
+        if value < timezone.now():
+            raise serializers.ValidationError("Start time must be in the future.")
+        return value
