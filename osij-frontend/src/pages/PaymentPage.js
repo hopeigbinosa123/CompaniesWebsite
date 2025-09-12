@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import PayPalButton from '../components/payment/PayPalButton';
 
 const PaymentPage = () => {
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [course, setCourse] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Get course data from navigation state
+    if (location.state?.course) {
+      setCourse(location.state.course);
+    } else {
+      // If no course data, redirect to courses page
+      navigate('/courses');
+    }
+  }, [location, navigate]);
 
   const handlePaymentSuccess = (details) => {
     console.log('Payment successful', details);
@@ -13,9 +25,19 @@ const PaymentPage = () => {
   };
 
   const handlePaymentError = (error) => {
-    console.error('Payment error', error);
+    console.error('Unable to process payment', error);
     setPaymentStatus('error');
   };
+
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Loading course information...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -28,9 +50,14 @@ const PaymentPage = () => {
         </div>
 
         <div className="mb-6">
+          <div className="bg-gray-50 p-4 rounded-lg mb-4">
+            <h3 className="font-semibold text-gray-800 mb-2">{course.title}</h3>
+            <p className="text-sm text-gray-600">{course.description}</p>
+          </div>
+          
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-700">Order Total:</span>
-            <span className="text-lg font-semibold">$10.00 USD</span>
+            <span className="text-lg font-semibold">${course.price} USD</span>
           </div>
         </div>
 
@@ -57,7 +84,7 @@ const PaymentPage = () => {
         ) : (
           <div className="mt-8">
             <PayPalButton 
-              amount="10.00" 
+              amount={course.price.toString()} 
               currency="USD" 
               onSuccess={handlePaymentSuccess}
               onError={handlePaymentError}

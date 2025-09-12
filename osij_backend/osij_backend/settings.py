@@ -58,6 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # ...
 ]
 
 ROOT_URLCONF = 'osij_backend.urls'
@@ -214,3 +217,11 @@ DEFAULT_FROM_EMAIL = 'noreply@osijplatform.com'
 # PayPal Settings
 PAYPAL_RETURN_URL = env('PAYPAL_RETURN_URL', default='http://localhost:3000/paypal-success')
 PAYPAL_CANCEL_URL = env('PAYPAL_CANCEL_URL', default='http://localhost:3000/paypal-cancel')
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = True  # For development only
+# For production, use:
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3002",
+#     "http://127.0.0.1:3002",
+# ]
+CORS_ALLOW_CREDENTIALS = True
