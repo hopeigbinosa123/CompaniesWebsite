@@ -1,68 +1,52 @@
-import api from './axiosConfig';
+import axios from 'axios';
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+
+const cosmetologyAPI = axios.create({
+  baseURL: `${API_BASE_URL}/cosmetology/`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add auth token if present
+cosmetologyAPI.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Handle 401 globally
+cosmetologyAPI.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 const cosmetologyService = {
   // Services
   getServices: async () => {
-    try {
-      const response = await api.get('/cosmetology/services/');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching services:', error);
-      throw error;
-    }
-  },
-
-  getServiceDetails: async (id) => {
-    try {
-      const response = await api.get(`/cosmetology/services/${id}/`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching service ${id}:`, error);
-      throw error;
-    }
-  },
-
-  // Stylists
-  getStylists: async () => {
-    try {
-      const response = await api.get('/cosmetology/stylists/');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching stylists:', error);
-      throw error;
-    }
-  },
-
-  getStylistDetails: async (id) => {
-    try {
-      const response = await api.get(`/cosmetology/stylists/${id}/`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching stylist ${id}:`, error);
-      throw error;
-    }
+    const { data } = await cosmetologyAPI.get('services/');
+    return data;
   },
 
   // Bookings
   createBooking: async (bookingData) => {
-    try {
-      const response = await api.post('/cosmetology/bookings/me/', bookingData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating booking:', error);
-      throw error;
-    }
-  },
-
-  getUserBookings: async () => {
-    try {
-      const response = await api.get('/cosmetology/bookings/me/');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching user bookings:', error);
-      throw error;
-    }
+    const { data } = await cosmetologyAPI.post('bookings/', bookingData);
+    return data;
   },
 };
 
 export default cosmetologyService;
+

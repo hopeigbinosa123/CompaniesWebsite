@@ -14,7 +14,7 @@ export default function BeautyServicesList() {
         const response = await api.get('/cosmetology/services/');
         setServices(response.data);
       } catch (err) {
-        setError('Failed to load beauty services.');
+        setError('Something went wrong. Was unable to load beauty services.');
         console.error('Error fetching beauty services:', err);
       } finally {
         setLoading(false);

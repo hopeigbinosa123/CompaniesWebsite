@@ -8,9 +8,9 @@ class DesignerAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('get_user_name', 'email', 'title', 'design_type', 'ordered_at', 'status')
+    list_display = ('id', 'get_user_name', 'email', 'title', 'design_type', 'description', 'ordered_at', 'status')
     list_filter = ['ordered_at', 'status']
-    search_fields = ('user__first_name', 'user__last_name', 'title', 'email')
+    search_fields = ('user__first_name', 'user__last_name', 'title', 'email', 'name')
     readonly_fields = ('ordered_at',)  # Make ordered_at read-only in admin
     
     def get_user_name(self, obj):

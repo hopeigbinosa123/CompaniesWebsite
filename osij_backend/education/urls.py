@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     # Course endpoints
-    path('courses/', views.CourseListView.as_view(), name='course-list'),
+    path('courses/', views.CourseListCreateView.as_view(), name='course-list'),
     path('courses/<int:pk>/', views.CourseDetailView.as_view(), name='course-detail'),
     path('courses/<int:pk>/lessons/', views.CourseLessonsView.as_view(), name='course-lessons'),
     

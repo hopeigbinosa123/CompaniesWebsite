@@ -40,7 +40,15 @@ useEffect(() => {
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-blue-600">
-            Osij Group
+            <motion.span
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.05, color: '#87ceeb', rotate: 15 }} // use hex for skyblue
+              transition={{ duration: 0.5 }}
+              onClick={() => navigate('/')}
+            >
+              Osij Group
+            </motion.span>
           </Link>
 
           {/* Desktop Menu */}
@@ -58,17 +66,22 @@ useEffect(() => {
                 
                 Services 
               </button>
-              <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-lg mt-2 p-2 w-48 z-50">
-                {services.map((service) => (
-                  <Link
-                    key={service.path}
-                    to={service.path}
-                    className="block px-4 py-2 text-gray-700 hover:bg-blue-100 rounded" onClick={() => setIsServicesOpen(false)}
-                  >
-                    {service.name}
-                  </Link>
-                ))}
-              </div>
+              <div
+  className={`absolute bg-white shadow-lg rounded-lg mt-2 p-2 w-48 z-50 transition-all duration-300 ease-in-out ${
+    isServicesOpen ? 'opacity-100 scale-100 block' : 'opacity-0 scale-95 pointer-events-none'
+  }`}
+>
+  {services.map((service) => (
+    <Link
+      key={service.path}
+      to={service.path}
+      className="block px-4 py-2 text-gray-700 hover:bg-blue-100 rounded"
+      onClick={() => setIsServicesOpen(false)}
+    >
+      {service.name}
+    </Link>
+  ))}
+</div>
             </div>
 
             <Link to="/contact" className="text-gray-700 hover:text-blue-600">
@@ -126,7 +139,7 @@ useEffect(() => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t">
+          <div className="md:hidden bg-white border-t transition-all duration-300 ease-in-out animate-fade-in-down">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link to="/" className="block px-3 py-2 text-gray-700">Home</Link>
               <Link to="/about" className="block px-3 py-2 text-gray-700">About</Link>

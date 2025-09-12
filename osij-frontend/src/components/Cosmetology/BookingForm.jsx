@@ -36,7 +36,7 @@ export default function BookingForm() {
           setFormData((prevData) => ({ ...prevData, stylist: stylistsResponse.data[0].id }));
         }
       } catch (err) {
-        setError('Failed to load services or stylists.');
+        setError('Something went wrong. Was unable to load services or stylists.');
         console.error('Error fetching data for booking form:', err);
       } finally {
         setLoading(false);

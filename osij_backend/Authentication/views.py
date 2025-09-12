@@ -14,7 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
     
-    def post(self, request):
+    def post(self, request): # handles user registration
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -38,7 +38,7 @@ class RegisterView(APIView):
                     "last_name": user.last_name
                 },
                 "csrf_token": csrf_token,
-            }
+            } # handles user registration
             
             response = Response(response_data, status=status.HTTP_201_CREATED)
             
@@ -151,11 +151,11 @@ class LogoutView(APIView):
 class UserProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
-    def get(self, request):
+    def get(self, request): # handles user profile
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
     
-    def put(self, request):
+    def put(self, request): # handles user profile update
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             # Handle password hashing if password is being updated
@@ -167,14 +167,13 @@ class UserProfileView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['GET'])
+@api_view(['GET']) # handles csrf token
 @permission_classes([permissions.AllowAny])
-def get_csrf_token(request):
+def get_csrf_token(request): 
     """
     Get CSRF token for the session
     """
     from django.http import JsonResponse
-    response = JsonResponse({'detail': 'CSRF cookie set'})
+    response = JsonResponse({'detail': 'CSRF cookie set'}) # handles csrf token
     response['X-CSRFToken'] = get_token(request)
     return response

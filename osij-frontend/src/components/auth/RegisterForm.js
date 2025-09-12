@@ -49,7 +49,7 @@ const RegisterForm = () => {
 
     } catch (err) {
       // Handle specific error messages from the API if available
-      const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
+      const errorMessage = err.response?.data?.message || 'Unable to register. Please try again.';
       setError(errorMessage);
       console.error('Registration error:', err);
     } finally {

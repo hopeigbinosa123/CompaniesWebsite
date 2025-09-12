@@ -20,8 +20,8 @@ class BeautyService(models.Model):
     def __str__(self):
         return self.name
 
-class StylistProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+class StylistProfile(models.Model): 
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # handles stylist profile
     bio = models.TextField(blank=True)
     specialization = models.CharField(max_length=200)
     experience = models.IntegerField(help_text="Years of experience")
@@ -30,7 +30,7 @@ class StylistProfile(models.Model):
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.specialization}"
 
-class AppointmentBooking(models.Model):
+class AppointmentBooking(models.Model): # handles appointment booking
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('confirmed', 'Confirmed'),

@@ -3,7 +3,7 @@ const Footer = () => {
     <footer className="bg-gray-800 text-white py-8 mt-auto">
       <div className="container mx-auto px-4">
         <div className="text-center">
-          <p>&copy; 2024 Osij Group. All rights reserved.</p>
+          <p>&copy; 2025 Osij Group. All rights reserved.</p>
           <div className="mt-4 space-x-6">
             <a href="/about" className="hover:text-blue-300">About</a>
             <a href="/services" className="hover:text-blue-300">Services</a>
