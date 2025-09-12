@@ -1,20 +1,17 @@
 from django.db import models
 from django.conf import settings
 
-# Create your models here.
 
-
-# Model for the structure of the graphic designer's profile, including the designer's specialities
 class Designer(models.Model):
     SPECIALITIES = [
         ("THUMBNAIL", "Thumbnail"),
         ("WEB_DESIGN", "Web Design"),
-        ("BARNER", "Barner"),
+        ("BANNER", "Banner"),  # Fixed typo from BARNER to BANNER
         ("LOGO", "Logo"),
     ]
 
     name = models.CharField(max_length=200)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='designers/')  # Added upload_to
     email = models.EmailField()
     speciality = models.CharField(max_length=50, choices=SPECIALITIES)
     bio = models.TextField()
@@ -23,7 +20,6 @@ class Designer(models.Model):
         return self.name
 
 
-# model for graphic design orders made by users with the order requirements and status tracking
 class Order(models.Model):
     STATUS_CHOICES = [
         ("PENDING", "Pending"),
@@ -33,7 +29,7 @@ class Order(models.Model):
         ("COMPLETED", "Completed"),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='design_orders')
     email = models.EmailField()
     title = models.CharField(max_length=200)
     design_type = models.CharField(max_length=200)
@@ -41,9 +37,10 @@ class Order(models.Model):
     ordered_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDING")
     rejection_reason = models.TextField(blank=True, null=True)
+    reference_files = models.FileField(upload_to='design_references/', blank=True, null=True)  # Added for file uploads
 
     def __str__(self):
-        return f"{self.name} - {self.title} ({self.status})"
+        return f"{self.user.get_full_name() if self.user else 'Unknown User'} - {self.title} ({self.status})"
 
     def reject(self, reason):
         self.status = "REJECTED"
