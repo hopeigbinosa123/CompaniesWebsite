@@ -18,9 +18,10 @@ import RegisterPage from './pages/RegisterPage';
 // Public Module Pages
 import EducationPage from './pages/EducationPage';
 import SoftwareServicesPage from './pages/SoftwareServicesPage';
-import GraphicDesignPage from './pages/GraphicDesignPage';
-import CosmetologyPage from './pages/CosmetologyPage';
-import RequestServicePage from './pages/RequestServicePage'; // New import
+import RequestServicePage from './pages/RequestServicePage';
+import GraphicDesignPage from './pages/GraphicDesignPage.jsx';
+import CosmetologyPage from './pages/CosmetologyPage.jsx';
+import BookingForm from './components/Cosmetology/BookingForm.jsx';
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -82,9 +83,10 @@ function AppContent() {
             {/* Public Module Pages */}
             <Route path="/education" element={<EducationPage />} />
             <Route path="/software-services" element={<SoftwareServicesPage />} />
-            <Route path="/software-services/request" element={<RequestServicePage />} /> {/* New route */}
+            <Route path="/software-services/request" element={<RequestServicePage />} />
             <Route path="/graphic-design" element={<GraphicDesignPage />} />
             <Route path="/cosmetology" element={<CosmetologyPage />} />
+            <Route path="/cosmetology/book" element={<BookingForm />} />
 
             {/* Education Module Extensions */}
             <Route path="/education/courses/:id" element={<CourseDetailPage />} />

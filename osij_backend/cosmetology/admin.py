@@ -1,16 +1,22 @@
-# cosmetology/admin.py
 from django.contrib import admin
-from .models import Stylist, Appointment
+from .models import StylistProfile, Appointment, BeautyService, AppointmentBooking
 
-@admin.register(Stylist)
-class StylistAdmin(admin.ModelAdmin):
-    list_display = ("name", "specialties", "is_active")
-    list_filter = ("is_active",)
-    search_fields = ("name", "specialties", "email")
+@admin.register(StylistProfile)
+class StylistProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "specialization", "experience", "is_available")
+    search_fields = ["user__username", "specialization"]
 
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
-    list_display = ("service", "client", "stylist", "start_time", "status")
-    list_filter = ("status", "start_time")
-    search_fields = ("service", "notes")
+    list_display = ("service", "client", "stylist", "appointment_date", "status")
+    list_filter = ("status", "appointment_date")
+    search_fields = ("service__name", "notes")
     autocomplete_fields = ("client", "stylist")
+
+@admin.register(BeautyService)
+class BeautyServiceAdmin(admin.ModelAdmin):
+    list_display = ("name", "price", "duration_minutes")
+
+@admin.register(AppointmentBooking)
+class AppointmentBookingAdmin(admin.ModelAdmin):
+    list_display = ("user", "service", "stylist", "appointment_date", "status")

@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'graphic_design',
     'cosmetology',
     'payments',
+    'notifications',
+
 ]
 
 MIDDLEWARE = [
