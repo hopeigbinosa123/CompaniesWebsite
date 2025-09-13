@@ -7,13 +7,13 @@ from .serializers import DesignerSerializer, DesignOrderSerializer
 class IsAuthenticatedOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
     pass
 
-# Designer ViewSet
+# Designer ViewSet (used for /api/designers/)
 class DesignerViewSet(viewsets.ModelViewSet):
     queryset = Designer.objects.filter(is_active=True).order_by("name")
     serializer_class = DesignerSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["name", "specialties"]
+    search_fields = ["name", "speciality"]
     ordering_fields = ["name"]
 
 # Design Order ViewSet
@@ -34,7 +34,7 @@ class DesignerListView(ListAPIView):
     serializer_class = DesignerSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["name", "specialties"]
+    search_fields = ["name", "speciality"]
     ordering_fields = ["name"]
 
 # Public detail view for a single designer
