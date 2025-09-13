@@ -3,12 +3,8 @@ from .models import Designer, DesignOrder, Portfolio, DesignService
 
 @admin.register(Designer)
 class DesignerAdmin(admin.ModelAdmin):
-    list_display = ("name", "get_specialties", "is_active")
-    search_fields = ["name", "specialties__name"]
-
-    def get_specialties(self, obj):
-        return ", ".join([s.name for s in obj.specialties.all()])
-    get_specialties.short_description = "Specialties"
+    list_display = ("name", "speciality", "is_active")
+    search_fields = ["name", "email", "speciality"]
 
 @admin.register(DesignOrder)
 class DesignOrderAdmin(admin.ModelAdmin):
