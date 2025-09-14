@@ -20,15 +20,19 @@ class DesignerViewSet(viewsets.ModelViewSet):
 class DesignOrderViewSet(viewsets.ModelViewSet):
     queryset = DesignOrder.objects.select_related("client", "designer").order_by("-created_at")
     serializer_class = DesignOrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["title", "brief", "status"]
     ordering_fields = ["created_at", "status"]
 
     def perform_create(self, serializer):
-        serializer.save(client=self.request.user)
+        if self.request.user.is_authenticated:
+            serializer.save(client=self.request.user)
+        else:
+            serializer.save()
 
-# Public list view for designers
+
+# The Public list view for designers
 class DesignerListView(ListAPIView):
     queryset = Designer.objects.filter(is_active=True).order_by("name")
     serializer_class = DesignerSerializer

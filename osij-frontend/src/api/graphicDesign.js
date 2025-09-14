@@ -5,7 +5,7 @@ export const graphicDesignAPI = {
   // Get all designers
   getDesigners: async () => {
     try {
-      const response = await api.get('/api/graphic_design/designers/');
+      const response = await api.get('/graphic_design/designers/');
       return response.data;
     } catch (error) {
       console.error('Error fetching designers:', error);
@@ -16,7 +16,7 @@ export const graphicDesignAPI = {
   // Get one designer
   getDesigner: async (id) => {
     try {
-      const response = await api.get(`/api/graphic_design/designers/${id}/`);
+      const response = await api.get(`/graphic_design/designers/${id}/`);
       return response.data;
     } catch (error) {
       console.error('Error fetching designer:', error);
@@ -24,21 +24,22 @@ export const graphicDesignAPI = {
     }
   },
 
-  // Create a new design order
-  createDesignOrder: async (data) => {
-    try {
-      const response = await api.post('/api/graphic_design/orders/', data);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating design order:', error);
-      throw error;
-    }
-  },
+ // Create a new design order
+createDesignOrder: async (data) => {
+  try {
+    const response = await api.post('/design-orders/', data); // ✅ Corrected path
+    return response.data;
+  } catch (error) {
+    console.error('Error creating design order:', error);
+    throw error;
+  }
+},
+
 
   // Get current user's orders
   getUserOrders: async () => {
     try {
-      const response = await api.get('/api/graphic_design/orders/me/');
+      const response = await api.get('/graphic_design/orders/me/');
       return response.data;
     } catch (error) {
       console.error('Error fetching user orders:', error);
@@ -49,7 +50,7 @@ export const graphicDesignAPI = {
   // Get specific order details
   getOrderDetails: async (orderId) => {
     try {
-      const response = await api.get(`/api/graphic_design/orders/${orderId}/`);
+      const response = await api.get(`/graphic_design/orders/${orderId}/`);
       return response.data;
     } catch (error) {
       console.error('Error fetching order details:', error);
@@ -60,7 +61,7 @@ export const graphicDesignAPI = {
   // Update order status (admin only)
   updateOrderStatus: async (orderId, statusData) => {
     try {
-      const response = await api.patch(`/api/graphic_design/admin/orders/${orderId}/update/`, statusData);
+      const response = await api.patch(`/graphic_design/admin/orders/${orderId}/update/`, statusData);
       return response.data;
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -100,18 +101,12 @@ export const orderHelpers = {
       errors.title = 'Title is required';
     }
 
-    if (!formData.email?.trim()) {
-      errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Email is invalid';
+    if (!formData.brief?.trim()) {
+      errors.brief = 'Project brief is required';
     }
 
-    if (!formData.design_type?.trim()) {
-      errors.design_type = 'Design type is required';
-    }
-
-    if (!formData.description?.trim()) {
-      errors.description = 'Description is required';
+    if (formData.budget && isNaN(formData.budget)) {
+      errors.budget = 'Budget must be a number';
     }
 
     return errors;
