@@ -5,7 +5,7 @@ export const graphicDesignAPI = {
   // Get all designers
   getDesigners: async () => {
     try {
-      const response = await api.get('/graphic_design/designers/');
+      const response = await api.get('/designers/');
       return response.data;
     } catch (error) {
       console.error('Error fetching designers:', error);
@@ -16,7 +16,7 @@ export const graphicDesignAPI = {
   // Get one designer
   getDesigner: async (id) => {
     try {
-      const response = await api.get(`/graphic_design/designers/${id}/`);
+      const response = await api.get(`/designers/${id}/`);
       return response.data;
     } catch (error) {
       console.error('Error fetching designer:', error);
@@ -24,22 +24,21 @@ export const graphicDesignAPI = {
     }
   },
 
- // Create a new design order
-createDesignOrder: async (data) => {
-  try {
-    const response = await api.post('/design-orders/', data); // ✅ Corrected path
-    return response.data;
-  } catch (error) {
-    console.error('Error creating design order:', error);
-    throw error;
-  }
-},
-
+  // Create a new design order
+  createDesignOrder: async (data) => {
+    try {
+      const response = await api.post('/graphic-design/design-orders/', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating design order:', error);
+      throw error;
+    }
+  },
 
   // Get current user's orders
   getUserOrders: async () => {
     try {
-      const response = await api.get('/graphic_design/orders/me/');
+      const response = await api.get('/design-orders/me/');
       return response.data;
     } catch (error) {
       console.error('Error fetching user orders:', error);
@@ -50,7 +49,7 @@ createDesignOrder: async (data) => {
   // Get specific order details
   getOrderDetails: async (orderId) => {
     try {
-      const response = await api.get(`/graphic_design/orders/${orderId}/`);
+      const response = await api.get(`/design-orders/${orderId}/`);
       return response.data;
     } catch (error) {
       console.error('Error fetching order details:', error);
@@ -61,7 +60,7 @@ createDesignOrder: async (data) => {
   // Update order status (admin only)
   updateOrderStatus: async (orderId, statusData) => {
     try {
-      const response = await api.patch(`/graphic_design/admin/orders/${orderId}/update/`, statusData);
+      const response = await api.patch(`/design-orders/admin/${orderId}/update/`, statusData);
       return response.data;
     } catch (error) {
       console.error('Error updating order status:', error);

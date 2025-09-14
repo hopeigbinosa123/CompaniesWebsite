@@ -49,7 +49,8 @@ class DesignOrder(models.Model):
         COMPLETED = "completed", "Completed"
         CANCELED = "canceled", "Canceled"
 
-    client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="design_orders")
+
+    client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="design_orders")
     designer = models.ForeignKey(Designer, on_delete=models.SET_NULL, null=True, related_name="orders")
     title = models.CharField(max_length=140)
     brief = models.TextField()

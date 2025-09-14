@@ -13,8 +13,10 @@ export default function GraphicDesignOrderForm() {
   ];
 
   const handleSubmit = (data) => {
-    return createDesignOrder({ ...data, designer: id });
-  };
+  const designerId = parseInt(id, 10); // ✅ Ensure it's an integer
+  return createDesignOrder({ ...data, designer: designerId });
+};
+
 
   return (
     <div className="p-6 max-w-lg mx-auto">
