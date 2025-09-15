@@ -20,6 +20,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=140)),
                 ('brief', models.TextField()),
                 ('reference_links', models.TextField(blank=True, help_text='Comma-separated URLs or notes')),
+                ('reference_files', models.FileField(blank=True, null=True, upload_to='design_references/')),
                 ('budget', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
                 ('status', models.CharField(choices=[('pending', 'Pending'), ('in_progress', 'In Progress'), ('review', 'In Review'), ('completed', 'Completed'), ('canceled', 'Canceled')], default='pending', max_length=20)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
