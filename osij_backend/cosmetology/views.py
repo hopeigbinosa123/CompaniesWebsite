@@ -58,3 +58,19 @@ class StylistDetailsView(generics.RetrieveAPIView):
     queryset = StylistProfile.objects.all()
     serializer_class = StylistDetailsSerializer
     permission_classes = [AllowAny]
+
+from .models import AppointmentBooking
+from .serializers import AppointmentBookingSerializer, AppointmentCreateSerializer
+
+class AppointmentBookingViewSet(viewsets.ModelViewSet):
+    queryset = AppointmentBooking.objects.select_related("user", "service", "stylist")
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return AppointmentCreateSerializer
+        return AppointmentBookingSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+

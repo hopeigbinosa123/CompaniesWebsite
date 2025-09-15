@@ -8,18 +8,21 @@ User = get_user_model()
 # Serializer for stylist profile list
 class StylistProfileSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
     services = serializers.SerializerMethodField()
 
     class Meta:
         model = StylistProfile
-        fields = ['id', 'name', 'specialization', 'experience', 'is_available', 'services']
+        fields = ['id', 'name', 'username', 'specialization', 'experience', 'is_available', 'services']
 
     def get_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
 
+    def get_username(self, obj):
+        return obj.user.username
+
     def get_services(self, obj):
         return [service.name for service in BeautyService.objects.all()]
-
 
 # Serializer for stylist profile detail
 class StylistDetailsSerializer(serializers.ModelSerializer):
