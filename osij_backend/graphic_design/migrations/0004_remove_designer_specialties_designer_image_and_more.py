@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('graphic_design', '0003_merge_20250913_1745'),
+        ('graphic_design', '0002_designorder_remove_designer_image_and_more'),
     ]
 
     operations = [
@@ -25,11 +25,7 @@ class Migration(migrations.Migration):
             field=models.CharField(choices=[('THUMBNAIL', 'Thumbnail'), ('WEB_DESIGN', 'Web Design'), ('BANNER', 'Banner'), ('LOGO', 'Logo')], default=2, max_length=50),
             preserve_default=False,
         ),
-        migrations.AddField(
-            model_name='designorder',
-            name='reference_files',
-            field=models.FileField(blank=True, null=True, upload_to='design_references/'),
-        ),
+        
         migrations.AddField(
             model_name='designorder',
             name='rejection_reason',
