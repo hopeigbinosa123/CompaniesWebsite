@@ -1,16 +1,3 @@
-<<<<<<< HEAD
-
-import api from "./axiosConfig";
-
-// Get all stylists
-export const getStylists = () => api.get("/api/cosmetology/stylists/");
-
-// Get one stylist
-export const getStylist = (id) => api.get(`/api/cosmetology/stylists/${id}/`);
-
-// Create a new appointment
-export const createAppointment = (data) => api.post("/api/cosmetology/appointments/", data);
-=======
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
@@ -22,7 +9,6 @@ const cosmetologyAPI = axios.create({
   },
 });
 
-// Add auth token if present
 cosmetologyAPI.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
@@ -34,7 +20,6 @@ cosmetologyAPI.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Handle 401 globally
 cosmetologyAPI.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -47,20 +32,41 @@ cosmetologyAPI.interceptors.response.use(
   }
 );
 
-const cosmetologyService = {
-  // Services
+// ✅ Named export for endpoints
+export const cosmetologyAPIEndpoints = {
   getServices: async () => {
     const { data } = await cosmetologyAPI.get('services/');
     return data;
   },
-
-  // Bookings
   createBooking: async (bookingData) => {
     const { data } = await cosmetologyAPI.post('bookings/', bookingData);
     return data;
   },
+  getStylists: async () => {
+    const { data } = await cosmetologyAPI.get('stylists/');
+    return data;
+  },
+  getStylist: async (id) => {
+    const { data } = await cosmetologyAPI.get(`stylists/${id}/`);
+    return data;
+  },
+  createAppointment: async (data) => {
+    const { data: response } = await cosmetologyAPI.post('appointments/', data);
+    return response;
+  },
 };
 
-export default cosmetologyService;
+// ✅ Named export for form helpers
+export const cosmetologyFormHelpers = {
+  validateBookingForm: (formData) => {
+    const errors = {};
+    if (!formData.service?.trim()) errors.service = 'Service is required';
+    if (!formData.stylist?.trim()) errors.stylist = 'Stylist is required';
+    if (!formData.appointment_date?.trim()) errors.appointment_date = 'Date and time are required';
+    return errors;
+  }
+};
 
->>>>>>> 85c70677a912d112ee4c8ddeb8cbb9bba28816a4
+// ✅ Default export (optional, if used elsewhere)
+export default cosmetologyAPIEndpoints;
+

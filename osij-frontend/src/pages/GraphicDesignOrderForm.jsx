@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { createDesignOrder } from "../../api/graphicDesign";
-import ServiceForm from "../../components/ServiceForm";
+import { graphicDesignAPI } from '../api/graphicDesign';
+import ServiceForm from '../components/ServiceForm';
 
 export default function GraphicDesignOrderForm() {
   const { id } = useParams();
@@ -13,10 +13,8 @@ export default function GraphicDesignOrderForm() {
   ];
 
   const handleSubmit = (data) => {
-  const designerId = parseInt(id, 10); // ✅ Ensure it's an integer
-  return createDesignOrder({ ...data, designer: designerId });
-};
-
+    return graphicDesignAPI.createDesignOrder({ ...data, designer: id });
+  };
 
   return (
     <div className="p-6 max-w-lg mx-auto">

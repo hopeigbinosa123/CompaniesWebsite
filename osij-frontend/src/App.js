@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -18,9 +19,11 @@ import RegisterPage from './pages/RegisterPage';
 // Public Module Pages
 import EducationPage from './pages/EducationPage';
 import SoftwareServicesPage from './pages/SoftwareServicesPage';
-import GraphicDesignPage from './pages/GraphicDesignPage';
-import CosmetologyPage from './pages/CosmetologyPage';
-import RequestServicePage from './pages/RequestServicePage'; // New import
+import RequestServicePage from './pages/RequestServicePage';
+import GraphicDesignPage from './pages/GraphicDesignPage.jsx';
+import GraphicDesignOrderForm from './pages/GraphicDesignOrderForm.jsx';
+import CosmetologyPage from './pages/CosmetologyPage.jsx';
+import BookingForm from './components/Cosmetology/BookingForm.jsx';
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -30,7 +33,7 @@ import PaymentPage from './pages/PaymentPage';
 
 // Education Module Extensions
 import CourseDetailPage from './pages/CourseDetailPage';
-import CourseLessonsPage from './pages/CourseLessionsPage';
+import CourseLessonsPage from './pages/CourseLessonsPage';
 import EnrolledCoursesList from './pages/EnrolledCourseList';
 
 // 404 Page
@@ -79,16 +82,22 @@ function AppContent() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
-            {/* Public Module Pages */}
-            <Route path="/education" element={<EducationPage />} />
-            <Route path="/software-services" element={<SoftwareServicesPage />} />
-            <Route path="/software-services/request" element={<RequestServicePage />} /> {/* New route */}
-            <Route path="/graphic-design" element={<GraphicDesignPage />} />
-            <Route path="/cosmetology" element={<CosmetologyPage />} />
+            {/* Graphic Design */}
+            <Route path="/graphic-design" element={<GraphicDesignPage />} /> {/* ✅ Added route */}
+            <Route path="/graphic-design/order/:id" element={<GraphicDesignOrderForm />} />
 
-            {/* Education Module Extensions */}
+            {/* Cosmetology */}
+            <Route path="/cosmetology" element={<CosmetologyPage />} />
+            <Route path="/cosmetology/book" element={<BookingForm />} />
+
+            {/* Education */}
+            <Route path="/education" element={<EducationPage />} />
             <Route path="/education/courses/:id" element={<CourseDetailPage />} />
             <Route path="/education/courses/:id/lessons" element={<CourseLessonsPage />} />
+
+            {/* Software Services */}
+            <Route path="/software-services" element={<SoftwareServicesPage />} />
+            <Route path="/software-services/request" element={<RequestServicePage />} />
 
             {/* Protected Dashboard Routes */}
             <Route
