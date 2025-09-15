@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # cosmetology/views.py
 from rest_framework import viewsets, permissions, filters
 from .models import Stylist, Appointment
@@ -34,7 +33,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(client=self.request.user)
-=======
+
 from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -108,4 +107,3 @@ class AppointmentUpdateView(generics.UpdateAPIView):
     serializer_class = AppointmentBookingSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'pk'
->>>>>>> 85c70677a912d112ee4c8ddeb8cbb9bba28816a4
