@@ -25,7 +25,7 @@ A key feature is the **automatic email notification system**, which sends welcom
 | :-------- | :---------------------------------------------------------------------- |
 | **Backend** | Python, Django, Django REST Framework, Django Simple JWT                |
 | **Frontend**  | React, React Router, Axios, Tailwind CSS                                |
-| **Database**  | SQLite 3 (for development)                                              |
+| **Database**  | SQLite 3 (for development), MySQL (optional)                            |
 | **Payments**  | PayPal REST SDK, @paypal/react-paypal-js                                |
 
 ---
@@ -45,7 +45,7 @@ graph TD
 
     subgraph Backend (Django)
         C[Django REST API on Heroku]
-        D[Database (PostgreSQL/SQLite)]
+        D[Database (PostgreSQL/MySQL/SQLite)]
         E[PayPal API]
     end
 
@@ -125,7 +125,7 @@ Ensure you have the following software installed:
     PAYPAL_CANCEL_URL=http://localhost:3000/dashboard/payment/cancel
     ```
 
-6.  **Run Database Migrations:**
+6.  **Run Database Migrations (for default SQLite setup):**
     *This command creates the database schema based on your models.*
     ```bash
     python manage.py migrate
@@ -159,6 +159,57 @@ Ensure you have the following software installed:
     ```
     REACT_APP_PAYPAL_CLIENT_ID='your-paypal-client-id'
     ```
+
+### 4.4. Optional: Using MySQL as the Database
+
+By default, this project uses SQLite for simplicity. Follow these steps if you wish to run the project with a MySQL database.
+
+**1. Prerequisites:**
+*   You must have a MySQL server installed and running on your machine or network.
+*   You must create an empty database for the project. For example, you can name it `osij_db`.
+
+**2. Install the MySQL Client Driver:**
+*   In your activated Python virtual environment, install the `mysqlclient` package:
+    ```bash
+    pip install mysqlclient
+    ```
+
+**3. Modify Django Settings:**
+*   Open the settings file at `osij_backend/osij_backend/settings.py`.
+*   Find the `DATABASES` section. It currently looks like this:
+    ```python
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    ```
+*   **Comment out the existing SQLite configuration and replace it** with your MySQL database details. Your new configuration should look like this:
+    ```python
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'osij_db',         # Your database name
+            'USER': 'your_mysql_user', # Your MySQL username
+            'PASSWORD': 'your_mysql_password', # Your MySQL password
+            'HOST': 'localhost',       # Or your DB host IP/domain
+            'PORT': '3306',            # Default MySQL port
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
+    ```
+    **Important:** Replace the placeholder values for `NAME`, `USER`, `PASSWORD`, `HOST`, and `PORT` with your actual database credentials.
+
+**4. Run Migrations on the New Database:**
+*   After configuring the settings, run the `migrate` command to create all the project tables in your MySQL database.
+    ```bash
+    python manage.py migrate
+    ```
+
+Your project is now configured to use MySQL. When you run the backend, it will connect to the specified MySQL database instead of the `db.sqlite3` file.
 
 ---
 
