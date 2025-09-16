@@ -1,289 +1,327 @@
-# OSIJ Fullstack Platform
+# OSIJ Fullstack Platform: A Comprehensive Guide
 
-This repository contains the source code for the OSIJ platform, a modular Django and React application that provides a wide range of services, including educational courses, software solutions, graphic design, and cosmetology services.
+Welcome to the OSIJ Fullstack Platform! This document serves as a complete guide for lecturers, students, and developers to understand, set up, and run this project.
 
-## Project Overview
+The OSIJ platform is a modular full-stack application built with a **Django** backend and a **React** frontend. It offers a diverse range of services, including an education platform, software service management, graphic design orders, and a cosmetology appointment system.
 
-The OSIJ platform is a full-stack application with a Django backend and a React frontend. The backend is built with a modular architecture, with separate apps for each of the main services offered by the platform. The frontend is a single-page application built with React and Tailwind CSS, with a clean and modern user interface.
+## 1. Project Overview
 
-The backend also includes an automatic email notification system built into the `authentication` app, sending supportive messages when users register or purchase courses.
+This project is designed to showcase a real-world, modular application structure. The backend consists of several independent Django apps, each responsible for a specific business domain. This promotes a clean architecture and separation of concerns. The frontend is a modern single-page application (SPA) using React, offering a dynamic and responsive user experience.
 
-## Features
+A key feature is the **automatic email notification system**, which sends welcome emails to new users and confirmation messages for various actions, creating a more engaging user experience.
 
-* **Education Platform:** A comprehensive platform for online courses, with features for course creation, enrollment, lesson management, and certification.
-* **Software Services:** A system for managing software service requests, with features for submitting enquiries, tracking progress, and communicating with the support team.
-* **Graphic Design Services:** A platform for ordering graphic design services, with features for browsing designer portfolios, placing orders, and tracking order status.
-* **Cosmetology Services:** A platform for booking cosmetology appointments, with features for browsing beauty services, viewing stylist profiles, and booking appointments.
-* **User Authentication:** A complete user authentication system with support for user registration, login, and session management.
-* **Automatic Notifications:** Sends welcome emails on user registration and enrollment confirmations after course purchases, creating a warm onboarding experience.
-* **REST API:** A well-documented REST API for interacting with the backend services.
+### Key Features:
 
-## Notification System
+*   **Modular Service Architecture:** Separate Django apps for each service (Education, Software, etc.).
+*   **REST API:** A comprehensive API built with Django REST Framework for seamless frontend-backend communication.
+*   **JWT Authentication:** Secure, token-based authentication for users.
+*   **React Frontend:** A dynamic and responsive user interface built with React and styled with Tailwind CSS.
+*   **Payment Integration:** Pre-configured for course and service payments using PayPal.
+*   **Automated Email Notifications:** Enhances user communication for events like registration and purchases.
 
-The OSIJ platform includes an automatic email notification system built into the `authentication` app. It uses Django signals and modular utilities to send supportive messages when:
+## 2. Technology Stack
 
-* A user registers on the platform
-* A user purchases a course
+| Area      | Technology                                                              |
+| :-------- | :---------------------------------------------------------------------- |
+| **Backend** | Python, Django, Django REST Framework, Django Simple JWT                |
+| **Frontend**  | React, React Router, Axios, Tailwind CSS                                |
+| **Database**  | SQLite 3 (for development)                                              |
+| **Payments**  | PayPal REST SDK, @paypal/react-paypal-js                                |
 
-These emails are designed to create a warm, affirming experience for new users. Future enhancements will include admin-triggered custom messages and delivery logs.
+---
+## 3. Project Architecture
 
-## Technology Stack
+This diagram illustrates the high-level architecture of the OSIJ platform.
 
-### Backend
+```mermaid
+graph TD
+    subgraph User
+        A[Browser]
+    end
 
-* [Django](https://www.djangoproject.com/)
-* [Django REST Framework](https://www.django-rest-framework.org/)
-* [Python](https://www.python.org/)
+    subgraph Frontend (React)
+        B[React App on Vercel/Netlify]
+    end
 
-### Frontend
+    subgraph Backend (Django)
+        C[Django REST API on Heroku]
+        D[Database (PostgreSQL/SQLite)]
+        E[PayPal API]
+    end
 
-* [React](https://reactjs.org/)
-* [React Router](https://reactrouter.com/)
-* [Axios](https://axios-http.com/)
-* [Tailwind CSS](https://tailwindcss.com/)
-
-## Project Structure
-
-```
-project_root/
-├── osij_backend/
-│   ├── osij_backend/        # Django settings
-│   ├── authentication/      # User authentication and automatic notifications
-│   ├── education/           # Education platform app
-│   ├── software_services/   # Software services app
-│   ├── graphic_design/      # Graphic design services app
-│   ├── cosmetology/         # Cosmetology services app
-│   ├── manage.py
-│   └── requirements.txt
-├── osij_frontend/           # React frontend
-│   ├── public/
-│   └── src/
-│       ├── api/
-│       ├── components/
-│       ├── context/
-│       ├── pages/
-│       └── App.js
-└── README.md
+    A -- HTTPS --> B
+    B -- API Calls (HTTPS) --> C
+    C -- Reads/Writes --> D
+    C -- Interacts with --> E
 ```
 
-## Getting Started
+---
 
-### Prerequisites
+## 4. Setup and Installation
 
-* [Python 3.10+](https://www.python.org/downloads/)
-* [Node.js 14+](https://nodejs.org/en/download/)
-* [Git](https://git-scm.com/downloads)
+Follow these instructions carefully to get the project running on your local machine.
 
-### Backend Setup
+### 4.1. Prerequisites
 
-1. Clone the repository:
+Ensure you have the following software installed:
+
+*   [Python 3.10+](https://www.python.org/downloads/)
+*   [Node.js 14+](https://nodejs.org/en/download/)
+*   [Git](https://git-scm.com/downloads)
+
+### 4.2. Backend Setup (`osij_backend`)
+
+1.  **Clone the Repository:**
     ```bash
     git clone https://github.com/hopeigbinosa123/CompaniesWebsite.git
+    cd CompaniesWebsite
     ```
-2. Navigate to the backend directory:
+
+2.  **Navigate to the Backend Directory:**
     ```bash
-    cd CompaniesWebsite/osij_backend
+    cd osij_backend
     ```
-3. Create a virtual environment:
-    ```bash
-    python -m venv venv
-    ```
-4. Activate the virtual environment:
-    * On Windows:
+
+3.  **Create and Activate a Python Virtual Environment:**
+    *A virtual environment is crucial as it isolates project-specific dependencies.*
+    *   On Windows:
         ```bash
+        python -m venv venv
         venv\Scripts\activate
         ```
-    * On macOS and Linux:
+    *   On macOS/Linux:
         ```bash
+        python3 -m venv venv
         source venv/bin/activate
         ```
-5. Install the dependencies:
+    Your terminal prompt should now be prefixed with `(venv)`.
+
+4.  **Install Dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
-6. Run the migrations:
+
+5.  **Create the Backend Environment File (`.env`):**
+    *   In the `osij_backend` directory, create a new file named `.env`.
+    *   This file will hold your secret keys and environment-specific settings.
+    *   Copy and paste the following content into it, replacing the placeholder values:
+
+    ```ini
+    # Django Secret Key - Generate a new one for production
+    SECRET_KEY='your-super-secret-key-here'
+
+    # Debug Mode - Set to False in production
+    DEBUG=True
+
+    # Allowed Hosts (space-separated) - Use * for development if needed
+    ALLOWED_HOSTS=localhost 127.0.0.1
+
+    # PayPal API Credentials (from your PayPal Developer account)
+    PAYPAL_CLIENT_ID='your-paypal-client-id'
+    PAYPAL_SECRET='your-paypal-secret'
+
+    # PayPal Redirect URLs
+    PAYPAL_RETURN_URL=http://localhost:3000/dashboard/payment/success
+    PAYPAL_CANCEL_URL=http://localhost:3000/dashboard/payment/cancel
+    ```
+
+6.  **Run Database Migrations:**
+    *This command creates the database schema based on your models.*
     ```bash
     python manage.py migrate
     ```
-7. Run the development server:
-    ```bash
-    python manage.py runserver
-    ```
-The backend server will be running at `http://localhost:8000`.
 
-### Frontend Setup
-
-1. Navigate to the frontend directory:
+7.  **Create a Superuser (Administrator):**
+    *This account will allow you to access the Django admin panel.*
     ```bash
-    cd ../osij_frontend
+    python manage.py createsuperuser
     ```
-2. Install the dependencies:
+    Follow the prompts to set a username, email, and password.
+
+### 4.3. Frontend Setup (`osij-frontend`)
+
+1.  **Navigate to the Frontend Directory:**
+    *(From the project root)*
+    ```bash
+    cd osij-frontend
+    ```
+
+2.  **Install Dependencies:**
     ```bash
     npm install
     ```
-3. Run the development server:
-    ```bash
-    npm start
+
+3.  **Create the Frontend Environment File (`.env.local`):**
+    *   In the `osij-frontend` directory, create a new file named `.env.local`.
+    *   This file stores the PayPal Client ID needed by the React app.
+    *   Add the following content, using the **same Client ID** as in the backend `.env` file:
+
     ```
-The frontend development server will be running at `http://localhost:3000`.
+    REACT_APP_PAYPAL_CLIENT_ID='your-paypal-client-id'
+    ```
 
-## API Documentation
+---
 
-The backend provides a REST API for interacting with the application services. The API endpoints are organized by app.
+## 5. Running the Application
 
-### Education API
+To run the application, you need to start both the backend and frontend servers.
 
-* `/education/courses/`
-* `/education/courses/<id>/`
-* `/education/enrollments/`
-* `/education/enrollments/<id>/`
-* `/education/certificates/`
-* `/education/certificates/<id>/`
-* `/education/lessons/`
-* `/education/lessons/<id>/`
-* `/education/lesson-progress/`
-* `/education/lesson-progress/<id>/`
-* `/education/live-sessions/`
-* `/education/live-sessions/<id>/`
+1.  **Start the Backend Server:**
+    *   Open a terminal, navigate to `osij_backend`, and ensure your virtual environment is active.
+    *   Run the server:
+        ```bash
+        python manage.py runserver
+        ```
+    *   The backend API will be running at `http://localhost:8000`. You can access the admin panel at `http://localhost:8000/admin/`.
 
-### Software Services API
+2.  **Start the Frontend Server:**
+    *   Open a **new** terminal and navigate to `osij-frontend`.
+    *   Run the server:
+        ```bash
+        npm start
+        ```
+    *   The frontend application will open automatically in your browser at `http://localhost:3000`.
 
-* `/software_services/services/`
-* `/software_services/services/<id>/`
-* `/software_services/requests/`
-* `/software_services/requests/<id>/`
-* `/software_services/updates/`
-* `/software_services/updates/<id>/`
-* `/software_services/enquiries/`
-* `/software_services/enquiries/<id>/`
-* `/software_services/responses/`
-* `/software_services/responses/<id>/`
+### How They Connect
+The React frontend at `http://localhost:3000` sends API requests to the Django backend at `http://localhost:8000`. This is configured in `osij-frontend/src/api/axiosConfig.js`. The `django-cors-headers` package on the backend is configured to allow these cross-origin requests during development.
 
-### Graphic Design API
+---
 
-* `/graphic_design/designers/`
-* `/graphic_design/designers/<id>/`
-* `/graphic_design/orders/`
-* `/graphic_design/orders/<id>/`
+## 6. Core Data Models
 
-### Cosmetology API
+This section provides an overview of the main database models for each service.
 
-* `/cosmetology/services/`
-* `/cosmetology/services/<id>/`
-* `/cosmetology/stylists/`
-* `/cosmetology/stylists/<id>/`
-* `/cosmetology/appointments/`
-* `/cosmetology/appointments/<id>/`
+### Education
+*   **Course:** Represents a course with a title, description, price, and instructor.
+*   **Lesson:** A single lesson within a course (e.g., video, text, or quiz).
+*   **Enrollment:** Links a `User` to a `Course`, tracking their progress.
+*   **Certificate:** Issued to a `User` upon completion of a `Course`.
 
-## Frontend Documentation
+### Cosmetology
+*   **BeautyService:** A service offered, like a haircut or manicure, with a price and duration.
+*   **StylistProfile:** Represents a stylist, their specialization, and availability.
+*   **AppointmentBooking:** A record of a `User` booking a `BeautyService` with a `StylistProfile` at a specific time.
 
-The frontend is a single-page application built with React. The code is organized into the following directories:
+### Graphic Design
+*   **Designer:** Represents a graphic designer with their name, specialty, and portfolio.
+*   **DesignService:** A type of design service offered (e.g., Logo Design).
+*   **DesignOrder:** A user's request for a specific design, including a brief, budget, and status.
 
-* `src/api`: Contains the API client for communicating with the backend.
-* `src/components`: Contains reusable UI components.
-* `src/context`: Contains React context providers for managing the application state.
-* `src/pages`: Contains the main pages of the application.
+### Software Services
+*   **SoftwareService:** A type of software development service offered (e.g., Web Development).
+*   **ServiceRequest:** A formal request from a user for a `SoftwareService`, including project details and budget.
+*   **SoftwareEnquiry:** A more general-purpose inquiry from a user about a software problem.
 
-## Contributing
+---
 
-Contributions are welcome! Please follow these guidelines when contributing to the project:
+## 7. API Endpoint Reference
 
-* **Branching:** Create a new branch for each new feature or bug fix.
-* **Commits:** Write clear and concise commit messages.
-* **Pull Requests:** Open a pull request to merge your changes into the `main` branch.
-* **Code Style:** Follow the existing code style and conventions.
+Below is a summary of the key API endpoints. The base URL for all endpoints is `/api/`.
 
-## Future Instructions
+### Authentication (`/auth/...`)
+| Method | Endpoint         | Description                   |
+| :----- | :--------------- | :---------------------------- |
+| `POST` | `/register/`     | Creates a new user account.   |
+| `POST` | `/login/`        | Obtains JWT access/refresh tokens. |
+| `POST` | `/logout/`       | Blacklists a refresh token.   |
 
-Here are some suggestions for future development:
+### Education (`/education/...`)
+| Method | Endpoint             | Description                               |
+| :----- | :------------------- | :---------------------------------------- |
+| `GET`  | `/courses/`          | Lists all available courses.              |
+| `GET`  | `/courses/<id>/`     | Retrieves details for a single course.    |
+| `POST` | `/enroll/`           | Enrolls the current user in a course.     |
+| `GET`  | `/my-enrollments/`   | Lists all courses the user is enrolled in.|
 
-* **Implement user profiles:** Add a user profile page where users can view their enrolled courses, service requests, and other information.
-* **Add payment integration:** Integrate a payment gateway to allow users to pay for courses and services. And also add `PAYPAL_CLIENT_ID` and `PAYPAL_SECRET` keys.
-* **Improve the UI/UX:** Improve the user interface and user experience of the application.
-* **Write more tests:** Write more unit and integration tests to improve the code quality and prevent regressions.
-* **Deploy the application:** Deploy the application to a cloud platform like AWS, Google Cloud, or Heroku.
-* **Expand notification system:** Add custom admin messages, delivery logs, and HTML email templates for a more personalized experience.
+### Cosmetology (`/cosmetology/...`)
+| Method | Endpoint         | Description                         |
+| :----- | :--------------- | :---------------------------------- |
+| `GET`  | `/services/`     | Lists all available beauty services.|
+| `GET`  | `/stylists/`     | Lists all available stylists.      |
+| `POST` | `/bookings/`     | Creates a new appointment booking.  |
 
-# PayPal Setup Instructions
+---
 
-## Prerequisites
+## 8. User and Service Guides
 
-Before you can use PayPal payments in your application, you need to set up a PayPal Developer account and get your API credentials.
+### 8.1. User Authentication
 
-## Step 1: Create PayPal Developer Account
+*   **Registration:** Navigate to the "Register" page on the frontend. Fill out the form to create a new account. Upon successful registration, a welcome email will be printed to the backend console (as `EMAIL_BACKEND` is set to `console.EmailBackend`).
+*   **Login:** Navigate to the "Login" page. Use the credentials of the user you just created or the superuser account. Upon login, a JSON Web Token (JWT) is saved in your browser's `localStorage`, authenticating you for future API requests.
 
-1. Go to [PayPal Developer Dashboard](https://developer.paypal.com/developer/applications/)
-2. Sign in with your PayPal account or create a new one
-3. Navigate to "My Apps & Credentials"
+### 8.2. Service Management (Admin Guide)
 
-## Step 2: Create a New App
+Most services are managed by an administrator through the **Django Admin Panel**.
 
-1. Click "Create App"
-2. Give your app a name (e.g., "OSIJ Course Payments")
-3. Select "Merchant" as the app type
-4. Click "Create App"
+*   **Accessing the Admin Panel:** Go to `http://localhost:8000/admin/` and log in with your superuser account.
 
-## Step 3: Get Your Client ID
+*   **Education / IT Training:**
+    *   In the admin panel, locate the **Education** section.
+    *   Here you can add, update, or delete `Courses`, `Lessons`, and `Live Sessions`. This is the primary way to manage the educational content offered.
 
-1. After creating the app, you'll see your **Client ID** and **Client Secret**
-2. Copy the **Client ID** - this is what you need for the frontend
+*   **Software Services:**
+    *   In the admin panel, find the **Software Services** section.
+    *   You can define the `Software Services` offered.
+    *   When a user submits a request through the frontend, a `Service Request` or `Software Enquiry` will appear here, which an admin can then manage.
 
-## Step 4: Set Up Environment Variable
+### 8.3. User Flows (Frontend Guide)
 
-Create a `.env.local` file in your `osij-frontend` directory with the following content:
+*   **Booking a Cosmetology Appointment:**
+    1.  Navigate to the Cosmetology section of the website.
+    2.  Browse the list of available services.
+    3.  Select a service to view details and available stylists.
+    4.  Fill out the booking form to schedule an appointment.
 
-```bash
-REACT_APP_PAYPAL_CLIENT_ID=your_paypal_client_id_here
-```
+*   **Enrolling in a Course (with PayPal):**
+    1.  Navigate to the Education section.
+    2.  Select a course and click "Enroll Now".
+    3.  You will be redirected to a payment page where the PayPal button is displayed.
+    4.  Clicking the PayPal button will open the PayPal payment window to complete the transaction.
+    5.  Upon successful payment, you will be redirected back to the site.
 
-Replace `your_paypal_client_id_here` with the actual Client ID you copied from PayPal.
+---
 
-## Step 5: Restart Your Development Server
+## 9. Basic Deployment Guide
 
-After creating the `.env.local` file, you need to restart your React development server:
+This is a high-level guide. Actual deployment may require more specific steps based on your configuration.
 
-```bash
-cd osij-frontend
-npm start
-```
+### Backend (Django on Heroku)
+1.  **Install Gunicorn:** `pip install gunicorn`
+2.  **Create `Procfile`:** In `osij_backend`, create a file named `Procfile` with the content: `web: gunicorn osij_backend.wsgi --log-file -`
+3.  **Configure `settings.py` for Production:**
+    *   Set `DEBUG = False`.
+    *   Set `ALLOWED_HOSTS` to your Heroku app's domain.
+    *   Configure a production database (like PostgreSQL) using `dj-database-url`.
+4.  **Create a Heroku App:** Use the Heroku CLI: `heroku create your-app-name`
+5.  **Push to Heroku:** `git push heroku main`
+6.  **Set Environment Variables:** In the Heroku dashboard, set all the variables from your `.env` file.
 
-## Step 6: Test the Integration
+### Frontend (React on Vercel)
+1.  **Push to GitHub:** Ensure your project is on a GitHub repository.
+2.  **Import Project:** In your Vercel dashboard, import the GitHub repository.
+3.  **Configure Project:**
+    *   Select `osij-frontend` as the Root Directory.
+    *   The build command and output directory should be detected automatically (`npm run build`, `build`).
+4.  **Set Environment Variables:** Add `REACT_APP_PAYPAL_CLIENT_ID` in the Vercel project settings.
+5.  **Deploy:** Click the "Deploy" button.
 
-1. Navigate to a course and click "Enroll Now"
-2. You should be redirected to the payment page
-3. The PayPal button should now load properly
-4. You can test with PayPal's sandbox environment
+---
 
-## Important Notes
+## 10. Troubleshooting
 
-- **Sandbox Mode**: By default, PayPal uses sandbox mode for testing. You don't need real money to test.
-- **Environment Variables**: Make sure your `.env.local` file is in the root of your frontend directory.
-- **Security**: Never commit your `.env.local` file to version control. It's already in `.gitignore`.
-- **Backend Configuration**: You also need to configure PayPal credentials in your Django backend settings.
+*   **CORS Error:** If the frontend shows a "Cross-Origin Resource Sharing" error, ensure the backend server is running and that `CORS_ALLOWED_ORIGINS` in `osij_backend/settings.py` includes `http://localhost:3000`. For development, you can set `CORS_ALLOW_ALL_ORIGINS = True`.
+*   **`npm install` Fails:** Delete the `node_modules` directory and the `package-lock.json` file, then run `npm install` again.
+*   **PayPal Button Not Appearing:** Ensure the `REACT_APP_PAYPAL_CLIENT_ID` is set correctly in `osij-frontend/.env.local` and that you have **restarted** the frontend server after creating the file.
+*   **Migrations Fail:** If `python manage.py migrate` fails, ensure your models have no errors. You may need to delete the `db.sqlite3` file and the migration files in each app's `migrations` directory (except `__init__.py`) to start fresh, but **this will delete all data**.
 
-## Backend Configuration
+---
 
-In your Django backend (`osij_backend`), make sure you have the following environment variables set:
+## 11. Future Improvements
 
-```bash
-PAYPAL_CLIENT_ID=your_paypal_client_id_here
-PAYPAL_SECRET=your_paypal_secret_here
-PAYPAL_RETURN_URL=http://localhost:3000/dashboard/payment/success
-PAYPAL_CANCEL_URL=http://localhost:3000/dashboard/payment/cancel
-```
+This project has a solid foundation but can be extended in many ways:
 
-## Troubleshooting
-
-If you still see the "PayPal client ID is not configured" error:
-
-1. Double-check that you created the `.env.local` file in the correct directory (`osij-frontend/`)
-2. Make sure the variable name is exactly `REACT_APP_PAYPAL_CLIENT_ID`
-3. Restart your development server after making changes
-4. Check the browser console for any additional errors
-
-## PayPal SDK Documentation
-
-For more information about the PayPal React SDK, visit:
-- [PayPal React SDK Documentation](https://developer.paypal.com/docs/business/checkout/react-integration/)
-- [PayPal Developer Portal](https://developer.paypal.com/)
-```
+*   **Build Out Frontend Pages:** Create dedicated frontend pages for Education, Software Services, and Graphic Design to allow users to interact with them more fully.
+*   **User Dashboards:** Create a profile page for logged-in users to view their enrolled courses, appointment bookings, and order history.
+*   **Refine UI/UX:** Enhance the visual design and user experience across the application for a more polished feel.
+*   **Advanced Email Notifications:** Integrate a real email service (like SendGrid or Mailgun) and create HTML email templates for more professional communication.
+*   **Testing:** Expand the test suite with more unit and integration tests to ensure code quality and reliability.
