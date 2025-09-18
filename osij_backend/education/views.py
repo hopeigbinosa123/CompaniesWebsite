@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Course, Lesson, Enrollment, LessonProgress, LiveSession
 from .serializers import CourseSerializer, LessonSerializer, EnrollmentSerializer, LiveSessionSerializer
-
 from rest_framework.generics import RetrieveAPIView
 from .models import Course
 from .serializers import CourseSerializer
@@ -26,9 +25,9 @@ class MyEnrollmentsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        enrollments = Enrollment.objects.filter(user=request.user)
+        enrollments = Enrollment.objects.filter(user=request.user).select_related('course')
         courses = [en.course for en in enrollments]
-        serializer = CourseSerializer(courses, many=True)
+        serializer = CourseSerializer(courses, many=True, context={'request': request})
         return Response(serializer.data)
 
 class EnrollView(APIView):
@@ -54,19 +53,24 @@ class CourseListView(generics.ListAPIView):
     serializer_class = CourseSerializer
     permission_classes = [permissions.AllowAny]
     
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 class CourseDetailView(generics.RetrieveAPIView):
     queryset = Course.objects.filter(is_active=True)
     serializer_class = CourseSerializer
     permission_classes = [permissions.AllowAny]
+    lookup_field = 'pk'
 
 class CourseLessonsView(generics.ListAPIView):
     serializer_class = LessonSerializer
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        course_id = self.kwargs['course_id']
-        return Lesson.objects.filter(course_id=course_id).order_by('order')
+        return Lesson.objects.filter(
+            course_id=self.kwargs['pk'],
+            is_active=True
+        )
 
 class EnrollmentView(generics.CreateAPIView):
     queryset = Enrollment.objects.all()
@@ -113,4 +117,3 @@ class MyEnrollmentsView(generics.ListAPIView):
 
     def get_queryset(self):
         return Enrollment.objects.filter(user=self.request.user)
-

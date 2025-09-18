@@ -2,25 +2,20 @@ import api from './axiosConfig';
 // Authentication API calls
 
 export const auth = {
-  login: async (email, password) => {
-     // Login user and stores tokens
-         try {
-              const response = await api.post('/auth/login/', { email, password }); // 
-              if (response.data.access) {
-                 localStorage.setItem('token', response.data.access);
-                  localStorage.setItem('refresh_token', response.data.refresh);
-              }
-              return response.data;
-    }         catch (error) {
-              console.error('Login error:', error);
-              throw error;
-              }
+  login: async (username, password) => {
+    try {
+      const response = await api.post('/auth/login/', { username, password });
+      return response.data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   },
 
   register: async (userData) => {
     // Registers a new user
-            try {
-                 const response = await api.post('/auth/register/', userData); //calls  from axiosConfig.js
+    try {
+      const response = await api.post('/auth/register/', userData); //calls  from axiosConfig.js
                  return response.data;
     }            catch (error) {
                  console.error('Registration error:', error);

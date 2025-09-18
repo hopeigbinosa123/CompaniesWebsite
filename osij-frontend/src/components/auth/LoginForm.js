@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-
+import { auth } from '../../api/auth';
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -25,33 +25,20 @@ const LoginForm = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
+  
     try {
-      // This would call your Django login endpoint
-      const response = await fetch('http://localhost:8000/api/auth/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Assuming your Django backend returns { user: {...}, token: '...' }
-        login(data.user, data.token);
-        navigate('/'); // Redirect to home page after successful login
-      } else {
-        setError(data.message || 'Login failed. Please check your credentials.');
-      }
+      console.log('Login payload:', { username: formData.username, password: formData.password });
+      const response = await auth.login(formData.username, formData.password);
+      login(response.user, response.access);
+      navigate('/');
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
       console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

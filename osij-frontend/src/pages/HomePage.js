@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom';
+
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -6,7 +9,7 @@ const HomePage = () => {
         <div className="container mx-auto text-center">
           <h1 className="text-4xl font-bold mb-4">Welcome to Osij Group</h1>
           <p className="text-xl mb-8">Your one-stop platform for premium services</p>
-          <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100" >
+          <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100" onClick={() => navigate('/services')}>
             Explore Services
           </button>
         </div>
