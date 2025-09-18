@@ -5,26 +5,56 @@ import { enrollInCourse } from '../../api/education';
 
 const CourseCard = ({ course }) => {
   const [loading, setLoading] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const [error, setError] = useState('');
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleEnroll = async () => {
+    // Wait for auth to finish loading
+    if (authLoading) {
+      setError('Please be patient with us while we verify your authentication...');
+      return;
+    }
+
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate('/login', { 
+        state: { 
+          redirectTo: '/dashboard/payment',
+          courseData: {
+            id: course.id,
+            title: course.title,
+            price: course.price,
+            description: course.description
+          }
+        } 
+      });
       return;
     }
 
     setLoading(true);
+    setError('');
+    
     try {
       await enrollInCourse(course.id);
-      alert('Successfully enrolled in the course!');
-      // You can redirect or update state here
+      // Redirect to payment page with course data
+      navigate('/dashboard/payment', { 
+        state: { 
+          course: {
+            id: course.id,
+            title: course.title,
+            price: course.price,
+            description: course.description
+          }
+        } 
+      });
     } catch (error) {
       console.error('Enrollment error:', error);
-      if (error.response?.data?.detail) {
-        alert(error.response.data.detail);
+      if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+        setError('Unable to connect to the server. Please make sure the backend is running.');
+      } else if (error.response?.data?.detail) {
+        setError(error.response.data.detail);
       } else {
-        alert('Failed to enroll. Please try again.');
+        setError('Failed to enroll. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -56,12 +86,18 @@ const CourseCard = ({ course }) => {
           <span className="text-sm text-gray-500">{course.duration || 'Self-paced'}</span>
         </div>
 
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
         <button
           onClick={handleEnroll}
-          disabled={loading}
+          disabled={loading || authLoading}
           className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Enrolling...' : 'Enroll Now'}
+          {loading ? 'Enrolling...' : authLoading ? 'Checking Auth...' : 'Enroll Now'}
         </button>
       </div>
     </div>

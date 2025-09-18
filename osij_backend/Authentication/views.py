@@ -8,29 +8,66 @@ from .models import User
 from .serializers import UserSerializer, LoginSerializer
 from rest_framework.decorators import api_view, permission_classes
 from django.middleware.csrf import get_token
+from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
     
-    def post(self, request):
+    def post(self, request): # handles user registration
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            return Response(
-                {
-                    "message": "User created successfully",
-                    "user": {
-                        "id": user.id,
-                        "username": user.username,
-                        "email": user.email,
-                        "first_name": user.first_name,
-                        "last_name": user.last_name
-                    }
+            
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            
+            # Get CSRF token
+            from django.middleware.csrf import get_token
+            csrf_token = get_token(request)
+            
+            response_data = {
+                "message": "User created successfully",
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name
                 },
-                status=status.HTTP_201_CREATED
+                "csrf_token": csrf_token,
+            } # handles user registration
+            
+            response = Response(response_data, status=status.HTTP_201_CREATED)
+            
+            # Set CSRF cookie
+            response.set_cookie(
+                'csrftoken',
+                csrf_token,
+                httponly=False,
+                samesite='Lax',
+                secure=False
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Set refresh token in HttpOnly cookie
+            response.set_cookie(
+                'refresh_token',
+                str(refresh),
+                httponly=True,
+                samesite='Lax',
+                secure=False,
+                max_age=60 * 60 * 24 * 7  # 7 days
+            )
+            
+            return response
+            
+        print("Serializer errors:", serializer.errors)  # Debug log
+        return Response(
+            {"error": "Registration failed", "details": serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -41,24 +78,59 @@ class LoginView(APIView):
             serializer = LoginSerializer(data=request.data)
             if not serializer.is_valid():
                 print("Validation errors:", serializer.errors)  # Debug log
-                print("Raw request data:", request.body)  # Add this line
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Invalid credentials", "details": serializer.errors},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
                 
             # Get the validated user from the serializer
             user = serializer.validated_data.get('user')
             if not user:
                 return Response(
-                    {"error": "User not found in validated data"}, 
+                    {"error": "Invalid credentials"}, 
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            token, created = Token.objects.get_or_create(user=user)
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
             
-            return Response({
-                'token': token.key,
+            # Set session for CSRF
+            from django.contrib.auth import login
+            login(request, user)
+            
+            # Get CSRF token
+            from django.middleware.csrf import get_token
+            csrf_token = get_token(request)
+            
+            response_data = {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
                 'user': UserSerializer(user).data,
-                'access': token.key
-            })
+                'csrf_token': csrf_token,
+            }
+            
+            response = Response(response_data, status=status.HTTP_200_OK)
+            
+            # Set CSRF cookie
+            response.set_cookie(
+                'csrftoken',
+                csrf_token,
+                httponly=False,  # Allow JavaScript to access
+                samesite='Lax',
+                secure=False  # Set to True in production with HTTPS
+            )
+            
+            # Set refresh token in HttpOnly cookie for better security
+            response.set_cookie(
+                'refresh_token',
+                str(refresh),
+                httponly=True,
+                samesite='Lax',
+                secure=False,  # Set to True in production with HTTPS
+                max_age=60 * 60 * 24 * 7  # 7 days
+            )
+            
+            return response
             
         except Exception as e:
             import traceback
@@ -79,11 +151,11 @@ class LogoutView(APIView):
 class UserProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
-    def get(self, request):
+    def get(self, request): # handles user profile
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
     
-    def put(self, request):
+    def put(self, request): # handles user profile update
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             # Handle password hashing if password is being updated
@@ -95,20 +167,13 @@ class UserProfileView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['GET'])
+@api_view(['GET']) # handles csrf token
 @permission_classes([permissions.AllowAny])
-def get_csrf_token(request):
+def get_csrf_token(request): 
     """
     Get CSRF token for the session
     """
     from django.http import JsonResponse
-    from django.views.decorators.csrf import ensure_csrf_cookie
-    
-    @ensure_csrf_cookie
-    def get_csrf(request):
-        return JsonResponse({'detail': 'CSRF cookie set'})
-    
-    response = get_csrf(request)
-    response['X-CSRFToken'] = request.META.get('CSRF_COOKIE')
+    response = JsonResponse({'detail': 'CSRF cookie set'}) # handles csrf token
+    response['X-CSRFToken'] = get_token(request)
     return response

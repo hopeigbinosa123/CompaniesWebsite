@@ -1,16 +1,17 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 from .views import (
-    ServicesListView, 
-    ServiceDetailsView, 
-    StylistsListView, 
-    StylistDetailsView, 
-    BookingView, 
+    StylistViewSet,
+    AppointmentViewSet,
+    AppointmentBookingViewSet,
+    ServicesListView,  #  Add this
 )
 
-urlpatterns = [
-    path('services/', ServicesListView.as_view(), name='services_list'),
-    path('services/<int:pk>/', ServiceDetailsView.as_view(), name="service_details"),
-    path('stylists/', StylistsListView.as_view(), name='stylists_list'),
-    path('stylists/<int:pk>/', StylistDetailsView.as_view(), name='stylist_details'),
-    path('bookings/', BookingView.as_view(), name='appointment_bookings'),
+router = DefaultRouter()
+router.register(r"stylists", StylistViewSet, basename="stylist")
+router.register(r"appointments", AppointmentViewSet, basename="appointment")
+router.register(r"bookings", AppointmentBookingViewSet, basename="booking")
+
+urlpatterns = router.urls + [
+    path("services/", ServicesListView.as_view(), name="services-list"),  # Add this
 ]

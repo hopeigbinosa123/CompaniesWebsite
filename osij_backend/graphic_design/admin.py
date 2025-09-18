@@ -1,15 +1,21 @@
 from django.contrib import admin
-from graphic_design.models import Designer, Order
+from .models import Designer, DesignOrder, Portfolio, DesignService
 
-# Register your models here.
-
+@admin.register(Designer)
 class DesignerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image')
-    search_fields = ['name']
-admin.site.register(Designer, DesignerAdmin)
+    list_display = ("name", "speciality", "is_active")
+    search_fields = ["name", "email", "speciality"]
 
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'title', 'design_type', 'description', 'ordered_at', 'status')
-    list_filter = ['ordered_at', 'status', ]
-    search_fields = ('name', 'title')
-admin.site.register(Order, OrderAdmin)
+@admin.register(DesignOrder)
+class DesignOrderAdmin(admin.ModelAdmin):
+    list_display = ("client", "designer", "status", "created_at")
+    list_filter = ("status",)
+    search_fields = ("client__username", "designer__name")
+
+@admin.register(Portfolio)
+class PortfolioAdmin(admin.ModelAdmin):
+    list_display = ("designer", "title", "created_at")
+
+@admin.register(DesignService)
+class DesignServiceAdmin(admin.ModelAdmin):
+    list_display = ("name", "price", "duration_minutes")

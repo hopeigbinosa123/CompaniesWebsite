@@ -10,6 +10,7 @@ const RegisterForm = () => {
     password2: '',
     first_name: '',
     last_name: '',
+    phone_number: '', // Added phone_number
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,17 +41,15 @@ const RegisterForm = () => {
       // Remove password2 from the data sent to the server
       const { password2, ...registrationData } = formData;
       
-      // Call the actual registration API
-      const response = await register(registrationData);
+      // Call the register function from the context
+      await register(registrationData);
       
-      // If registration is successful, log the user in
-      if (response.user) {
-        login(response.user, response.access);
-        navigate('/');
-      }
+      // Navigate to the home page upon successful registration and login
+      navigate('/');
+
     } catch (err) {
       // Handle specific error messages from the API if available
-      const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
+      const errorMessage = err.response?.data?.message || 'Unable to register. Please try again.';
       setError(errorMessage);
       console.error('Registration error:', err);
     } finally {
@@ -164,6 +163,22 @@ const RegisterForm = () => {
           onChange={handleChange}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           placeholder="Confirm your password"
+          disabled={loading}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700">
+          Phone Number
+        </label>
+        <input
+          id="phone_number"
+          name="phone_number"
+          type="text"
+          value={formData.phone_number}
+          onChange={handleChange}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Optional phone number"
           disabled={loading}
         />
       </div>

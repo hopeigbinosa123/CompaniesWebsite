@@ -1,5 +1,7 @@
+
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/shared/Navbar';
 import Footer from './components/shared/Footer';
@@ -17,8 +19,11 @@ import RegisterPage from './pages/RegisterPage';
 // Public Module Pages
 import EducationPage from './pages/EducationPage';
 import SoftwareServicesPage from './pages/SoftwareServicesPage';
-import GraphicDesignPage from './pages/GraphicDesignPage';
-import CosmetologyPage from './pages/CosmetologyPage';
+import RequestServicePage from './pages/RequestServicePage';
+import GraphicDesignPage from './pages/GraphicDesignPage.jsx';
+import GraphicDesignOrderForm from './pages/GraphicDesignOrderForm.jsx';
+import CosmetologyPage from './pages/CosmetologyPage.jsx';
+import BookingForm from './components/Cosmetology/BookingForm.jsx';
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -28,7 +33,7 @@ import PaymentPage from './pages/PaymentPage';
 
 // Education Module Extensions
 import CourseDetailPage from './pages/CourseDetailPage';
-import CourseLessonsPage from './pages/CourseLessionsPage';
+import CourseLessonsPage from './pages/CourseLessonsPage';
 import EnrolledCoursesList from './pages/EnrolledCourseList';
 
 // 404 Page
@@ -52,6 +57,7 @@ function NotFoundPage() {
 // Main App Content
 function AppContent() {
   const { loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -66,70 +72,79 @@ function AppContent() {
     <div className="App flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-grow">
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          {/* Public Module Pages */}
-          <Route path="/education" element={<EducationPage />} />
-          <Route path="/software-services" element={<SoftwareServicesPage />} />
-          <Route path="/graphic-design" element={<GraphicDesignPage />} />
-          <Route path="/cosmetology" element={<CosmetologyPage />} />
+            {/* Graphic Design */}
+            <Route path="/graphic-design" element={<GraphicDesignPage />} /> {/* ✅ Added route */}
+            <Route path="/graphic-design/order/:id" element={<GraphicDesignOrderForm />} />
 
-          {/* Education Module Extensions */}
-          <Route path="/education/courses/:id" element={<CourseDetailPage />} />
-          <Route path="/education/courses/:id/lessons" element={<CourseLessonsPage />} />
+            {/* Cosmetology */}
+            <Route path="/cosmetology" element={<CosmetologyPage />} />
+            <Route path="/cosmetology/book" element={<BookingForm />} />
 
-          {/* Protected Dashboard Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/software-projects"
-            element={
-              <ProtectedRoute>
-                <SoftwareProjectsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/design-orders"
-            element={
-              <ProtectedRoute>
-                <GraphicDesignOrdersPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/payment"
-            element={
-              <ProtectedRoute>
-                <PaymentPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/my-courses"
-            element={
-              <ProtectedRoute>
-                <EnrolledCoursesList />
-              </ProtectedRoute>
-            }
-          />
+            {/* Education */}
+            <Route path="/education" element={<EducationPage />} />
+            <Route path="/education/courses/:id" element={<CourseDetailPage />} />
+            <Route path="/education/courses/:id/lessons" element={<CourseLessonsPage />} />
 
-          {/* 404 Fallback */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+            {/* Software Services */}
+            <Route path="/software-services" element={<SoftwareServicesPage />} />
+            <Route path="/software-services/request" element={<RequestServicePage />} />
+
+            {/* Protected Dashboard Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/software-projects"
+              element={
+                <ProtectedRoute>
+                  <SoftwareProjectsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/design-orders"
+              element={
+                <ProtectedRoute>
+                  <GraphicDesignOrdersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/payment"
+              element={
+                <ProtectedRoute>
+                  <PaymentPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/my-courses"
+              element={
+                <ProtectedRoute>
+                  <EnrolledCoursesList />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* 404 Fallback */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </AnimatePresence>
       </main>
       <Footer />
     </div>

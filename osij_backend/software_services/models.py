@@ -20,7 +20,7 @@ class SoftwareService(models.Model):
     is_active = models.BooleanField(default=True)
     
     def __str__(self):
-        return self.name
+        return self.title
 
 class ServiceRequest(models.Model):
     STATUS_CHOICES = [
@@ -56,7 +56,7 @@ class ProjectUpdate(models.Model):
 
 # Add to software_services/models.py
 class SoftwareEnquiry(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1) # FIXME: Provide a valid default user id
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     problem_title = models.CharField(max_length=200)
     problem_description = models.TextField()
     status = models.CharField(max_length=20, default='submitted')

@@ -275,3 +275,16 @@ A deployment guide will be added once the platform is ready for staging.
 - 🐞 Log and comment bugs as learning artifacts
 - 🗂️ Use task boards for modular planning
 - ❤️ Encourage and uplift — progress over perfection
+
+## 🧩 Modules
+
+### 🎨 Graphic Design Services
+
+✅ **Sprint Completed – 15 Sept 2025**
+
+- Public designer is now listed via `/designers/`
+- Designer detail view with profile
+- Order form has been linked to designer via `/graphic-design/order/:id`
+- Frontend form built with validation and submission logic to ehance user experience
+- Backend accepts public and authenticated orders via `/design-orders/`
+

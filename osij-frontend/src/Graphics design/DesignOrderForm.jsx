@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import OsijButton from './OsijButton';
 
@@ -36,6 +37,7 @@ function DesignOrderForm() {
     setIsLoading(true);
     setFormErrors({});
 
+<<<<<<< HEAD
     setTimeout(() => {
       console.log('Form submitted:', formData);
       setSubmitted(true);
@@ -46,11 +48,28 @@ function DesignOrderForm() {
         email: '',
         type: '',
         details: '',
+=======
+    axios.post("http://127.0.0.1:8000/api/graphic-design/design-orders/", formData)
+      .then(() => {
+        setSubmitted(true);
+        setIsLoading(false);
+        setFormData({
+          name: '',
+          email: '',
+          type: '',
+          details: '',
+        });
+      })
+      .catch(err => {
+        console.error("Submission failed:", err);
+        setIsLoading(false);
+        // Optional: show error feedback to user
+>>>>>>> ac218696596a8434813a1b26a25e8b4728fe8157
       });
-    }, 1500);
   }
 
   return (
+<<<<<<< HEAD
     <>
       {/* Hero Banner */}
       <section
@@ -84,6 +103,24 @@ function DesignOrderForm() {
             {/* Name */}
             <FormField
               label="Your Name"
+=======
+    <section className="py-10 px-4 bg-gray-50">
+      <div className="max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold mb-6 text-center text-purple-700">Request a Design</h2>
+
+        {submitted && (
+          <div className="mb-6 p-4 bg-green-100 text-green-800 rounded-lg text-center">
+            Your design request has been submitted successfully!
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5 bg-white p-6 rounded-lg shadow">
+          {/* Name */}
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Your Name *</label>
+            <input
+              id="name"
+>>>>>>> ac218696596a8434813a1b26a25e8b4728fe8157
               name="name"
               type="text"
               value={formData.name}
@@ -91,10 +128,21 @@ function DesignOrderForm() {
               placeholder="e.g. Prince M."
               error={formErrors.name}
             />
+<<<<<<< HEAD
 
             {/* Email */}
             <FormField
               label="Email Address"
+=======
+            {formErrors.name && <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>}
+          </div>
+
+          {/* Email */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address *</label>
+            <input
+              id="email"
+>>>>>>> ac218696596a8434813a1b26a25e8b4728fe8157
               name="email"
               type="email"
               value={formData.email}
@@ -102,6 +150,7 @@ function DesignOrderForm() {
               placeholder="e.g. prince@example.com"
               error={formErrors.email}
             />
+<<<<<<< HEAD
 
             {/* Design Type */}
             <div>
@@ -144,6 +193,45 @@ function DesignOrderForm() {
               ></textarea>
               {formErrors.details && <p className="text-red-500 text-sm mt-1">{formErrors.details}</p>}
             </div>
+=======
+            {formErrors.email && <p className="mt-1 text-sm text-red-600">{formErrors.email}</p>}
+          </div>
+
+          {/* Design Type */}
+          <div>
+            <label htmlFor="type" className="block text-sm font-medium text-gray-700">Design Type *</label>
+            <select
+              id="type"
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              className={`w-full p-2 border rounded mt-1 ${formErrors.type ? 'border-red-500' : 'border-gray-300'}`}
+            >
+              <option value="">Select a design type</option>
+              <option value="Logo">Logo Design</option>
+              <option value="Flyer">Flyer Design</option>
+              <option value="Business Card">Business Card</option>
+              <option value="Social Media">Social Media Graphics</option>
+              <option value="Other">Other</option>
+            </select>
+            {formErrors.type && <p className="mt-1 text-sm text-red-600">{formErrors.type}</p>}
+          </div>
+
+          {/* Project Details */}
+          <div>
+            <label htmlFor="details" className="block text-sm font-medium text-gray-700">Project Details *</label>
+            <textarea
+              id="details"
+              name="details"
+              rows="4"
+              value={formData.details}
+              onChange={handleChange}
+              className={`w-full p-2 border rounded mt-1 ${formErrors.details ? 'border-red-500' : 'border-gray-300'}`}
+              placeholder="Describe your project requirements, preferred colors, style, etc."
+            ></textarea>
+            {formErrors.details && <p className="mt-1 text-sm text-red-600">{formErrors.details}</p>}
+          </div>
+>>>>>>> ac218696596a8434813a1b26a25e8b4728fe8157
 
             {/* Submit Button */}
             <OsijButton

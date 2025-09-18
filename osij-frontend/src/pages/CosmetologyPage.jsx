@@ -1,12 +1,10 @@
 import React from 'react';
-import Cosmetology from '../Graphics design/Cosmetology/Cosmetology';
-import AboutCosmetology from '../Graphics design/AboutGraphicDesign';
 
 export default function CosmetologyPage() {
   return (
-    <div className="min-h-screen py-16">
-        <Cosmetology />
-      <AboutCosmetology />
+    <div className="p-6">
+      <h1 className="text-2xl font-bold text-pink-700">Cosmetology Services</h1>
+      <p className="mt-4 text-gray-600">This page will highlight our beauty and wellness services, including booking options.</p>
     </div>
   );
 }

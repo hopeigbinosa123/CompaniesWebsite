@@ -1,6 +1,6 @@
 import sqlite3
 
-db_path = 'db.sqlite3'
+db_path = 'osij_backend/db.sqlite3'
 
 try:
     conn = sqlite3.connect(db_path)

@@ -9,7 +9,7 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = "__all__"
 
-    def get_is_completed(self, obj):
+    def get_is_completed(self, obj): # handles lesson completion status
         request = self.context.get("request")
         if not (request and request.user.is_authenticated):
             return False
@@ -34,7 +34,7 @@ class CourseSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['instructor', 'created_at']
 
-    def get_thumbnail_url(self, obj):
+    def get_thumbnail_url(self, obj): # handles thumbnail url
         if obj.thumbnail:
             request = self.context.get('request')
             if request is not None:
@@ -52,7 +52,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
                  'enrolled_at', 'status', 'progress', 'last_accessed']
         read_only_fields = ['user', 'enrolled_at', 'last_accessed']
 
-    def get_course_thumbnail(self, obj):
+    def get_course_thumbnail(self, obj): # handles course thumbnail
         if obj.course.thumbnail:
             request = self.context.get('request')
             if request is not None:

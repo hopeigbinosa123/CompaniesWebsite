@@ -15,7 +15,7 @@ const SoftwareServicesPage = () => {
         const response = await getSoftwareServices();
         setServices(response.data);
       } catch (error) {
-        setError('Failed to load services. Please try again later.');
+        setError('Unable to load services. Please try again later.');
         console.error('Error fetching services:', error);
       } finally {
         setLoading(false);

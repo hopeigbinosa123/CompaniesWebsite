@@ -1,34 +1,26 @@
+# graphic_design/serializers.py
 from rest_framework import serializers
-from .models import Designer, Order
- 
-# serializes designer profile objects into JSON
+from .models import Designer, DesignOrder
+
 class DesignerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Designer
-        fields = ['name', 'image', 'speciality']
+        fields = "__all__"
 
 
-class DesignerDetailsSerializer(serializers.ModelSerializer):
+class DesignOrderSerializer(serializers.ModelSerializer):
+    client_username = serializers.CharField(source="client.username", read_only=True)
+    designer_name = serializers.CharField(source="designer.name", read_only=True)
+
     class Meta:
-        model = Designer
-        fields = '__all__'
+        model = DesignOrder
+        fields = [
+            "id", "client", "client_username", "designer", "designer_name",
+            "title", "brief", "reference_links", "budget",
+            "status", "created_at", "updated_at",
+        ]
+        read_only_fields = ("status", "created_at", "updated_at")
 
-
-# serializes specific order objects when called upon
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = ['title', 'status', 'ordered_at']
-
-
-# serializes all order objects when specific order details requested
-class OrderDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = '__all__'
-
-# serializer that enables designers to update order status
-class UpdateStatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = ['status']
+    def validate(self, attrs):
+        # Example: require budget for certain briefs (optional)
+        return attrs
