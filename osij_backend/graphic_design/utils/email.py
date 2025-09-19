@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 def send_design_order_confirmation(order):
     subject = f"✅ Design Order Confirmation — {order.title}"
     message = (

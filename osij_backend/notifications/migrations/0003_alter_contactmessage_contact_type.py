@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0002_contactmessage'),
+        ("notifications", "0002_contactmessage"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='contactmessage',
-            name='contact_type',
-            field=models.CharField(choices=[('general', 'General'), ('software', 'Software'), ('design', 'Design'), ('cosmetology', 'Cosmetology')], default='general', max_length=20),
+            model_name="contactmessage",
+            name="contact_type",
+            field=models.CharField(
+                choices=[
+                    ("general", "General"),
+                    ("software", "Software"),
+                    ("design", "Design"),
+                    ("cosmetology", "Cosmetology"),
+                ],
+                default="general",
+                max_length=20,
+            ),
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0003_alter_contactmessage_contact_type'),
+        ("notifications", "0003_alter_contactmessage_contact_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contactmessage',
-            name='phone',
+            model_name="contactmessage",
+            name="phone",
             field=models.CharField(blank=True, max_length=20, null=True),
         ),
     ]

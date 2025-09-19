@@ -16,95 +16,242 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Course',
+            name="Course",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('duration', models.CharField(max_length=100)),
-                ('thumbnail', models.ImageField(blank=True, null=True, upload_to='course_thumbnails/')),
-                ('is_active', models.BooleanField(default=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('instructor', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("duration", models.CharField(max_length=100)),
+                (
+                    "thumbnail",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="course_thumbnails/"
+                    ),
+                ),
+                ("is_active", models.BooleanField(default=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "instructor",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Enrollment',
+            name="Enrollment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('enrolled_at', models.DateTimeField(auto_now_add=True)),
-                ('status', models.CharField(choices=[('enrolled', 'Enrolled'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], default='enrolled', max_length=20)),
-                ('progress', models.IntegerField(default=0)),
-                ('last_accessed', models.DateTimeField(auto_now=True)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='education.course')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("enrolled_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("enrolled", "Enrolled"),
+                            ("in_progress", "In Progress"),
+                            ("completed", "Completed"),
+                            ("cancelled", "Cancelled"),
+                        ],
+                        default="enrolled",
+                        max_length=20,
+                    ),
+                ),
+                ("progress", models.IntegerField(default=0)),
+                ("last_accessed", models.DateTimeField(auto_now=True)),
+                (
+                    "course",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="education.course",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'course')},
+                "unique_together": {("user", "course")},
             },
         ),
         migrations.CreateModel(
-            name='Lesson',
+            name="Lesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('lesson_type', models.CharField(choices=[('video', 'YouTube Video'), ('live', 'Live Zoom Session'), ('text', 'Text Content'), ('quiz', 'Quiz')], max_length=20)),
-                ('youtube_url', models.URLField(blank=True, null=True)),
-                ('zoom_meeting_id', models.CharField(blank=True, max_length=100, null=True)),
-                ('content', models.TextField(blank=True)),
-                ('order', models.IntegerField(default=0)),
-                ('duration_minutes', models.IntegerField(default=0)),
-                ('is_free', models.BooleanField(default=False)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='lessons', to='education.course')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                (
+                    "lesson_type",
+                    models.CharField(
+                        choices=[
+                            ("video", "YouTube Video"),
+                            ("live", "Live Zoom Session"),
+                            ("text", "Text Content"),
+                            ("quiz", "Quiz"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("youtube_url", models.URLField(blank=True, null=True)),
+                (
+                    "zoom_meeting_id",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                ("content", models.TextField(blank=True)),
+                ("order", models.IntegerField(default=0)),
+                ("duration_minutes", models.IntegerField(default=0)),
+                ("is_free", models.BooleanField(default=False)),
+                (
+                    "course",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="lessons",
+                        to="education.course",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['order'],
+                "ordering": ["order"],
             },
         ),
         migrations.CreateModel(
-            name='LiveSession',
+            name="LiveSession",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('zoom_meeting_id', models.CharField(blank=True, max_length=100, null=True)),
-                ('zoom_meeting_url', models.URLField(blank=True, null=True)),
-                ('start_time', models.DateTimeField()),
-                ('end_time', models.DateTimeField()),
-                ('duration_minutes', models.IntegerField(default=60)),
-                ('is_recurring', models.BooleanField(default=False)),
-                ('recording_url', models.URLField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='live_sessions', to='education.course')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                (
+                    "zoom_meeting_id",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                ("zoom_meeting_url", models.URLField(blank=True, null=True)),
+                ("start_time", models.DateTimeField()),
+                ("end_time", models.DateTimeField()),
+                ("duration_minutes", models.IntegerField(default=60)),
+                ("is_recurring", models.BooleanField(default=False)),
+                ("recording_url", models.URLField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "course",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="live_sessions",
+                        to="education.course",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['start_time'],
+                "ordering": ["start_time"],
             },
         ),
         migrations.CreateModel(
-            name='Certificate',
+            name="Certificate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('issued_at', models.DateTimeField(auto_now_add=True)),
-                ('certificate_id', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
-                ('download_link', models.URLField(blank=True)),
-                ('verified', models.BooleanField(default=False)),
-                ('course', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='education.course')),
-                ('user', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("issued_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "certificate_id",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
+                ("download_link", models.URLField(blank=True)),
+                ("verified", models.BooleanField(default=False)),
+                (
+                    "course",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="education.course",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        default=1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='LessonProgress',
+            name="LessonProgress",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('completed', models.BooleanField(default=False)),
-                ('completed_at', models.DateTimeField(blank=True, null=True)),
-                ('time_spent_minutes', models.IntegerField(default=0)),
-                ('enrollment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='lesson_progress', to='education.enrollment')),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='education.lesson')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("completed", models.BooleanField(default=False)),
+                ("completed_at", models.DateTimeField(blank=True, null=True)),
+                ("time_spent_minutes", models.IntegerField(default=0)),
+                (
+                    "enrollment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="lesson_progress",
+                        to="education.enrollment",
+                    ),
+                ),
+                (
+                    "lesson",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="education.lesson",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('enrollment', 'lesson')},
+                "unique_together": {("enrollment", "lesson")},
             },
         ),
     ]

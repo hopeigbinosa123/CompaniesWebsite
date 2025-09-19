@@ -9,69 +9,117 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('graphic_design', '0001_initial'),
+        ("graphic_design", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DesignOrder',
+            name="DesignOrder",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=140)),
-                ('brief', models.TextField()),
-                ('reference_links', models.TextField(blank=True, help_text='Comma-separated URLs or notes')),
-                ('reference_files', models.FileField(blank=True, null=True, upload_to='design_references/')),
-                ('budget', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('in_progress', 'In Progress'), ('review', 'In Review'), ('completed', 'Completed'), ('canceled', 'Canceled')], default='pending', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='design_orders', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=140)),
+                ("brief", models.TextField()),
+                (
+                    "reference_links",
+                    models.TextField(
+                        blank=True, help_text="Comma-separated URLs or notes"
+                    ),
+                ),
+                (
+                    "reference_files",
+                    models.FileField(
+                        blank=True, null=True, upload_to="design_references/"
+                    ),
+                ),
+                (
+                    "budget",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=10, null=True
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("in_progress", "In Progress"),
+                            ("review", "In Review"),
+                            ("completed", "Completed"),
+                            ("canceled", "Canceled"),
+                        ],
+                        default="pending",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "client",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="design_orders",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.RemoveField(
-            model_name='designer',
-            name='image',
+            model_name="designer",
+            name="image",
         ),
         migrations.RemoveField(
-            model_name='designer',
-            name='speciality',
+            model_name="designer",
+            name="speciality",
         ),
         migrations.AddField(
-            model_name='designer',
-            name='is_active',
+            model_name="designer",
+            name="is_active",
             field=models.BooleanField(default=True),
         ),
         migrations.AddField(
-            model_name='designer',
-            name='portfolio_url',
+            model_name="designer",
+            name="portfolio_url",
             field=models.URLField(blank=True),
         ),
         migrations.AddField(
-            model_name='designer',
-            name='specialties',
+            model_name="designer",
+            name="specialties",
             field=models.CharField(blank=True, max_length=255),
         ),
         migrations.AlterField(
-            model_name='designer',
-            name='bio',
+            model_name="designer",
+            name="bio",
             field=models.TextField(blank=True),
         ),
         migrations.AlterField(
-            model_name='designer',
-            name='email',
+            model_name="designer",
+            name="email",
             field=models.EmailField(blank=True, max_length=254),
         ),
         migrations.AlterField(
-            model_name='designer',
-            name='name',
+            model_name="designer",
+            name="name",
             field=models.CharField(max_length=120),
         ),
         migrations.DeleteModel(
-            name='Order',
+            name="Order",
         ),
         migrations.AddField(
-            model_name='designorder',
-            name='designer',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='orders', to='graphic_design.designer'),
+            model_name="designorder",
+            name="designer",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="orders",
+                to="graphic_design.designer",
+            ),
         ),
     ]

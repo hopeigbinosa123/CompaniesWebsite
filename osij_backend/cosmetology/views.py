@@ -1,19 +1,26 @@
 # cosmetology/views.py
 from django.shortcuts import render
 from rest_framework import generics, permissions, viewsets, filters
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    IsAuthenticated,
+    AllowAny,
+    IsAuthenticatedOrReadOnly,
+)
 from .models import BeautyService, StylistProfile, AppointmentBooking, Appointment
 from .serializers import (
-    BeautyServiceSerializer, 
+    BeautyServiceSerializer,
     StylistProfileSerializer,
-    StylistDetailsSerializer, 
+    StylistDetailsSerializer,
     AppointmentBookingSerializer,
     AppointmentCreateSerializer,
-    AppointmentSerializer
+    AppointmentSerializer,
 )
 
+
 class StylistViewSet(viewsets.ModelViewSet):
-    queryset = StylistProfile.objects.filter(is_available=True).order_by("user__username")
+    queryset = StylistProfile.objects.filter(is_available=True).order_by(
+        "user__username"
+    )
     serializer_class = StylistProfileSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -42,16 +49,19 @@ class ServicesListView(generics.ListAPIView):
     serializer_class = BeautyServiceSerializer
     permission_classes = [AllowAny]
 
+
 class ServiceDetailsView(generics.RetrieveAPIView):
     queryset = BeautyService.objects.all()
     serializer_class = BeautyServiceSerializer
 
     permission_classes = [AllowAny]
 
+
 class StylistsListView(generics.ListAPIView):
     queryset = StylistProfile.objects.filter(is_available=True)
     serializer_class = StylistProfileSerializer
     permission_classes = [AllowAny]
+
 
 class StylistDetailsView(generics.RetrieveAPIView):
     queryset = StylistProfile.objects.all()
@@ -71,11 +81,11 @@ class AppointmentBookingViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['request'] = self.request
+        context["request"] = self.request
         return context
+
 
 # Admin/Staff Views
 class AllAppointmentsListView(generics.ListAPIView):
@@ -83,8 +93,9 @@ class AllAppointmentsListView(generics.ListAPIView):
     serializer_class = AppointmentBookingSerializer
     permission_classes = [IsAuthenticated]
 
+
 class AppointmentUpdateView(generics.UpdateAPIView):
     queryset = AppointmentBooking.objects.all()
     serializer_class = AppointmentBookingSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'pk'
+    lookup_field = "pk"

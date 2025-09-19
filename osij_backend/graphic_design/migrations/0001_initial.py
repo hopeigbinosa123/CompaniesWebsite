@@ -15,28 +15,74 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Designer',
+            name="Designer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('image', models.ImageField(upload_to='')),
-                ('email', models.EmailField(max_length=254)),
-                ('speciality', models.CharField(choices=[('THUMBNAIL', 'Thumbnail'), ('WEB_DESIGN', 'Web Design'), ('BARNER', 'Barner'), ('LOGO', 'Logo')], max_length=50)),
-                ('bio', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("image", models.ImageField(upload_to="")),
+                ("email", models.EmailField(max_length=254)),
+                (
+                    "speciality",
+                    models.CharField(
+                        choices=[
+                            ("THUMBNAIL", "Thumbnail"),
+                            ("WEB_DESIGN", "Web Design"),
+                            ("BARNER", "Barner"),
+                            ("LOGO", "Logo"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("bio", models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('email', models.EmailField(max_length=254)),
-                ('title', models.CharField(max_length=200)),
-                ('design_type', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('ordered_at', models.DateTimeField(auto_now_add=True)),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('APPROVED', 'Approved'), ('IN_PROGRESS', 'In Progress'), ('REJECTED', 'Rejected'), ('COMPLETED', 'Completed')], default='PENDING', max_length=20)),
-                ('rejection_reason', models.TextField(blank=True, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("email", models.EmailField(max_length=254)),
+                ("title", models.CharField(max_length=200)),
+                ("design_type", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("ordered_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("APPROVED", "Approved"),
+                            ("IN_PROGRESS", "In Progress"),
+                            ("REJECTED", "Rejected"),
+                            ("COMPLETED", "Completed"),
+                        ],
+                        default="PENDING",
+                        max_length=20,
+                    ),
+                ),
+                ("rejection_reason", models.TextField(blank=True, null=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

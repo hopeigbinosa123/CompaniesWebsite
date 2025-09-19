@@ -1,11 +1,18 @@
 from rest_framework import viewsets, permissions, filters
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from .models import Designer, DesignOrder
 from .serializers import DesignerSerializer, DesignOrderSerializer
+
 
 # Permissions
 class IsAuthenticatedOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
     pass
+
 
 # Designer ViewSet (used for /api/designers/)
 class DesignerViewSet(viewsets.ModelViewSet):
@@ -16,9 +23,12 @@ class DesignerViewSet(viewsets.ModelViewSet):
     search_fields = ["name", "speciality"]
     ordering_fields = ["name"]
 
+
 # Design Order ViewSet
 class DesignOrderViewSet(viewsets.ModelViewSet):
-    queryset = DesignOrder.objects.select_related("client", "designer").order_by("-created_at")
+    queryset = DesignOrder.objects.select_related("client", "designer").order_by(
+        "-created_at"
+    )
     serializer_class = DesignOrderSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -41,11 +51,13 @@ class DesignerListView(ListAPIView):
     search_fields = ["name", "speciality"]
     ordering_fields = ["name"]
 
+
 # Public detail view for a single designer
 class DesignerDetailView(RetrieveAPIView):
     queryset = Designer.objects.filter(is_active=True)
     serializer_class = DesignerSerializer
     permission_classes = [permissions.AllowAny]
+
 
 # Create a new design order
 class OrderCreateView(CreateAPIView):
@@ -56,13 +68,17 @@ class OrderCreateView(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(client=self.request.user)
 
+
 # List orders made by the authenticated user
 class UserOrderListView(ListAPIView):
     serializer_class = DesignOrderSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return DesignOrder.objects.filter(client=self.request.user).order_by("-created_at")
+        return DesignOrder.objects.filter(client=self.request.user).order_by(
+            "-created_at"
+        )
+
 
 # Retrieve details of a specific order
 class OrderDetailView(RetrieveAPIView):
@@ -70,9 +86,9 @@ class OrderDetailView(RetrieveAPIView):
     serializer_class = DesignOrderSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 # Admin-only view to update an order
 class OrderUpdateView(UpdateAPIView):
     queryset = DesignOrder.objects.all()
     serializer_class = DesignOrderSerializer
     permission_classes = [permissions.IsAdminUser]
-
