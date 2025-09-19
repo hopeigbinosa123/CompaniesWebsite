@@ -39,11 +39,11 @@ graph TD
         A[Browser]
     end
 
-    subgraph Frontend (React)
+    subgraph "Frontend (React)"
         B[React App on Vercel/Netlify]
     end
 
-    subgraph Backend (Django)
+    subgraph "Backend (Django)"
         C[Django REST API on Heroku]
         D[Database (PostgreSQL/MySQL/SQLite)]
         E[PayPal API]
