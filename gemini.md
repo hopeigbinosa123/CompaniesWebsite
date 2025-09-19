@@ -23,7 +23,7 @@ A key feature is the **automatic email notification system**, which sends welcom
 
 | Area      | Technology                                                              |
 | :-------- | :---------------------------------------------------------------------- |
-| **Backend** | Python, Django, Django REST Framework, Django Simple JWT                |
+| **Backend** | Python, Django, Django REST Framework, Django Simple JWT, drf-spectacular                |
 | **Frontend**  | React, React Router, Axios, Tailwind CSS                                |
 | **Database**  | SQLite 3 (for development), MySQL (optional)                            |
 | **Payments**  | PayPal REST SDK, @paypal/react-paypal-js                                |
@@ -243,25 +243,38 @@ The React frontend at `http://localhost:3000` sends API requests to the Django b
 This section provides an overview of the main database models for each service.
 
 ### Education
-*   **Course:** Represents a course with a title, description, price, and instructor.
-*   **Lesson:** A single lesson within a course (e.g., video, text, or quiz).
+*   **Course:** Represents a course with a title, description, price, duration, instructor, and thumbnail.
+*   **Lesson:** A single lesson within a course. Can be a video, text, or a live session.
+*   **LiveSession:** Represents a live Zoom session with a start and end time.
 *   **Enrollment:** Links a `User` to a `Course`, tracking their progress.
+*   **LessonProgress:** Tracks a user's completion status for a specific lesson.
 *   **Certificate:** Issued to a `User` upon completion of a `Course`.
 
 ### Cosmetology
+*   **StylistProfile:** Represents a stylist with their bio, specialization, and experience.
 *   **BeautyService:** A service offered, like a haircut or manicure, with a price and duration.
-*   **StylistProfile:** Represents a stylist, their specialization, and availability.
-*   **AppointmentBooking:** A record of a `User` booking a `BeautyService` with a `StylistProfile` at a specific time.
+*   **Appointment:** Represents a booking made by a client for a specific service with a stylist.
+*   **AppointmentBooking:** A record of a `User` booking a `BeautyService` with a `StylistProfile` at a specific time. It seems to overlap with `Appointment`.
 
 ### Graphic Design
 *   **Designer:** Represents a graphic designer with their name, specialty, and portfolio.
+*   **Portfolio:** Represents a portfolio item for a designer.
 *   **DesignService:** A type of design service offered (e.g., Logo Design).
 *   **DesignOrder:** A user's request for a specific design, including a brief, budget, and status.
 
 ### Software Services
 *   **SoftwareService:** A type of software development service offered (e.g., Web Development).
 *   **ServiceRequest:** A formal request from a user for a `SoftwareService`, including project details and budget.
+*   **ProjectUpdate:** An update on a `ServiceRequest`.
 *   **SoftwareEnquiry:** A more general-purpose inquiry from a user about a software problem.
+*   **SupportResponse:** A response to a `SoftwareEnquiry`.
+
+### Payments
+*   **Payment:** Records a payment transaction, including the amount, currency, PayPal order ID, and status.
+
+### Notifications
+*   **EmailNotification:** A record of an email sent from the system.
+*   **ContactMessage:** A message submitted through the contact form.
 
 ---
 
@@ -275,21 +288,68 @@ Below is a summary of the key API endpoints. The base URL for all endpoints is `
 | `POST` | `/register/`     | Creates a new user account.   |
 | `POST` | `/login/`        | Obtains JWT access/refresh tokens. |
 | `POST` | `/logout/`       | Blacklists a refresh token.   |
+| `GET`  | `/profile/`      | Gets the current user's profile. |
+| `PUT`  | `/profile/`      | Updates the current user's profile. |
+| `GET`  | `/dashboard/`    | Gets a summary of the user's activity. |
+| `GET`  | `/csrf/`         | Gets a CSRF token.            |
 
 ### Education (`/education/...`)
 | Method | Endpoint             | Description                               |
 | :----- | :------------------- | :---------------------------------------- |
-| `GET`  | `/courses/`          | Lists all available courses.              |
+| `GET`, `POST`  | `/courses/`          | Lists all available courses or creates a new one.              |
 | `GET`  | `/courses/<id>/`     | Retrieves details for a single course.    |
+| `GET`  | `/courses/<id>/lessons/` | Lists all lessons for a specific course. |
 | `POST` | `/enroll/`           | Enrolls the current user in a course.     |
 | `GET`  | `/my-enrollments/`   | Lists all courses the user is enrolled in.|
+| `POST` | `/lessons/<id>/complete/` | Marks a lesson as complete for the current user. |
+| `GET`  | `/live-sessions/upcoming/` | Lists upcoming live sessions. |
 
 ### Cosmetology (`/cosmetology/...`)
 | Method | Endpoint         | Description                         |
 | :----- | :--------------- | :---------------------------------- |
 | `GET`  | `/services/`     | Lists all available beauty services.|
-| `GET`  | `/stylists/`     | Lists all available stylists.      |
-| `POST` | `/bookings/`     | Creates a new appointment booking.  |
+| `GET`, `POST` | `/stylists/`     | Lists all available stylists or creates a new one.      |
+| `GET`, `POST` | `/bookings/`     | Creates a new appointment booking or lists existing ones.  |
+| `GET`, `PUT`, `DELETE` | `/appointments/<id>/` | Manages a specific appointment. |
+
+### Graphic Design (`/graphic-design/...`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET`, `POST` | `/designers/` | List all designers or create a new one. |
+| `GET`, `PUT`, `DELETE` | `/designers/<id>/` | Manage a specific designer. |
+| `GET`, `POST` | `/design-orders/` | List all design orders or create a new one. |
+| `GET`, `PUT`, `DELETE` | `/design-orders/<id>/` | Manage a specific design order. |
+| `GET` | `/public/designers/` | Get a public list of designers. |
+| `GET` | `/public/designers/<id>/` | Get public details for a specific designer. |
+| `POST` | `/orders/create/` | Create a new design order. |
+| `GET` | `/orders/my/` | Get a list of the current user's orders. |
+| `GET` | `/orders/<id>/` | Get details for a specific order. |
+| `PUT` | `/orders/<id>/update/` | Update a specific order (admin only). |
+
+### Software Services (`/software-services/...`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/services/` | List all available software services. |
+| `POST` | `/requests/create/` | Create a new service request. |
+| `GET` | `/requests/me/` | Get a list of the current user's service requests. |
+| `GET` | `/requests/<id>/` | Get details for a specific service request. |
+| `PUT` | `/admin/requests/<id>/update/` | Update a service request (admin only). |
+| `POST` | `/admin/requests/<id>/updates/create/` | Add an update to a service request (admin only). |
+| `GET` | `/admin/requests/<id>/updates/` | Get all updates for a service request (admin only). |
+
+### Payments (`/payments/...`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/create-order/` | Creates a new PayPal order. |
+| `POST` | `/capture-order/<order_id>/` | Captures a PayPal order. |
+
+### Notifications (`/notifications/...`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/contact/submit/` | Submits a contact form message. |
+| `GET` | `/contact/messages/` | Gets all contact messages (admin only). |
+| `PATCH` | `/contact/messages/<id>/mark-read/` | Marks a message as read (admin only). |
+| `POST` | `/software-service/submit/` | Submits a software service request. |
 
 ---
 
@@ -298,7 +358,7 @@ Below is a summary of the key API endpoints. The base URL for all endpoints is `
 ### 8.1. User Authentication
 
 *   **Registration:** Navigate to the "Register" page on the frontend. Fill out the form to create a new account. Upon successful registration, a welcome email will be printed to the backend console (as `EMAIL_BACKEND` is set to `console.EmailBackend`).
-*   **Login:** Navigate to the "Login" page. Use the credentials of the user you just created or the superuser account. Upon login, a JSON Web Token (JWT) is saved in your browser's `localStorage`, authenticating you for future API requests.
+*   **Login:** Navigate to the "Login" page. Use the credentials of the user you just created or the superuser account. Upon login, a JSON Web Token (JWT) is stored in an `HttpOnly` cookie, and an access token is sent to the frontend to authenticate future API requests.
 
 ### 8.2. Service Management (Admin Guide)
 
