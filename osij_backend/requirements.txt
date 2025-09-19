@@ -10,3 +10,4 @@ django-environ>=0.10.0
 black
 flake8
 drf-spectacular
+colorama==0.4.6
