@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { fetchCourses } from '../api/education';
+import api from '../api/axiosConfig';
 import CourseCard from '../components/Education/CourseCard';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
-import ErrorMessage from '../components/shared/ErrorMessage'; // Create this component
+import ErrorMessage from '../components/shared/ErrorMessage';
 
 const EducationPage = () => {
   const [courses, setCourses] = useState([]);
@@ -12,7 +12,7 @@ const EducationPage = () => {
   useEffect(() => {
     const getCourses = async () => {
       try {
-        const response = await fetchCourses();
+        const response = await api.get('/education/courses/');
         setCourses(response.data);
       } catch (error) {
         setError('Failed to load courses. Please try again later.');

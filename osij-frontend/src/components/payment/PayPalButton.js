@@ -5,7 +5,7 @@ import axios from 'axios';
 const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
   const [error, setError] = useState(null);
   const [succeeded, setSucceeded] = useState(false);
-  const [orderID, setOrderID] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
@@ -52,7 +52,6 @@ const PayPalButton = ({ amount, currency, onSuccess, onError }) => {
         amount: amount,
         currency: currency ?? 'USD'
       });
-      setOrderID(response.data.id);
       return response.data.id;
     } catch (err) {
       setError('Something went wrong. Was unable to create order');
