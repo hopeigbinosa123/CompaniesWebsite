@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -23,7 +22,7 @@ import RequestServicePage from './pages/RequestServicePage';
 import GraphicDesignPage from './pages/GraphicDesignPage.jsx';
 import GraphicDesignOrderForm from './pages/GraphicDesignOrderForm.jsx';
 import CosmetologyPage from './pages/CosmetologyPage.jsx';
-import BookingForm from './components/Cosmetology/BookingForm.jsx';
+import BookingForm from './pages/Cosmetology/BookingForm.jsx';
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -83,13 +82,17 @@ function AppContent() {
             <Route path="/register" element={<RegisterPage />} />
 
             {/* Graphic Design */}
-            <Route path="/graphic-design" element={<GraphicDesignPage />} /> {/* ✅ Added route */}
+            <Route path="/graphic-design" element={<GraphicDesignPage />} />
             <Route path="/graphic-design/order/:id" element={<GraphicDesignOrderForm />} />
+
 
             {/* Cosmetology */}
             <Route path="/cosmetology" element={<CosmetologyPage />} />
             <Route path="/cosmetology/book" element={<BookingForm />} />
+            <Route path="/cosmetology/book/:id" element={<BookingForm />} />
 
+
+          
             {/* Education */}
             <Route path="/education" element={<EducationPage />} />
             <Route path="/education/courses/:id" element={<CourseDetailPage />} />
@@ -161,3 +164,4 @@ function App() {
 }
 
 export default App;
+

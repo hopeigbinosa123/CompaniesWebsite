@@ -32,7 +32,13 @@ cosmetologyAPI.interceptors.response.use(
   }
 );
 
-// ✅ Named export for endpoints
+//  Individual named export for createAppointment
+export const createAppointment = async (data) => {
+  const { data: response } = await cosmetologyAPI.post('appointments/', data);
+  return response;
+};
+
+//  Named export for endpoints
 export const cosmetologyAPIEndpoints = {
   getServices: async () => {
     const { data } = await cosmetologyAPI.get('services/');
@@ -50,13 +56,9 @@ export const cosmetologyAPIEndpoints = {
     const { data } = await cosmetologyAPI.get(`stylists/${id}/`);
     return data;
   },
-  createAppointment: async (data) => {
-    const { data: response } = await cosmetologyAPI.post('appointments/', data);
-    return response;
-  },
 };
 
-// ✅ Named export for form helpers
+//  Named export for form helpers
 export const cosmetologyFormHelpers = {
   validateBookingForm: (formData) => {
     const errors = {};
@@ -67,6 +69,5 @@ export const cosmetologyFormHelpers = {
   }
 };
 
-// ✅ Default export (optional, if used elsewhere)
+// Default export (optional)
 export default cosmetologyAPIEndpoints;
-

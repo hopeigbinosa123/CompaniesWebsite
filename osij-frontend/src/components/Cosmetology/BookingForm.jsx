@@ -3,6 +3,7 @@ import api from '../../api/axiosConfig';
 import LoadingSpinner from '../shared/LoadingSpinner';
 import ErrorMessage from '../shared/ErrorMessage';
 import { useNavigate } from 'react-router-dom';
+import { createAppointment } from '../../api/cosmetology';
 
 export default function BookingForm() {
   const navigate = useNavigate();
