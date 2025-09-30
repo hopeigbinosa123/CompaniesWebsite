@@ -14,6 +14,11 @@ class SoftwareServiceListView(generics.ListAPIView):
     serializer_class = SoftwareServiceSerializer
     permission_classes = [permissions.AllowAny]
 
+class SoftwareServiceDetailView(generics.RetrieveAPIView):
+    queryset = SoftwareService.objects.filter(is_active=True)
+    serializer_class = SoftwareServiceSerializer
+    permission_classes = [permissions.AllowAny]
+
 
 class ServiceRequestCreateView(generics.CreateAPIView):
     queryset = ServiceRequest.objects.all()

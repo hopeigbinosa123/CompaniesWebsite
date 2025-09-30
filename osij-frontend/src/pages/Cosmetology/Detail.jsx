@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getStylist } from "../../api/cosmetology";
+import { cosmetologyAPIEndpoints } from "../../api/cosmetology";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function CosmetologyDetail() {
@@ -8,8 +8,8 @@ export default function CosmetologyDetail() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getStylist(id)
-      .then(res => setStylist(res.data))
+    cosmetologyAPIEndpoints.getStylist(id)
+      .then(data => setStylist(data))
       .catch(err => console.error("Error fetching stylist:", err));
   }, [id]);
 

@@ -17,6 +17,44 @@ from .serializers import (
 )
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from datetime import datetime, timedelta
+
+# ... (existing imports)
+
+class AppointmentAvailabilityCheckView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        stylist_id = request.data.get('stylist')
+        start_time_str = request.data.get('start_time')
+        duration_minutes = request.data.get('duration_minutes')
+
+        if not all([stylist_id, start_time_str, duration_minutes]):
+            return Response({'detail': 'Missing required fields.'}, status=400)
+
+        try:
+            stylist = StylistProfile.objects.get(id=stylist_id)
+            start_time = datetime.fromisoformat(start_time_str.replace('Z', '+00:00'))
+            duration = timedelta(minutes=int(duration_minutes))
+            end_time = start_time + duration
+        except (StylistProfile.DoesNotExist, ValueError) as e:
+            return Response({'detail': str(e)}, status=400)
+
+        # Check for overlapping appointments
+        overlapping_appointments = Appointment.objects.filter(
+            stylist=stylist,
+            start_time__lt=end_time,
+            end_time__gt=start_time,
+        ).exists()
+
+        if overlapping_appointments:
+            return Response({'available': False, 'detail': 'This time slot is already booked.'}, status=200)
+        else:
+            return Response({'available': True, 'detail': 'This time slot is available.'}, status=200)
+
+
 class StylistViewSet(viewsets.ModelViewSet):
     queryset = StylistProfile.objects.filter(is_available=True).order_by(
         "user__username"

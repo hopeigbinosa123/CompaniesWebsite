@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../../api/axiosConfig';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import ErrorMessage from '../../components/shared/ErrorMessage';
-
+import GraphicDesignOrderForm from './OrderForm';
 const DesignerCard = ({ designer }) => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
     <Link to={`/graphic-design/designers/${designer.id}`}>
@@ -59,6 +59,13 @@ const DesignerListPage = () => {
         ) : (
           <p className="text-center text-gray-500">No designers are available at the moment.</p>
         )}
+        <div className="mt-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-800">Place a General Order</h2>
+            <p className="text-lg text-gray-600 mt-2">Don't have a specific designer in mind? Fill out the form below.</p>
+          </div>
+          <GraphicDesignOrderForm />
+        </div>
       </div>
     </div>
   );

@@ -93,7 +93,7 @@ const SoftwareServicesForm = () => {
           required 
         />
         <input 
-          type="text" 
+          type="number" 
           name="budget"
           value={formData.budget}
           onChange={handleInputChange}

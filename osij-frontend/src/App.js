@@ -19,12 +19,15 @@ import RegisterPage from './pages/RegisterPage';
 // Public Module Pages
 import EducationPage from './pages/EducationPage';
 import SoftwareServicesPage from './pages/SoftwareServicesPage';
+import SoftwareServiceDetailPage from './pages/SoftwareServiceDetailPage';
 import RequestServicePage from './pages/RequestServicePage';
 import DesignerListPage from './pages/GraphicDesign/List.jsx';
 import DesignerDetailPage from './pages/GraphicDesign/Detail.jsx';
 import GraphicDesignOrderForm from './pages/GraphicDesign/OrderForm.jsx';
+import CosmetologyStylistDetail from './pages/Cosmetology/Detail.jsx';
+import CosmetologyBookingForm from './pages/Cosmetology/BookingForm.jsx';
+import CosmetologyServiceDetail from './pages/Cosmetology/ServiceDetail.jsx';
 import CosmetologyPage from './pages/CosmetologyPage.jsx';
-import BookingForm from './components/Cosmetology/BookingForm.jsx';
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -90,7 +93,9 @@ function AppContent() {
 
             {/* Cosmetology */}
             <Route path="/cosmetology" element={<CosmetologyPage />} />
-            <Route path="/cosmetology/book" element={<BookingForm />} />
+            <Route path="/cosmetology/stylists/:id" element={<CosmetologyStylistDetail />} />
+            <Route path="/cosmetology/services/:id" element={<CosmetologyServiceDetail />} />
+            <Route path="/cosmetology/stylists/:id/book" element={<CosmetologyBookingForm />} />
 
             {/* Education */}
             <Route path="/education" element={<EducationPage />} />
@@ -99,6 +104,7 @@ function AppContent() {
 
             {/* Software Services */}
             <Route path="/software-services" element={<SoftwareServicesPage />} />
+            <Route path="/software-services/:id" element={<SoftwareServiceDetailPage />} />
             <Route path="/software-services/request" element={<RequestServicePage />} />
 
             {/* Protected Dashboard Routes */}

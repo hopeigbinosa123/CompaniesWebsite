@@ -7,7 +7,7 @@ function EnrolledCoursesList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/my-enrollments/')
+    api.get('/education/my-enrollments/')
       .then(res => {
         setCourses(res.data);
         setLoading(false);

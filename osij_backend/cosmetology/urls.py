@@ -4,7 +4,8 @@ from .views import (
     StylistViewSet,
     AppointmentViewSet,
     AppointmentBookingViewSet,
-    ServicesListView,  #  Add this
+    ServicesListView,
+    AppointmentAvailabilityCheckView,
 )
 
 router = DefaultRouter()
@@ -13,5 +14,6 @@ router.register(r"appointments", AppointmentViewSet, basename="appointment")
 router.register(r"bookings", AppointmentBookingViewSet, basename="booking")
 
 urlpatterns = router.urls + [
-    path("services/", ServicesListView.as_view(), name="services-list"),  # Add this
+    path("services/", ServicesListView.as_view(), name="services-list"),
+    path("check-availability/", AppointmentAvailabilityCheckView.as_view(), name="check-appointment-availability"),
 ]

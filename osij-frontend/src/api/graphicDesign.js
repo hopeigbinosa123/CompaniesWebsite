@@ -38,7 +38,7 @@ export const graphicDesignAPI = {
   // Get current user's orders
   getUserOrders: async () => {
     try {
-      const response = await api.get('/design-orders/me/');
+      const response = await api.get('/graphic-design/orders/my/');
       return response.data;
     } catch (error) {
       console.error('Error fetching user orders:', error);

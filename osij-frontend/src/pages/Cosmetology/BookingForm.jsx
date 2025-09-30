@@ -1,21 +1,62 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { createAppointment } from "../../api/cosmetology";
+import { cosmetologyAPIEndpoints } from "../../api/cosmetology";
 import ServiceForm from "../../components/ServiceForm";
 
 export default function CosmetologyBookingForm() {
-  const { id } = useParams();
+  const { id: stylistIdFromUrl } = useParams();
+  const [stylists, setStylists] = useState([]);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-
-  // Defensive check for stylist ID
-  const stylistId = id ?? null;
+  const [selectedStylist, setSelectedStylist] = useState(stylistIdFromUrl || '');
+  const [availability, setAvailability] = useState({ available: true, message: '' });
+  const [formData, setFormData] = useState({
+    service: '',
+    notes: '',
+    start_time: '',
+    duration_minutes: '',
+  });
 
   useEffect(() => {
-    if (!stylistId) {
-      setError("Stylist ID is missing from the URL.");
+    const fetchStylists = async () => {
+      try {
+        const data = await cosmetologyAPIEndpoints.getStylists();
+        setStylists(data);
+      } catch (err) {
+        console.error("Error fetching stylists:", err);
+      }
+    };
+
+    if (!stylistIdFromUrl) {
+      fetchStylists();
     }
-  }, [stylistId]);
+  }, [stylistIdFromUrl]);
+
+  useEffect(() => {
+    const checkAvailability = async () => {
+      const stylistId = stylistIdFromUrl || selectedStylist;
+      const { start_time, duration_minutes } = formData;
+
+      if (stylistId && start_time && duration_minutes) {
+        try {
+          const response = await cosmetologyAPIEndpoints.checkAppointmentAvailability(
+            stylistId,
+            start_time,
+            duration_minutes
+          );
+          setAvailability(response);
+        } catch (err) {
+          console.error("Error checking availability:", err);
+          setAvailability({ available: false, message: 'Error checking availability.' });
+        }
+      } else {
+        setAvailability({ available: true, message: '' });
+      }
+    };
+
+    checkAvailability();
+  }, [selectedStylist, formData.start_time, formData.duration_minutes, stylistIdFromUrl, formData]);
 
   const fields = [
     {
@@ -46,9 +87,12 @@ export default function CosmetologyBookingForm() {
 
   const handleSubmit = async (data) => {
     try {
-      if (!stylistId) throw new Error("Stylist ID is missing from URL");
+      const stylistId = stylistIdFromUrl || selectedStylist;
+      if (!stylistId) throw new Error("Please select a stylist.");
+      if (!availability.available) throw new Error(availability.message || "Selected slot is unavailable.");
+
       const payload = { ...data, stylist: stylistId };
-      await createAppointment(payload);
+      await cosmetologyAPIEndpoints.createAppointment(payload);
       setSuccess(true);
       setError(null);
     } catch (err) {
@@ -56,6 +100,10 @@ export default function CosmetologyBookingForm() {
       setError(err.message || "Booking failed. Please try again.");
       setSuccess(false);
     }
+  };
+
+  const handleFormChange = (newFormData) => {
+    setFormData(newFormData);
   };
 
   return (
@@ -73,13 +121,39 @@ export default function CosmetologyBookingForm() {
         </div>
       )}
 
-      {!error && (
-        <ServiceForm
-          fields={fields}
-          onSubmit={handleSubmit}
-          submitLabel="Book Now"
-        />
+      {!stylistIdFromUrl && (
+        <div className="mb-4">
+          <label htmlFor="stylist" className="block text-sm font-medium text-gray-700">Select a Stylist</label>
+          <select
+            name="stylist"
+            id="stylist"
+            value={selectedStylist}
+            onChange={(e) => setSelectedStylist(e.target.value)}
+            required
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+          >
+            <option value="">-- Choose a Stylist --</option>
+            {stylists.map(s => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
+        </div>
       )}
+
+      {availability.message && (
+        <div className={`mb-4 font-semibold ${availability.available ? 'text-green-600' : 'text-red-600'}`}>
+          {availability.message}
+        </div>
+      )}
+
+      <ServiceForm
+        fields={fields}
+        onSubmit={handleSubmit}
+        submitLabel="Book Now"
+        initialState={formData}
+        onFormChange={handleFormChange}
+        submitDisabled={!availability.available}
+      />
     </div>
   );
 }

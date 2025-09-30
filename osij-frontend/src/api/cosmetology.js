@@ -38,6 +38,10 @@ export const cosmetologyAPIEndpoints = {
     const { data } = await cosmetologyAPI.get('services/');
     return data;
   },
+  getService: async (id) => {
+    const { data } = await cosmetologyAPI.get(`services/${id}/`);
+    return data;
+  },
   createBooking: async (bookingData) => {
     const { data } = await cosmetologyAPI.post('bookings/', bookingData);
     return data;
@@ -53,6 +57,14 @@ export const cosmetologyAPIEndpoints = {
   createAppointment: async (data) => {
     const { data: response } = await cosmetologyAPI.post('appointments/', data);
     return response;
+  },
+  checkAppointmentAvailability: async (stylist, start_time, duration_minutes) => {
+    const { data } = await cosmetologyAPI.post('check-availability/', {
+      stylist,
+      start_time,
+      duration_minutes,
+    });
+    return data;
   },
 };
 
