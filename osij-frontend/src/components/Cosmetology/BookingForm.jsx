@@ -65,7 +65,7 @@ export default function BookingForm() {
       await api.post('/cosmetology/bookings/create/', formData);
       setSubmitSuccess(true);
       // Optionally, navigate to a success page or user's bookings page
-      navigate('/bookings/me'); // Assuming this route exists for user's bookings
+      navigate('/dashboard/'); // Assuming this route exists for user's bookings
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to book appointment.');
       console.error('Appointment booking error:', err);

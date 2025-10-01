@@ -1,6 +1,10 @@
 # cosmetology/views.py
 from django.shortcuts import render
 from rest_framework import generics, permissions, viewsets, filters
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from datetime import datetime, timedelta
 from rest_framework.permissions import (
     IsAuthenticated,
     AllowAny,
@@ -15,11 +19,9 @@ from .serializers import (
     AppointmentCreateSerializer,
     AppointmentSerializer,
 )
+import logging
 
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from datetime import datetime, timedelta
+logger = logging.getLogger(__name__)
 
 # ... (existing imports)
 
@@ -40,6 +42,7 @@ class AppointmentAvailabilityCheckView(APIView):
             duration = timedelta(minutes=int(duration_minutes))
             end_time = start_time + duration
         except (StylistProfile.DoesNotExist, ValueError) as e:
+            logger.error(f"Error checking appointment availability: {str(e)}")
             return Response({'detail': str(e)}, status=400)
 
         # Check for overlapping appointments
@@ -83,7 +86,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
 
 class ServicesListView(generics.ListAPIView):
-    queryset = BeautyService.objects.filter(is_available=True)
+    queryset = BeautyService.objects.all()
     serializer_class = BeautyServiceSerializer
     permission_classes = [AllowAny]
 
@@ -137,3 +140,5 @@ class AppointmentUpdateView(generics.UpdateAPIView):
     serializer_class = AppointmentBookingSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "pk"
+
+    

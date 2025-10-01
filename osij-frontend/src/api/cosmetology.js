@@ -11,7 +11,7 @@ const cosmetologyAPI = axios.create({
 
 cosmetologyAPI.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,15 +24,15 @@ cosmetologyAPI.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
 
-// ✅ Named export for endpoints
+
 export const cosmetologyAPIEndpoints = {
   getServices: async () => {
     const { data } = await cosmetologyAPI.get('services/');
@@ -68,7 +68,7 @@ export const cosmetologyAPIEndpoints = {
   },
 };
 
-// ✅ Named export for form helpers
+
 export const cosmetologyFormHelpers = {
   validateBookingForm: (formData) => {
     const errors = {};
@@ -76,9 +76,26 @@ export const cosmetologyFormHelpers = {
     if (!formData.stylist?.trim()) errors.stylist = 'Stylist is required';
     if (!formData.appointment_date?.trim()) errors.appointment_date = 'Date and time are required';
     return errors;
+  },
+  validateAppointmentForm: (formData) => {
+    const errors = {};
+    if (!formData.service?.trim()) errors.service = 'Service is required';
+    if (!formData.stylist?.trim()) errors.stylist = 'Stylist is required';
+    if (!formData.appointment_date?.trim()) errors.appointment_date = 'Date and time are required';
+    return errors;
+  },
+  formatDuration: (minutes) => {
+    if (minutes < 60) {
+      return `${minutes} min`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    if (remainingMinutes === 0) {
+      return `${hours} hr${hours > 1 ? 's' : ''}`;
+    }
+    return `${hours} hr${hours > 1 ? 's' : ''} ${remainingMinutes} min`;
   }
 };
 
-// ✅ Default export (optional, if used elsewhere)
-export default cosmetologyAPIEndpoints;
 
+export default cosmetologyAPIEndpoints;

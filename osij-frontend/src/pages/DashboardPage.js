@@ -87,6 +87,7 @@ const DashboardPage = () => {
             renderItem={(item) => (
               <li key={item.id} className="p-2 bg-gray-50 rounded-md">{item.service_name} on {formatDate(item.appointment_date)}</li>
             )}
+             viewAllLink="/dashboard/design-orders"
           />
 
           {/* Design Orders */}
