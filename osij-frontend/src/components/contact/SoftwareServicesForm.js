@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { submitServiceRequest, getSoftwareServices } from '../../api/SoftwareServices';
-
+import { useNavigate } from 'react-router-dom';
 const SoftwareServicesForm = () => {
   
   const [services, setServices] = useState([]);
@@ -14,6 +14,18 @@ const SoftwareServicesForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const navigate= useNavigate();
+
+  // Navigate to software projects page
+  useEffect(() => {
+    if (success) {
+    const timer= setTimeout(() => { navigate('/dashboard/software-projects');}, 2000);
+
+    return () => clearTimeout(timer);
+    
+     
+    }
+  }, [success, navigate]);
 
   useEffect(() => {
     const fetchServices = async () => {

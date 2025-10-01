@@ -10,6 +10,8 @@ const GraphicDesignOrderForm = () => {
   const { isAuthenticated } = useAuth();
 
   const [designers, setDesigners] = useState([]);
+  const [loadingDesigners, setLoadingDesigners] = useState(false);
+  
   const [formData, setFormData] = useState({
     title: '',
     brief: '',
@@ -21,19 +23,25 @@ const GraphicDesignOrderForm = () => {
 
   useEffect(() => {
     const fetchDesigners = async () => {
+      setLoadingDesigners(true);
       try {
         const response = await api.get('/graphic-design/public/designers/');
-        setDesigners(response.data.results || response.data);
+        console.log('Designers API response:', response.data);
+        const designersList = response.data.results || response.data;
+        console.log('Designers list:', designersList);
+        setDesigners(designersList);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching designers:', err);
+        setStatus(prev => ({ ...prev, error: 'Failed to load designers. Please refresh the page.' }));
+      } finally {
+        setLoadingDesigners(false);
       }
     };
 
     if (!designerIdFromUrl) {
       fetchDesigners();
     }
-  }, [designerIdFromUrl]);
-
+  }, [designerIdFromUrl]); 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));

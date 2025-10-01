@@ -105,7 +105,9 @@ function AppContent() {
             {/* Software Services */}
             <Route path="/software-services" element={<SoftwareServicesPage />} />
             <Route path="/software-services/:id" element={<SoftwareServiceDetailPage />} />
-            <Route path="/software-services/request" element={<RequestServicePage />} />
+              
+              {/* Protected  */}
+            <Route path="/software-services/request" element={  <ProtectedRoute><RequestServicePage /></ProtectedRoute>} />
 
             {/* Protected Dashboard Routes */}
             <Route

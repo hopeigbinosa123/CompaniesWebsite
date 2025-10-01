@@ -49,7 +49,7 @@ export const graphicDesignAPI = {
   // Get specific order details
   getOrderDetails: async (orderId) => {
     try {
-      const response = await api.get(`/design-orders/${orderId}/`);
+      const response = await api.get(`/graphic-design/orders/${orderId}/`);
       return response.data;
     } catch (error) {
       console.error('Error fetching order details:', error);

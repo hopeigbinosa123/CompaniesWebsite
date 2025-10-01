@@ -4,8 +4,9 @@ import { graphicDesignAPI, orderHelpers } from '../api/graphicDesign';
 const GraphicDesignOrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
+  const [error, setError] = useState('')
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     fetchUserOrders();
   }, []);
@@ -35,6 +36,21 @@ const GraphicDesignOrdersPage = () => {
       day: 'numeric'
     });
   };
+
+  const viewDetailsHandler= (orderId) =>{
+    const order = orders.find(o => o.id === orderId);
+    setSelectedOrder(order);
+    setShowModal(true);
+
+  };
+
+  const handleCloseModal = () =>{
+    setSelectedOrder(null);
+    setShowModal(false);
+
+  };
+
+
 
   if (loading) {
     return (
@@ -142,7 +158,7 @@ const GraphicDesignOrdersPage = () => {
                     Last updated: {formatDate(order.updated_at || order.ordered_at)}
                   </p>
                   <button
-                    onClick={() => graphicDesignAPI.getOrderDetails(order.id)}
+                   onClick={() => viewDetailsHandler(order.id)}
                     className="text-purple-600 hover:text-purple-700 text-sm font-medium"
                   >
                     View Details
@@ -152,6 +168,75 @@ const GraphicDesignOrdersPage = () => {
             ))}
           </div>
         )}
+             
+        {/* Modal for viewing order details */}
+        {showModal && selectedOrder && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleCloseModal}>
+            <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-2xl font-bold text-gray-900">Order Details</h2>
+                <button onClick={handleCloseModal} className="text-gray-400 hover:text-gray-600">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold">{selectedOrder.title}</h3>
+                  <p className="text-sm text-gray-600">Order #{selectedOrder.id}</p>
+                </div>
+                
+            
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">Status</p>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${orderHelpers.getStatusColor(selectedOrder.status)}`}>
+                      {orderHelpers.formatStatus(selectedOrder.status)}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">Design Type</p>
+                    <p className="text-sm text-gray-900">{selectedOrder.design_type}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">Ordered</p>
+                    <p className="text-sm text-gray-900">{formatDate(selectedOrder.ordered_at)}</p>
+                  </div>
+                  {selectedOrder.budget && (
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">Budget</p>
+                      <p className="text-sm text-gray-900">${selectedOrder.budget}</p>
+                    </div>
+                  )}
+                </div>
+                
+              
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Description</p>
+                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">{selectedOrder.brief || selectedOrder.description}</p>
+                </div>
+
+                {selectedOrder.rejection_reason && (
+                  <div>
+                    <p className="text-sm font-medium text-red-700">Rejection Reason</p>
+                    <p className="text-sm text-red-600 bg-red-50 p-3 rounded">{selectedOrder.rejection_reason}</p>
+                  </div>
+                )}
+
+                <div className="flex justify-end pt-4">
+                  <button 
+                    onClick={handleCloseModal}
+                    className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )} 
       </div>
     </div>
   );
