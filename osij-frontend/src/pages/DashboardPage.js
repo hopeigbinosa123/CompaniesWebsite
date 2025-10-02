@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../api/axiosConfig';
 import StudentDashboard from '../Graphics design/StudentDashboard'; // Corrected import path
-import { FaBook, FaChalkboardTeacher, FaShoppingCart, FaCalendarAlt, FaExclamationCircle } from 'react-icons/fa';
+
 
 const DashboardPage = () => {
     const [dashboardData, setDashboardData] = useState(null);
@@ -13,7 +13,7 @@ const DashboardPage = () => {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const response = await apiClient.get('/api/dashboard/');
+                const response = await apiClient.get('/auth/dashboard/');
                 setDashboardData(response.data);
             } catch (err) {
                 setError('Failed to load dashboard data. Please try again later.');
@@ -37,7 +37,7 @@ const DashboardPage = () => {
     if (error) {
         return (
             <div className="flex flex-col items-center justify-center h-screen text-red-500">
-                <FaExclamationCircle className="text-4xl mb-4" />
+                
                 <p className="text-xl">{error}</p>
             </div>
         );
@@ -45,10 +45,10 @@ const DashboardPage = () => {
 
     const { enrolled_courses, upcoming_live_sessions, recent_orders, booked_appointments } = dashboardData;
 
-    const DashboardCard = ({ title, icon, children }) => (
+    const DashboardCard = ({ title, children }) => (
         <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
             <div className="flex items-center mb-4">
-                <div className="text-2xl text-blue-500 mr-4">{icon}</div>
+                
                 <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             </div>
             <div>{children}</div>
@@ -72,7 +72,7 @@ const DashboardPage = () => {
                 <h1 className="text-4xl font-extrabold text-gray-900 mb-8">Your Dashboard</h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <DashboardCard title="Enrolled Courses" icon={<FaBook />}>
+                    <DashboardCard title="Enrolled Courses" >
                         {enrolled_courses && enrolled_courses.length > 0 ? (
                             <ul className="space-y-4">
                                 {enrolled_courses.map(course => (
@@ -87,7 +87,7 @@ const DashboardPage = () => {
                         )}
                     </DashboardCard>
 
-                    <DashboardCard title="Upcoming Live Sessions" icon={<FaChalkboardTeacher />}>
+                    <DashboardCard title="Upcoming Live Sessions" >
                         {upcoming_live_sessions && upcoming_live_sessions.length > 0 ? (
                             <ul className="space-y-4">
                                 {upcoming_live_sessions.map(session => (
@@ -105,7 +105,7 @@ const DashboardPage = () => {
                         )}
                     </DashboardCard>
 
-                    <DashboardCard title="Recent Orders" icon={<FaShoppingCart />}>
+                    <DashboardCard title="Recent Orders" >
                         {recent_orders && recent_orders.length > 0 ? (
                             <ul className="space-y-4">
                                 {recent_orders.map(order => (
@@ -121,7 +121,7 @@ const DashboardPage = () => {
                         )}
                     </DashboardCard>
 
-                    <DashboardCard title="Booked Appointments" icon={<FaCalendarAlt />}>
+                    <DashboardCard title="Booked Appointments" >
                         {booked_appointments && booked_appointments.length > 0 ? (
                             <ul className="space-y-4">
                                 {booked_appointments.map(appointment => (
