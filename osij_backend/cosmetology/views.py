@@ -1,10 +1,6 @@
 # cosmetology/views.py
 from django.shortcuts import render
 from rest_framework import generics, permissions, viewsets, filters
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from datetime import datetime, timedelta
 from rest_framework.permissions import (
     IsAuthenticated,
     AllowAny,
@@ -19,9 +15,11 @@ from .serializers import (
     AppointmentCreateSerializer,
     AppointmentSerializer,
 )
-import logging
 
-logger = logging.getLogger(__name__)
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from datetime import datetime, timedelta
 
 # ... (existing imports)
 
@@ -39,7 +37,6 @@ class AppointmentAvailabilityCheckView(APIView):
             stylist = StylistProfile.objects.get(id=stylist_id)
             appointment_date = datetime.fromisoformat(appointment_date_str).date()
         except (StylistProfile.DoesNotExist, ValueError) as e:
-            logger.error(f"Error checking appointment availability: {str(e)}")
             return Response({'detail': str(e)}, status=400)
 
         # Check for number of appointments on that day for the stylist
@@ -83,7 +80,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
 
 class ServicesListView(generics.ListAPIView):
-    queryset = BeautyService.objects.all()
+    queryset = BeautyService.objects.filter(is_available=True)
     serializer_class = BeautyServiceSerializer
     permission_classes = [AllowAny]
 
@@ -144,5 +141,3 @@ class AppointmentUpdateView(generics.UpdateAPIView):
     serializer_class = AppointmentBookingSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "pk"
-
-    

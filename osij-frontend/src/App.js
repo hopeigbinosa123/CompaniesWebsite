@@ -1,4 +1,4 @@
-
+import GraphicDesignPage from './pages/GraphicDesignPage';
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -28,6 +28,9 @@ import CosmetologyStylistDetail from './pages/Cosmetology/Detail.jsx';
 import CosmetologyBookingForm from './pages/Cosmetology/BookingForm.jsx';
 import CosmetologyServiceDetail from './pages/Cosmetology/ServiceDetail.jsx';
 import CosmetologyPage from './pages/CosmetologyPage.jsx';
+
+import BookingForm from './pages/Cosmetology/BookingForm.jsx';
+
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -87,16 +90,27 @@ function AppContent() {
             <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
 
             {/* Graphic Design */}
-            <Route path="/graphic-design" element={<DesignerListPage />} />
-            <Route path="/graphic-design/designers/:id" element={<DesignerDetailPage />} />
+
+            <Route path="/graphic-design" element={<GraphicDesignPage />} />
+
+           
+
             <Route path="/graphic-design/order/:id" element={<GraphicDesignOrderForm />} />
+
 
             {/* Cosmetology */}
             <Route path="/cosmetology" element={<CosmetologyPage />} />
+
+            <Route path="/cosmetology/book" element={<BookingForm />} />
+            <Route path="/cosmetology/book/:id" element={<BookingForm />} />
+
             <Route path="/cosmetology/stylists/:id" element={<CosmetologyStylistDetail />} />
             <Route path="/cosmetology/services/:id" element={<CosmetologyServiceDetail />} />
             <Route path="/cosmetology/stylists/:id/book" element={<CosmetologyBookingForm />} />
 
+
+
+          
             {/* Education */}
             <Route path="/education" element={<EducationPage />} />
             <Route path="/education/courses/:id" element={<CourseDetailPage />} />
@@ -171,3 +185,4 @@ function App() {
 }
 
 export default App;
+

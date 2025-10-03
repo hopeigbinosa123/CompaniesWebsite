@@ -5,7 +5,6 @@ from .views import (
     AppointmentViewSet,
     AppointmentBookingViewSet,
     ServicesListView,
-    ServiceDetailsView,
     AppointmentAvailabilityCheckView,
 )
 
@@ -16,6 +15,5 @@ router.register(r"bookings", AppointmentBookingViewSet, basename="booking")
 
 urlpatterns = router.urls + [
     path("services/", ServicesListView.as_view(), name="services-list"),
-    path("services/<int:pk>/", ServiceDetailsView.as_view(), name="service-detail"),
     path("check-availability/", AppointmentAvailabilityCheckView.as_view(), name="check-appointment-availability"),
 ]

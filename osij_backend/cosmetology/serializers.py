@@ -6,34 +6,33 @@ from .models import BeautyService, StylistProfile, Appointment, AppointmentBooki
 User = get_user_model()
 
 
-# Serializer for stylist profile list
-class StylistProfileSerializer(serializers.ModelSerializer):
+
+
+
+# Serializer for stylist profile detail
+class StylistDetailsSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
-    username = serializers.SerializerMethodField()
-    services = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     class Meta:
         model = StylistProfile
         fields = [
             "id",
             "name",
-            "username",
+            "email",
+            "bio",
             "specialization",
             "experience",
-            "is_available",
-            "services",
+            "is_available"
         ]
 
     def get_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
 
-    def get_username(self, obj):
-        return obj.user.username
+    def get_email(self, obj):
+        return obj.user.email
 
-    def get_services(self, obj):
-        return [service.name for service in BeautyService.objects.all()]
-
-
+        
 # Serializer for stylist profile detail
 class StylistDetailsSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -49,13 +48,11 @@ class StylistDetailsSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         return obj.user.email
 
-
 # Serializer for beauty services
 class BeautyServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = BeautyService
         fields = ["id", "name", "description", "price", "duration_minutes"]
-
 
 # Serializer for appointments
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -83,7 +80,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
         if value < timezone.now().date():
             raise serializers.ValidationError("Appointment date must be in the future.")
         return value
-
 
 # Serializer for viewing user's bookings
 class AppointmentBookingSerializer(serializers.ModelSerializer):
@@ -115,7 +111,6 @@ class AppointmentBookingSerializer(serializers.ModelSerializer):
 
     def get_stylist_name(self, obj):
         return obj.stylist.user.get_full_name() or obj.stylist.user.username
-
 
 from datetime import datetime
 
