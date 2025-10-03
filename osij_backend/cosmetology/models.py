@@ -47,11 +47,6 @@ class Appointment(models.Model):
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.PENDING
     )
-    service = models.ForeignKey(BeautyService, on_delete=models.CASCADE)
-    appointment_date = models.DateTimeField()
-    start_time = models.DateTimeField(null=True, blank=True)
-    end_time = models.DateTimeField(null=True, blank=True)
-    notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

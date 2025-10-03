@@ -6,41 +6,33 @@ from .models import BeautyService, StylistProfile, Appointment, AppointmentBooki
 User = get_user_model()
 
 
-# ✅ Serializer for stylist profile list (used in frontend dropdown)
 
-# Serializer for stylist profile list
 
-class StylistProfileSerializer(serializers.ModelSerializer):
-    username = serializers.SerializerMethodField()
+
+# Serializer for stylist profile detail
+class StylistDetailsSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     class Meta:
         model = StylistProfile
-
-        fields = ['id', 'username', 'name', 'specialization', 'experience', 'is_available']
-
         fields = [
             "id",
             "name",
-            "username",
+            "email",
+            "bio",
             "specialization",
             "experience",
-            "is_available",
-            "services",
+            "is_available"
         ]
 
     def get_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
 
+    def get_email(self, obj):
+        return obj.user.email
 
-    def get_username(self, obj):
-        return getattr(obj.user, 'username', 'unnamed')
-
-    def get_name(self, obj):
-        full_name = obj.user.get_full_name()
-        return full_name if full_name else obj.user.username
-
-
+        
 # Serializer for stylist profile detail
 class StylistDetailsSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()

@@ -12,7 +12,7 @@ const cosmetologyAPI = axios.create({
 // 🔐 Attach token to requests
 cosmetologyAPI.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,8 +26,8 @@ cosmetologyAPI.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -50,6 +50,8 @@ export const checkAppointmentAvailability = async (stylist, start_time, duration
 };
 
 // ✅ Grouped endpoints
+
+// ✅ Named export for endpoint
 export const cosmetologyAPIEndpoints = {
   getServices: async () => {
     const { data } = await cosmetologyAPI.get('services/');
@@ -73,7 +75,9 @@ export const cosmetologyAPIEndpoints = {
   },
 };
 
-// ✅ Form helpers
+
+// ✅ Form helper
+// ✅ Named export for form helpers
 export const cosmetologyFormHelpers = {
   validateBookingForm: (formData) => {
     const errors = {};
@@ -99,5 +103,8 @@ export const cosmetologyFormHelpers = {
   },
 };
 
-// ✅ Optional default export
+
+// ✅ Default export (optional, if used elsewhere)
+
 export default cosmetologyAPIEndpoints;
+
