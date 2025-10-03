@@ -18,6 +18,7 @@ A key feature is the **automatic email notification system**, which sends welcom
 *   **React Frontend:** A dynamic and responsive user interface built with React and styled with Tailwind CSS.
 *   **Payment Integration:** Pre-configured for course and service payments using PayPal.
 *   **Automated Email Notifications:** Enhances user communication for events like registration and purchases.
+*   **User-Managed Dashboard Items:** Users can view and manage (create, read, update, delete) their enrolled courses, booked appointments, software service requests, and graphic design orders directly from their dashboard.
 
 ## 2. Technology Stack
 
@@ -274,7 +275,6 @@ This section provides an overview of the main database models for each service.
 
 ### Notifications
 *   **EmailNotification:** A record of an email sent from the system.
-*   **ContactMessage:** A message submitted through the contact form.
 
 ---
 
@@ -300,6 +300,7 @@ Below is a summary of the key API endpoints. The base URL for all endpoints is `
 | `GET`  | `/courses/<id>/`     | Retrieves details for a single course.    |
 | `GET`  | `/courses/<id>/lessons/` | Lists all lessons for a specific course. |
 | `POST` | `/enroll/`           | Enrolls the current user in a course.     |
+| `DELETE` | `/enrollments/<id>/delete/` | Allows a user to unenroll from a course. |
 | `GET`  | `/my-enrollments/`   | Lists all courses the user is enrolled in.|
 | `POST` | `/lessons/<id>/complete/` | Marks a lesson as complete for the current user. |
 | `GET`  | `/live-sessions/upcoming/` | Lists upcoming live sessions. |
@@ -310,6 +311,7 @@ Below is a summary of the key API endpoints. The base URL for all endpoints is `
 | `GET`  | `/services/`     | Lists all available beauty services.|
 | `GET`, `POST` | `/stylists/`     | Lists all available stylists or creates a new one.      |
 | `GET`, `POST` | `/bookings/`     | Creates a new appointment booking or lists existing ones.  |
+| `DELETE` | `/bookings/<id>/` | Allows a user to cancel an appointment. |
 | `GET`, `PUT`, `DELETE` | `/appointments/<id>/` | Manages a specific appointment. |
 
 ### Graphic Design (`/graphic-design/...`)
@@ -318,6 +320,7 @@ Below is a summary of the key API endpoints. The base URL for all endpoints is `
 | `GET`, `POST` | `/designers/` | List all designers or create a new one. |
 | `GET`, `PUT`, `DELETE` | `/designers/<id>/` | Manage a specific designer. |
 | `GET`, `POST` | `/design-orders/` | List all design orders or create a new one. |
+| `DELETE` | `/orders/<id>/delete/` | Allows a user to delete a design order. |
 | `GET`, `PUT`, `DELETE` | `/design-orders/<id>/` | Manage a specific design order. |
 | `GET` | `/public/designers/` | Get a public list of designers. |
 | `GET` | `/public/designers/<id>/` | Get public details for a specific designer. |
@@ -332,6 +335,7 @@ Below is a summary of the key API endpoints. The base URL for all endpoints is `
 | `GET` | `/services/` | List all available software services. |
 | `POST` | `/requests/create/` | Create a new service request. |
 | `GET` | `/requests/me/` | Get a list of the current user's service requests. |
+| `DELETE` | `/requests/<id>/delete/` | Allows a user to delete a service request. |
 | `GET` | `/requests/<id>/` | Get details for a specific service request. |
 | `PUT` | `/admin/requests/<id>/update/` | Update a service request (admin only). |
 | `POST` | `/admin/requests/<id>/updates/create/` | Add an update to a service request (admin only). |
@@ -382,6 +386,7 @@ Most services are managed by an administrator through the **Django Admin Panel**
     2.  Browse the list of available services.
     3.  Select a service to view details and available stylists.
     4.  Fill out the booking form to schedule an appointment.
+    5.  **Canceling an Appointment:** From your dashboard, locate the booked appointment and click the "Cancel" button.
 
 *   **Enrolling in a Course (with PayPal):**
     1.  Navigate to the Education section.
@@ -389,6 +394,17 @@ Most services are managed by an administrator through the **Django Admin Panel**
     3.  You will be redirected to a payment page where the PayPal button is displayed.
     4.  Clicking the PayPal button will open the PayPal payment window to complete the transaction.
     5.  Upon successful payment, you will be redirected back to the site.
+    6.  **Leaving a Course:** From your dashboard, locate the enrolled course and click the "Leave Course" button.
+
+*   **Managing Software Projects:**
+    1.  From your dashboard, navigate to the "My Software Projects" section.
+    2.  Here you can view all your submitted software service requests.
+    3.  **Deleting a Project:** Locate the project you wish to delete and click the "Delete" button.
+
+*   **Managing Design Orders:**
+    1.  From your dashboard, navigate to the "My Design Orders" section.
+    2.  Here you can view all your submitted graphic design orders.
+    3.  **Deleting an Order:** Locate the order you wish to delete and click the "Delete" button.
 
 ---
 
