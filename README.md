@@ -436,3 +436,12 @@ This project has a solid foundation but can be extended in many ways:
 *   **Refine UI/UX:** Enhance the visual design and user experience across the application for a more polished feel.
 *   **Advanced Email Notifications:** Integrate a real email service (like SendGrid or Mailgun) and create HTML email templates for more professional communication.
 *   **Testing:** Expand the test suite with more unit and integration tests to ensure code quality and reliability.
+
+##  Graphic Design Module
+
+- Added Hero section with gradient background and mission statement
+- Implemented dropdown filter for service types (LOGO, WEB_DESIGN, etc.)
+- Designed testimonial block and CTA footer for user engagement
+- Improved layout using Tailwind CSS grid and spacing
+- Contributor: Prince Ngwenyama
+- Date: 3 October 2025
