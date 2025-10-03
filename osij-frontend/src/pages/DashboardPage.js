@@ -1,149 +1,118 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import apiClient from '../api/axiosConfig';
-import StudentDashboard from '../Graphics design/StudentDashboard'; // Corrected import path
-import { FaBook, FaChalkboardTeacher, FaShoppingCart, FaCalendarAlt, FaExclamationCircle } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axiosConfig'; // Import the configured axios instance
+import LoadingSpinner from '../components/shared/LoadingSpinner';
+
+// Helper function to format dates
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+// Sub-component for displaying a list of items
+const InfoList = ({ title, items, renderItem, viewAllLink }) => (
+  <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="flex justify-between items-center mb-4">
+      <h2 className="text-xl font-semibold text-gray-700">{title}</h2>
+      {viewAllLink && (
+        <Link to={viewAllLink} className="text-sm text-blue-600 hover:underline">
+          View All
+        </Link>
+      )}
+    </div>
+    {items && items.length > 0 ? (
+      <ul className="space-y-3">
+        {items.map(renderItem)}
+      </ul>
+    ) : (
+      <p className="text-gray-500">No recent activity.</p>
+    )}
+  </div>
+);
 
 const DashboardPage = () => {
-    const [dashboardData, setDashboardData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const { user } = useAuth();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                const response = await apiClient.get('/api/dashboard/');
-                setDashboardData(response.data);
-            } catch (err) {
-                setError('Failed to load dashboard data. Please try again later.');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await api.get('/auth/dashboard/');
+        setDashboardData(response.data);
+      } catch (err) {
+        setError('Failed to load dashboard data. Please try again later.');
+        console.error(err);
+      }
+      setLoading(false);
+    };
 
-        fetchDashboardData();
-    }, []);
+    fetchDashboardData();
+  }, []);
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        );
-    }
+  if (loading) {
+    return <div className="min-h-screen flex justify-center items-center"><LoadingSpinner /></div>;
+  }
 
-    if (error) {
-        return (
-            <div className="flex flex-col items-center justify-center h-screen text-red-500">
-                <FaExclamationCircle className="text-4xl mb-4" />
-                <p className="text-xl">{error}</p>
-            </div>
-        );
-    }
+  if (error) {
+    return <div className="min-h-screen flex justify-center items-center text-red-500">{error}</div>;
+  }
 
-    const { enrolled_courses, upcoming_live_sessions, recent_orders, booked_appointments } = dashboardData;
-
-    const DashboardCard = ({ title, icon, children }) => (
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
-            <div className="flex items-center mb-4">
-                <div className="text-2xl text-blue-500 mr-4">{icon}</div>
-                <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-            </div>
-            <div>{children}</div>
+  return (
+    <div className="min-h-screen py-8 bg-gray-50">
+      <div className="container mx-auto px-4">
+        {/* Welcome Header */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Welcome back, {user?.first_name || user?.username}!</h1>
+          <p className="text-gray-600">Here's a summary of your recent activity.</p>
         </div>
-    );
 
-    const EmptyState = ({ message, link, linkText }) => (
-        <div className="text-center py-8 px-4 border-2 border-dashed rounded-lg">
-            <p className="text-gray-500 mb-4">{message}</p>
-            {link && linkText && (
-                <Link to={link} className="text-blue-500 hover:underline font-semibold">
-                    {linkText}
-                </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Enrolled Courses */}
+          <InfoList 
+            title="My Courses"
+            items={dashboardData?.enrollments}
+            renderItem={(item) => (
+              <li key={item.id} className="p-2 bg-gray-50 rounded-md">{item.course_title} - <span className="font-medium">{item.status}</span></li>
             )}
+            viewAllLink="/dashboard/my-courses"
+          />
+
+          {/* Appointments */}
+          <InfoList 
+            title="My Appointments"
+            items={dashboardData?.appointments}
+            renderItem={(item) => (
+              <li key={item.id} className="p-2 bg-gray-50 rounded-md">{item.service_name} on {formatDate(item.appointment_date)}</li>
+            )}
+             viewAllLink="/dashboard/design-orders"
+          />
+
+          {/* Design Orders */}
+          <InfoList 
+            title="My Design Orders"
+            items={dashboardData?.design_orders}
+            renderItem={(item) => (
+              <li key={item.id} className="p-2 bg-gray-50 rounded-md">{item.title} - <span className="font-medium">{item.status}</span></li>
+            )}
+            viewAllLink="/dashboard/design-orders"
+          />
+
+          {/* Service Requests */}
+          <InfoList 
+            title="My Software Requests"
+            items={dashboardData?.service_requests}
+            renderItem={(item) => (
+              <li key={item.id} className="p-2 bg-gray-50 rounded-md">{item.project_title} - <span className="font-medium">{item.status}</span></li>
+            )}
+            viewAllLink="/dashboard/software-projects"
+          />
         </div>
-    );
-
-    return (
-        <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
-            <div className="max-w-7xl mx-auto">
-                <h1 className="text-4xl font-extrabold text-gray-900 mb-8">Your Dashboard</h1>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <DashboardCard title="Enrolled Courses" icon={<FaBook />}>
-                        {enrolled_courses && enrolled_courses.length > 0 ? (
-                            <ul className="space-y-4">
-                                {enrolled_courses.map(course => (
-                                    <li key={course.id} className="p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                        <Link to={`/courses/${course.id}`} className="font-semibold text-blue-600 hover:underline">{course.title}</Link>
-                                        <p className="text-sm text-gray-600">{course.description}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <EmptyState message="You are not enrolled in any courses yet." link="/education" linkText="Browse Courses" />
-                        )}
-                    </DashboardCard>
-
-                    <DashboardCard title="Upcoming Live Sessions" icon={<FaChalkboardTeacher />}>
-                        {upcoming_live_sessions && upcoming_live_sessions.length > 0 ? (
-                            <ul className="space-y-4">
-                                {upcoming_live_sessions.map(session => (
-                                    <li key={session.id} className="p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                        <p className="font-semibold text-gray-800">{session.title}</p>
-                                        <p className="text-sm text-gray-600">
-                                            {new Date(session.start_time).toLocaleString()} - {new Date(session.end_time).toLocaleString()}
-                                        </p>
-                                        <a href={session.zoom_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Join Session</a>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <EmptyState message="No upcoming live sessions." />
-                        )}
-                    </DashboardCard>
-
-                    <DashboardCard title="Recent Orders" icon={<FaShoppingCart />}>
-                        {recent_orders && recent_orders.length > 0 ? (
-                            <ul className="space-y-4">
-                                {recent_orders.map(order => (
-                                    <li key={order.id} className="p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                        <p className="font-semibold text-gray-800">Order #{order.id}</p>
-                                        <p className="text-sm text-gray-600">Status: <span className={`font-medium ${order.status === 'Completed' ? 'text-green-600' : 'text-yellow-600'}`}>{order.status}</span></p>
-                                        <p className="text-sm text-gray-600">Total: ${order.total_price}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <EmptyState message="You have no recent orders." link="/services" linkText="Browse Services" />
-                        )}
-                    </DashboardCard>
-
-                    <DashboardCard title="Booked Appointments" icon={<FaCalendarAlt />}>
-                        {booked_appointments && booked_appointments.length > 0 ? (
-                            <ul className="space-y-4">
-                                {booked_appointments.map(appointment => (
-                                    <li key={appointment.id} className="p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                        <p className="font-semibold text-gray-800">{appointment.service_name}</p>
-                                        <p className="text-sm text-gray-600">With: {appointment.stylist_name}</p>
-                                        <p className="text-sm text-gray-600">On: {new Date(appointment.date_time).toLocaleString()}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <EmptyState message="You have no upcoming appointments." link="/cosmetology" linkText="Book an Appointment" />
-                        )}
-                    </DashboardCard>
-                </div>
-
-                <div className="mt-8">
-                    <StudentDashboard />
-                </div>
-            </div>
-        </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default DashboardPage;
