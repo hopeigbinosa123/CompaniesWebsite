@@ -9,6 +9,7 @@ const cosmetologyAPI = axios.create({
   },
 });
 
+// 🔐 Attach token to requests
 cosmetologyAPI.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -20,6 +21,7 @@ cosmetologyAPI.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// 🚫 Handle 401 errors
 cosmetologyAPI.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -32,17 +34,22 @@ cosmetologyAPI.interceptors.response.use(
   }
 );
 
- 
-//  Individual named export for createAppointment
+// ✅ Individual named exports
 export const createAppointment = async (data) => {
   const { data: response } = await cosmetologyAPI.post('appointments/', data);
   return response;
 };
 
-//  Named export for endpoints
+export const checkAppointmentAvailability = async (stylist, start_time, duration_minutes) => {
+  const { data } = await cosmetologyAPI.post('check-availability/', {
+    stylist,
+    start_time,
+    duration_minutes,
+  });
+  return data;
+};
 
-
-
+// ✅ Grouped endpoints
 export const cosmetologyAPIEndpoints = {
   getServices: async () => {
     const { data } = await cosmetologyAPI.get('services/');
@@ -64,27 +71,9 @@ export const cosmetologyAPIEndpoints = {
     const { data } = await cosmetologyAPI.get(`stylists/${id}/`);
     return data;
   },
-
 };
 
-//  Named export for form helpers
-
-  createAppointment: async (data) => {
-    const { data: response } = await cosmetologyAPI.post('appointments/', data);
-    return response;
-  },
-  checkAppointmentAvailability; async (stylist, start_time, duration_minutes) => {
-    const { data } = await cosmetologyAPI.post('check-availability/', {
-      stylist,
-      start_time,
-      duration_minutes,
-    });
-    return data;
-  };
-
-
-
-
+// ✅ Form helpers
 export const cosmetologyFormHelpers = {
   validateBookingForm: (formData) => {
     const errors = {};
@@ -101,20 +90,14 @@ export const cosmetologyFormHelpers = {
     return errors;
   },
   formatDuration: (minutes) => {
-    if (minutes < 60) {
-      return `${minutes} min`;
-    }
+    if (minutes < 60) return `${minutes} min`;
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    if (remainingMinutes === 0) {
-      return `${hours} hr${hours > 1 ? 's' : ''}`;
-    }
-    return `${hours} hr${hours > 1 ? 's' : ''} ${remainingMinutes} min`;
-  }
+    return remainingMinutes === 0
+      ? `${hours} hr${hours > 1 ? 's' : ''}`
+      : `${hours} hr${hours > 1 ? 's' : ''} ${remainingMinutes} min`;
+  },
 };
 
-// Default export (optional)
-
-
-
+// ✅ Optional default export
 export default cosmetologyAPIEndpoints;

@@ -22,7 +22,7 @@ export default function CosmetologyPage() {
       >
         Book Now
       </Link>
-=======
+
       <h1 className="text-3xl font-bold text-pink-700 mb-6">Cosmetology</h1>
       <div className="space-y-8">
         <ServiceList />

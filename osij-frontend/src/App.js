@@ -1,3 +1,4 @@
+import GraphicDesignPage from './pages/GraphicDesignPage';
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -30,7 +31,7 @@ import CosmetologyServiceDetail from './pages/Cosmetology/ServiceDetail.jsx';
 import CosmetologyPage from './pages/CosmetologyPage.jsx';
 
 import BookingForm from './pages/Cosmetology/BookingForm.jsx';
-c038f3eede06d5b5fa3ab9da8d395c379b996eb7
+
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -94,7 +95,7 @@ function AppContent() {
 
             <Route path="/graphic-design" element={<GraphicDesignPage />} />
 
-            <Route path="/graphic-design" element={<DesignerListPage />} />
+           
 
             <Route path="/graphic-design/order/:id" element={<GraphicDesignOrderForm />} />
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axiosConfig';
 
@@ -6,6 +6,7 @@ export default function GraphicDesignPage() {
   const [designers, setDesigners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState("");
+  const designerRef = useRef(null); // ✅ Scroll target
 
   useEffect(() => {
     api.get('/graphic-design/public/designers/')
@@ -54,7 +55,7 @@ export default function GraphicDesignPage() {
       {loading ? (
         <p>Loading designers...</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div ref={designerRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredDesigners.map(designer => (
             <div key={designer.id} className="border p-4 rounded shadow hover:shadow-md transition">
               <h2 className="text-xl font-semibold">{designer.name}</h2>
@@ -82,9 +83,12 @@ export default function GraphicDesignPage() {
       <div className="bg-blue-600 text-white p-6 rounded-lg text-center">
         <h2 className="text-2xl font-bold mb-2">Ready to start your journey?</h2>
         <p className="mb-4">Choose a service, submit your brief, and let our team bring your vision to life.</p>
-        <Link to="/graphic-design" className="bg-white text-blue-600 px-6 py-2 rounded font-semibold">
+        <button
+          onClick={() => designerRef.current?.scrollIntoView({ behavior: 'smooth' })}
+          className="bg-white text-blue-600 px-6 py-2 rounded font-semibold"
+        >
           Get Started
-        </Link>
+        </button>
       </div>
     </div>
   );
