@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../api/axiosConfig';
-
+import { FaPaintBrush, FaExclamationCircle } from 'react-icons/fa';
 
 const StudentDashboard = () => {
     const [designOrders, setDesignOrders] = useState([]);
@@ -11,7 +11,7 @@ const StudentDashboard = () => {
     useEffect(() => {
         const fetchDesignOrders = async () => {
             try {
-                const response = await apiClient.get('/graphic-design/orders/my/');
+                const response = await apiClient.get('/api/graphic-design/orders/my/');
                 setDesignOrders(response.data);
             } catch (err) {
                 setError('Failed to load design orders.');
@@ -24,10 +24,10 @@ const StudentDashboard = () => {
         fetchDesignOrders();
     }, []);
 
-    const DashboardCard = ({ title, children }) => (
+    const DashboardCard = ({ title, icon, children }) => (
         <div className="bg-white shadow-lg rounded-lg p-6">
             <div className="flex items-center mb-4">
-                
+                <div className="text-2xl text-purple-500 mr-4">{icon}</div>
                 <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             </div>
             <div>{children}</div>
@@ -56,14 +56,14 @@ const StudentDashboard = () => {
     if (error) {
         return (
             <div className="flex flex-col items-center justify-center p-8 text-red-500">
-                
+                <FaExclamationCircle className="text-3xl mb-3" />
                 <p className="text-lg">{error}</p>
             </div>
         );
     }
 
     return (
-        <DashboardCard title="My Design Orders" >
+        <DashboardCard title="My Design Orders" icon={<FaPaintBrush />}>
             {designOrders.length > 0 ? (
                 <ul className="space-y-4">
                     {designOrders.map(order => (
