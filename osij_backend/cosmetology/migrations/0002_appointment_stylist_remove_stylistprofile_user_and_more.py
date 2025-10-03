@@ -9,54 +9,94 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('cosmetology', '0001_initial'),
+        ("cosmetology", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Appointment',
+            name="Appointment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('service', models.CharField(max_length=140)),
-                ('notes', models.TextField(blank=True)),
-                ('start_time', models.DateTimeField()),
-                ('duration_minutes', models.PositiveIntegerField(default=60)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('confirmed', 'Confirmed'), ('completed', 'Completed'), ('canceled', 'Canceled')], default='pending', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='appointments', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("service", models.CharField(max_length=140)),
+                ("notes", models.TextField(blank=True)),
+                ("start_time", models.DateTimeField()),
+                ("duration_minutes", models.PositiveIntegerField(default=60)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("confirmed", "Confirmed"),
+                            ("completed", "Completed"),
+                            ("canceled", "Canceled"),
+                        ],
+                        default="pending",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "client",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="appointments",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-start_time'],
+                "ordering": ["-start_time"],
             },
         ),
         migrations.CreateModel(
-            name='Stylist',
+            name="Stylist",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=120)),
-                ('bio', models.TextField(blank=True)),
-                ('specialties', models.CharField(blank=True, max_length=255)),
-                ('email', models.EmailField(blank=True, max_length=254)),
-                ('is_active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=120)),
+                ("bio", models.TextField(blank=True)),
+                ("specialties", models.CharField(blank=True, max_length=255)),
+                ("email", models.EmailField(blank=True, max_length=254)),
+                ("is_active", models.BooleanField(default=True)),
             ],
         ),
         migrations.RemoveField(
-            model_name='stylistprofile',
-            name='user',
+            model_name="stylistprofile",
+            name="user",
         ),
         migrations.DeleteModel(
-            name='AppointmentBooking',
+            name="AppointmentBooking",
         ),
         migrations.DeleteModel(
-            name='BeautyService',
+            name="BeautyService",
         ),
         migrations.DeleteModel(
-            name='StylistProfile',
+            name="StylistProfile",
         ),
         migrations.AddField(
-            model_name='appointment',
-            name='stylist',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='appointments', to='cosmetology.stylist'),
+            model_name="appointment",
+            name="stylist",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="appointments",
+                to="cosmetology.stylist",
+            ),
         ),
     ]

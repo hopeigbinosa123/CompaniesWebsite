@@ -1,21 +1,26 @@
-from .models import StylistProfile
-from django.db import models
-from rest_framework import viewsets, permissions, filters, generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Appointment, BeautyService, StylistProfile
+# cosmetology/views.py
+from django.shortcuts import render
+from rest_framework import generics, permissions, viewsets, filters
+from rest_framework.permissions import (
+    IsAuthenticated,
+    AllowAny,
+    IsAuthenticatedOrReadOnly,
+)
+from .models import BeautyService, StylistProfile, AppointmentBooking, Appointment
 from .serializers import (
-    AppointmentSerializer,
     BeautyServiceSerializer,
     StylistProfileSerializer,
-    StylistDetailsSerializer
+    StylistDetailsSerializer,
+    AppointmentBookingSerializer,
+    AppointmentCreateSerializer,
+    AppointmentSerializer,
 )
 
 
-class IsAuthenticatedOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
-    pass
-
 class StylistViewSet(viewsets.ModelViewSet):
-    queryset = StylistProfile.objects.filter(is_available=True).order_by("user__username")
+    queryset = StylistProfile.objects.filter(is_available=True).order_by(
+        "user__username"
+    )
     serializer_class = StylistProfileSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -38,10 +43,12 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(client=self.request.user)
 
+
 class ServicesListView(generics.ListAPIView):
     queryset = BeautyService.objects.filter(is_available=True)
     serializer_class = BeautyServiceSerializer
     permission_classes = [AllowAny]
+
 
 class ServiceDetailsView(generics.RetrieveAPIView):
     queryset = BeautyService.objects.all()
@@ -49,18 +56,18 @@ class ServiceDetailsView(generics.RetrieveAPIView):
 
     permission_classes = [AllowAny]
 
+
 class StylistsListView(generics.ListAPIView):
     queryset = StylistProfile.objects.filter(is_available=True)
     serializer_class = StylistProfileSerializer
     permission_classes = [AllowAny]
+
 
 class StylistDetailsView(generics.RetrieveAPIView):
     queryset = StylistProfile.objects.all()
     serializer_class = StylistDetailsSerializer
     permission_classes = [AllowAny]
 
-from .models import AppointmentBooking
-from .serializers import AppointmentBookingSerializer, AppointmentCreateSerializer
 
 class AppointmentBookingViewSet(viewsets.ModelViewSet):
     queryset = AppointmentBooking.objects.select_related("user", "service", "stylist")
@@ -74,3 +81,21 @@ class AppointmentBookingViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
+
+
+# Admin/Staff Views
+class AllAppointmentsListView(generics.ListAPIView):
+    queryset = AppointmentBooking.objects.all()
+    serializer_class = AppointmentBookingSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class AppointmentUpdateView(generics.UpdateAPIView):
+    queryset = AppointmentBooking.objects.all()
+    serializer_class = AppointmentBookingSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "pk"

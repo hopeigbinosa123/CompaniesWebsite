@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from .models import Designer, DesignOrder
 
+
 class DesignerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Designer
@@ -15,9 +16,18 @@ class DesignOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = DesignOrder
         fields = [
-            "id", "client", "client_username", "designer", "designer_name",
-            "title", "brief", "reference_links", "budget",
-            "status", "created_at", "updated_at",
+            "id",
+            "client",
+            "client_username",
+            "designer",
+            "designer_name",
+            "title",
+            "brief",
+            "reference_links",
+            "budget",
+            "status",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ("status", "created_at", "updated_at")
 

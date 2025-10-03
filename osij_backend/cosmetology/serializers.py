@@ -5,14 +5,33 @@ from .models import BeautyService, StylistProfile, Appointment, AppointmentBooki
 
 User = get_user_model()
 
+
 # ✅ Serializer for stylist profile list (used in frontend dropdown)
+
+# Serializer for stylist profile list
+
 class StylistProfileSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
 
     class Meta:
         model = StylistProfile
+
         fields = ['id', 'username', 'name', 'specialization', 'experience', 'is_available']
+
+        fields = [
+            "id",
+            "name",
+            "username",
+            "specialization",
+            "experience",
+            "is_available",
+            "services",
+        ]
+
+    def get_name(self, obj):
+        return obj.user.get_full_name() or obj.user.username
+
 
     def get_username(self, obj):
         return getattr(obj.user, 'username', 'unnamed')
@@ -21,6 +40,7 @@ class StylistProfileSerializer(serializers.ModelSerializer):
         full_name = obj.user.get_full_name()
         return full_name if full_name else obj.user.username
 
+
 # Serializer for stylist profile detail
 class StylistDetailsSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -28,7 +48,7 @@ class StylistDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StylistProfile
-        fields = '__all__'
+        fields = "__all__"
 
     def get_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
@@ -40,7 +60,7 @@ class StylistDetailsSerializer(serializers.ModelSerializer):
 class BeautyServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = BeautyService
-        fields = ['id', 'name', 'description', 'price', 'duration_minutes']
+        fields = ["id", "name", "description", "price", "duration_minutes"]
 
 # Serializer for appointments
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -50,9 +70,18 @@ class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = [
-            "id", "client", "client_username", "stylist", "stylist_name",
-            "service", "notes", "appointment_date", "duration_minutes",
-            "status", "created_at", "updated_at",
+            "id",
+            "client",
+            "client_username",
+            "stylist",
+            "stylist_name",
+            "service",
+            "notes",
+            "appointment_date",
+            "duration_minutes",
+            "status",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ("status", "created_at", "updated_at")
 
@@ -69,8 +98,8 @@ class AppointmentBookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppointmentBooking
-        fields = '__all__'
-        read_only_fields = ['user', 'created_at']
+        fields = "__all__"
+        read_only_fields = ["user", "created_at"]
 
     def get_user_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
@@ -85,8 +114,8 @@ class AppointmentBookingSerializer(serializers.ModelSerializer):
 class AppointmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppointmentBooking
-        fields = ['service', 'stylist', 'appointment_date', 'notes']
+        fields = ["service", "stylist", "appointment_date", "notes"]
 
     def create(self, validated_data):
-        validated_data['user'] = self.context['request'].user
+        validated_data["user"] = self.context["request"].user
         return super().create(validated_data)

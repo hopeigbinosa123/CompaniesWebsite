@@ -6,43 +6,47 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('graphic_design', '0003_merge_20250913_1745'),
+        ("graphic_design", "0002_designorder_remove_designer_image_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='designer',
-            name='specialties',
+            model_name="designer",
+            name="specialties",
         ),
         migrations.AddField(
-            model_name='designer',
-            name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='designers/'),
+            model_name="designer",
+            name="image",
+            field=models.ImageField(blank=True, null=True, upload_to="designers/"),
         ),
         migrations.AddField(
-            model_name='designer',
-            name='speciality',
-            field=models.CharField(choices=[('THUMBNAIL', 'Thumbnail'), ('WEB_DESIGN', 'Web Design'), ('BANNER', 'Banner'), ('LOGO', 'Logo')], default=2, max_length=50),
+            model_name="designer",
+            name="speciality",
+            field=models.CharField(
+                choices=[
+                    ("THUMBNAIL", "Thumbnail"),
+                    ("WEB_DESIGN", "Web Design"),
+                    ("BANNER", "Banner"),
+                    ("LOGO", "Logo"),
+                ],
+                default=2,
+                max_length=50,
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='designorder',
-            name='reference_files',
-            field=models.FileField(blank=True, null=True, upload_to='design_references/'),
-        ),
-        migrations.AddField(
-            model_name='designorder',
-            name='rejection_reason',
+            model_name="designorder",
+            name="rejection_reason",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='designer',
-            name='email',
+            model_name="designer",
+            name="email",
             field=models.EmailField(max_length=254),
         ),
         migrations.AlterField(
-            model_name='designer',
-            name='name',
+            model_name="designer",
+            name="name",
             field=models.CharField(max_length=200),
         ),
     ]

@@ -19,8 +19,9 @@ import RegisterPage from './pages/RegisterPage';
 import EducationPage from './pages/EducationPage';
 import SoftwareServicesPage from './pages/SoftwareServicesPage';
 import RequestServicePage from './pages/RequestServicePage';
-import GraphicDesignPage from './pages/GraphicDesignPage.jsx';
-import GraphicDesignOrderForm from './pages/GraphicDesignOrderForm.jsx';
+import DesignerListPage from './pages/GraphicDesign/List.jsx';
+import DesignerDetailPage from './pages/GraphicDesign/Detail.jsx';
+import GraphicDesignOrderForm from './pages/GraphicDesign/OrderForm.jsx';
 import CosmetologyPage from './pages/CosmetologyPage.jsx';
 import BookingForm from './pages/Cosmetology/BookingForm.jsx';
 
@@ -82,7 +83,11 @@ function AppContent() {
             <Route path="/register" element={<RegisterPage />} />
 
             {/* Graphic Design */}
+
             <Route path="/graphic-design" element={<GraphicDesignPage />} />
+
+            <Route path="/graphic-design" element={<DesignerListPage />} />
+
             <Route path="/graphic-design/order/:id" element={<GraphicDesignOrderForm />} />
 
 

@@ -15,61 +15,180 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='SoftwareEnquiry',
+            name="SoftwareEnquiry",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('problem_title', models.CharField(max_length=200)),
-                ('problem_description', models.TextField()),
-                ('status', models.CharField(default='submitted', max_length=20)),
-                ('submitted_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("problem_title", models.CharField(max_length=200)),
+                ("problem_description", models.TextField()),
+                ("status", models.CharField(default="submitted", max_length=20)),
+                ("submitted_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        default=1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SoftwareService',
+            name="SoftwareService",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('service_type', models.CharField(choices=[('web', 'Web Development'), ('mobile', 'Mobile App Development'), ('desktop', 'Desktop Software'), ('api', 'API Development'), ('database', 'Database Design'), ('cloud', 'Cloud Services'), ('ai', 'AI/ML Solutions')], default='web', max_length=50)),
-                ('base_price', models.DecimalField(decimal_places=2, default=0, max_digits=10)),
-                ('estimated_timeline', models.CharField(default='default timeline', max_length=100)),
-                ('is_active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                (
+                    "service_type",
+                    models.CharField(
+                        choices=[
+                            ("web", "Web Development"),
+                            ("mobile", "Mobile App Development"),
+                            ("desktop", "Desktop Software"),
+                            ("api", "API Development"),
+                            ("database", "Database Design"),
+                            ("cloud", "Cloud Services"),
+                            ("ai", "AI/ML Solutions"),
+                        ],
+                        default="web",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "base_price",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=10),
+                ),
+                (
+                    "estimated_timeline",
+                    models.CharField(default="default timeline", max_length=100),
+                ),
+                ("is_active", models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
-            name='SupportResponse',
+            name="SupportResponse",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message', models.TextField()),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('enquiry', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='responses', to='software_services.softwareenquiry')),
-                ('responder', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("message", models.TextField()),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                (
+                    "enquiry",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="responses",
+                        to="software_services.softwareenquiry",
+                    ),
+                ),
+                (
+                    "responder",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ServiceRequest',
+            name="ServiceRequest",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('project_title', models.CharField(max_length=200)),
-                ('project_description', models.TextField()),
-                ('budget', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
-                ('timeline', models.CharField(blank=True, max_length=100, null=True)),
-                ('status', models.CharField(choices=[('submitted', 'Submitted'), ('reviewing', 'Under Review'), ('approved', 'Approved'), ('rejected', 'Rejected'), ('in_progress', 'In Progress'), ('completed', 'Completed')], default='submitted', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('service', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='software_services.softwareservice')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("project_title", models.CharField(max_length=200)),
+                ("project_description", models.TextField()),
+                (
+                    "budget",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=10, null=True
+                    ),
+                ),
+                ("timeline", models.CharField(blank=True, max_length=100, null=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("submitted", "Submitted"),
+                            ("reviewing", "Under Review"),
+                            ("approved", "Approved"),
+                            ("rejected", "Rejected"),
+                            ("in_progress", "In Progress"),
+                            ("completed", "Completed"),
+                        ],
+                        default="submitted",
+                        max_length=20,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "service",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="software_services.softwareservice",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ProjectUpdate',
+            name="ProjectUpdate",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('service_request', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='updates', to='software_services.servicerequest')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "service_request",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="updates",
+                        to="software_services.servicerequest",
+                    ),
+                ),
             ],
         ),
     ]

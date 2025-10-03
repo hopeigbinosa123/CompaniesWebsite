@@ -9,13 +9,19 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('graphic_design', '0005_designservice_portfolio'),
+        ("graphic_design", "0005_designservice_portfolio"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='designorder',
-            name='client',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='design_orders', to=settings.AUTH_USER_MODEL),
+            model_name="designorder",
+            name="client",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="design_orders",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getSoftwareServices } from '../api/SoftwareServices';
+import api from '../api/axiosConfig';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorMessage from '../components/shared/ErrorMessage';
 
@@ -12,7 +12,7 @@ const SoftwareServicesPage = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await getSoftwareServices();
+        const response = await api.get('/software-services/services/');
         setServices(response.data);
       } catch (error) {
         setError('Unable to load services. Please try again later.');

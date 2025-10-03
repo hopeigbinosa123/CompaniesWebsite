@@ -7,28 +7,51 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('graphic_design', '0004_remove_designer_specialties_designer_image_and_more'),
+        ("graphic_design", "0004_remove_designer_specialties_designer_image_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DesignService',
+            name="DesignService",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.TextField(blank=True)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('duration_minutes', models.PositiveIntegerField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("description", models.TextField(blank=True)),
+                ("price", models.DecimalField(decimal_places=2, max_digits=8)),
+                ("duration_minutes", models.PositiveIntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='Portfolio',
+            name="Portfolio",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('image', models.ImageField(upload_to='portfolio/')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('designer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='portfolios', to='graphic_design.designer')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("image", models.ImageField(upload_to="portfolio/")),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "designer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="portfolios",
+                        to="graphic_design.designer",
+                    ),
+                ),
             ],
         ),
     ]

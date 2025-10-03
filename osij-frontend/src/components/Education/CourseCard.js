@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { enrollInCourse } from '../../api/education';
+import api from '../../api/axiosConfig';
 
 const CourseCard = ({ course }) => {
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ const CourseCard = ({ course }) => {
     setError('');
     
     try {
-      await enrollInCourse(course.id);
+      await api.post('/education/enroll/', { course_id: course.id });
       // Redirect to payment page with course data
       navigate('/dashboard/payment', { 
         state: { 

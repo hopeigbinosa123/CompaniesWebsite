@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -75,6 +76,16 @@ export default function BookingForm() {
         className="space-y-5 max-w-md mx-auto bg-white p-6 rounded-lg shadow"
       >
         {/* Name Field */}
+=======
+// TODO: Connect this form to backend POST endpoint
+// Fields: name, service, stylist, time slot
+
+export default function BookingForm() {
+  return (
+    <section className="py-10 px-4 bg-gray-50">
+      <h2 className="text-3xl font-bold mb-6 text-center text-purple-700">Book an Appointment</h2>
+      <form className="space-y-5 max-w-md mx-auto bg-white p-6 rounded-lg shadow">
+>>>>>>> 85c791e3ee0afe40bdf0c04b1c9583601f3a28dd
         <div>
           <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
             Your Name
@@ -84,14 +95,18 @@ export default function BookingForm() {
             type="text"
             placeholder="e.g. Prince M."
             className="w-full p-2 border rounded mt-1"
+<<<<<<< HEAD
             value={formData.notes}
             onChange={handleChange}
             required
+=======
+>>>>>>> 85c791e3ee0afe40bdf0c04b1c9583601f3a28dd
           />
         </div>
 
         {/* Service Dropdown */}
         <div>
+<<<<<<< HEAD
           <label htmlFor="service" className="block text-sm font-medium text-gray-700">
             Select Service
           </label>
@@ -108,11 +123,21 @@ export default function BookingForm() {
                 {service.name || 'Unnamed Service'}
               </option>
             ))}
+=======
+          <label htmlFor="service" className="block text-sm font-medium text-gray-700">Select Service</label>
+          <select id="service" className="w-full p-2 border rounded mt-1">
+            <option>Choose a service</option>
+            <option>Hair Styling and Coloring Workshops</option>
+            <option>Bridal Makeup Training</option>
+            <option>Skin Care & Coloring Workshops</option>
+            <option>Makeup</option>
+>>>>>>> 85c791e3ee0afe40bdf0c04b1c9583601f3a28dd
           </select>
         </div>
 
         {/* Stylist Dropdown */}
         <div>
+<<<<<<< HEAD
           <label htmlFor="stylist" className="block text-sm font-medium text-gray-700">
             Select Stylist
           </label>
@@ -145,11 +170,20 @@ export default function BookingForm() {
             ) : (
               <option disabled>No stylists available</option>
             )}
+=======
+          <label htmlFor="stylist" className="block text-sm font-medium text-gray-700">Select Stylist</label>
+          <select id="stylist" className="w-full p-2 border rounded mt-1">
+            <option>Choose a stylist</option>
+            <option>Zanele M.</option>
+            <option>Thabo K.</option>
+            <option>Nonhle Msimango</option>
+>>>>>>> 85c791e3ee0afe40bdf0c04b1c9583601f3a28dd
           </select>
         </div>
 
         {/* Time Slot Dropdown */}
         <div>
+<<<<<<< HEAD
           <label htmlFor="appointment_date" className="block text-sm font-medium text-gray-700">
             Select Time Slot
           </label>
@@ -165,21 +199,30 @@ export default function BookingForm() {
             <option value="2025-09-17T13:00:00">Wed 1pm–5pm</option>
             <option value="2025-09-16T09:00:00">Tue 9am–12pm</option>
             <option value="2025-09-19T14:00:00">Fri 2pm–6pm</option>
+=======
+          <label htmlFor="time" className="block text-sm font-medium text-gray-700">Select Time Slot</label>
+          <select id="time" className="w-full p-2 border rounded mt-1">
+            <option>Choose a time</option>
+            <option>Mon 10am–2pm</option>
+            <option>Wed 1pm–5pm</option>
+            <option>Tue 9am–12pm</option>
+            <option>Fri 2pm–6pm</option>
+>>>>>>> 85c791e3ee0afe40bdf0c04b1c9583601f3a28dd
           </select>
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isSubmitting}
-          className={`w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition ${
-            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition"
         >
-          {isSubmitting ? 'Booking...' : 'Book Now'}
+          Book Now
         </button>
       </form>
     </section>
   );
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 85c791e3ee0afe40bdf0c04b1c9583601f3a28dd

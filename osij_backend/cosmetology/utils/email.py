@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 def send_appointment_confirmation(appointment):
     subject = f"💇 Appointment Confirmation — {appointment.service}"
     message = (

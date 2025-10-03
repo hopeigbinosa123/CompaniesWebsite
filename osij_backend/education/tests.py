@@ -6,12 +6,12 @@ from .models import Course, Enrollment
 # Create your tests here.
 class EducationTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username='testuser')
+        self.user = User.objects.create(username="testuser")
         self.course = Course.objects.create(
-            title='Test Course',
-            description='This is a test course.',
+            title="Test Course",
+            description="This is a test course.",
             price=99.99,
-            instructor=self.user
+            instructor=self.user,
         )
 
     def test_enrollment_creation(self):

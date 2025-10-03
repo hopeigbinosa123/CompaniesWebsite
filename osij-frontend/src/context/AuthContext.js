@@ -46,27 +46,7 @@ const login = async (userData, token) => {
   setToken(token);
 };
 
-// Update the verifyToken function in useEffect
-const verifyToken = async () => {
-  const storedToken = localStorage.getItem('token');
-  if (storedToken) {
-    try {
-      // Set the auth header before making the request
-      api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-      const response = await api.get('/auth/profile/');
-      setUser(response.data);
-      setToken(storedToken); // Make sure to set the token in state
-    } catch (error) {
-      console.error('unable to verify session', error);
-      // Clear invalid token
-      localStorage.removeItem('token');
-      delete api.defaults.headers.common['Authorization'];
-      setUser(null);
-      setToken(null);
-    }
-  }
-  setLoading(false);
-};
+
 
   const register = async (userData) => {
     const response = await auth.register(userData);
