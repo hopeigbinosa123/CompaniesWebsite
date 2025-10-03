@@ -14,16 +14,23 @@ import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import PrivacyPolicy from './components/shared/PrivacyPolicy.js';
 
 // Public Module Pages
 import EducationPage from './pages/EducationPage';
 import SoftwareServicesPage from './pages/SoftwareServicesPage';
+import SoftwareServiceDetailPage from './pages/SoftwareServiceDetailPage';
 import RequestServicePage from './pages/RequestServicePage';
 import DesignerListPage from './pages/GraphicDesign/List.jsx';
 import DesignerDetailPage from './pages/GraphicDesign/Detail.jsx';
 import GraphicDesignOrderForm from './pages/GraphicDesign/OrderForm.jsx';
+import CosmetologyStylistDetail from './pages/Cosmetology/Detail.jsx';
+import CosmetologyBookingForm from './pages/Cosmetology/BookingForm.jsx';
+import CosmetologyServiceDetail from './pages/Cosmetology/ServiceDetail.jsx';
 import CosmetologyPage from './pages/CosmetologyPage.jsx';
+
 import BookingForm from './pages/Cosmetology/BookingForm.jsx';
+c038f3eede06d5b5fa3ab9da8d395c379b996eb7
 
 // Protected Dashboard Pages
 import DashboardPage from './pages/DashboardPage';
@@ -81,6 +88,7 @@ function AppContent() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
 
             {/* Graphic Design */}
 
@@ -93,8 +101,14 @@ function AppContent() {
 
             {/* Cosmetology */}
             <Route path="/cosmetology" element={<CosmetologyPage />} />
+
             <Route path="/cosmetology/book" element={<BookingForm />} />
             <Route path="/cosmetology/book/:id" element={<BookingForm />} />
+
+            <Route path="/cosmetology/stylists/:id" element={<CosmetologyStylistDetail />} />
+            <Route path="/cosmetology/services/:id" element={<CosmetologyServiceDetail />} />
+            <Route path="/cosmetology/stylists/:id/book" element={<CosmetologyBookingForm />} />
+
 
 
           
@@ -105,7 +119,10 @@ function AppContent() {
 
             {/* Software Services */}
             <Route path="/software-services" element={<SoftwareServicesPage />} />
-            <Route path="/software-services/request" element={<RequestServicePage />} />
+            <Route path="/software-services/:id" element={<SoftwareServiceDetailPage />} />
+              
+              {/* Protected  */}
+            <Route path="/software-services/request" element={  <ProtectedRoute><RequestServicePage /></ProtectedRoute>} />
 
             {/* Protected Dashboard Routes */}
             <Route

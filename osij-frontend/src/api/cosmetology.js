@@ -11,7 +11,7 @@ const cosmetologyAPI = axios.create({
 
 cosmetologyAPI.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,14 +24,15 @@ cosmetologyAPI.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
 
+ 
 //  Individual named export for createAppointment
 export const createAppointment = async (data) => {
   const { data: response } = await cosmetologyAPI.post('appointments/', data);
@@ -39,9 +40,16 @@ export const createAppointment = async (data) => {
 };
 
 //  Named export for endpoints
+
+
+
 export const cosmetologyAPIEndpoints = {
   getServices: async () => {
     const { data } = await cosmetologyAPI.get('services/');
+    return data;
+  },
+  getService: async (id) => {
+    const { data } = await cosmetologyAPI.get(`services/${id}/`);
     return data;
   },
   createBooking: async (bookingData) => {
@@ -56,9 +64,27 @@ export const cosmetologyAPIEndpoints = {
     const { data } = await cosmetologyAPI.get(`stylists/${id}/`);
     return data;
   },
+
 };
 
 //  Named export for form helpers
+
+  createAppointment: async (data) => {
+    const { data: response } = await cosmetologyAPI.post('appointments/', data);
+    return response;
+  },
+  checkAppointmentAvailability; async (stylist, start_time, duration_minutes) => {
+    const { data } = await cosmetologyAPI.post('check-availability/', {
+      stylist,
+      start_time,
+      duration_minutes,
+    });
+    return data;
+  };
+
+
+
+
 export const cosmetologyFormHelpers = {
   validateBookingForm: (formData) => {
     const errors = {};
@@ -66,8 +92,29 @@ export const cosmetologyFormHelpers = {
     if (!formData.stylist?.trim()) errors.stylist = 'Stylist is required';
     if (!formData.appointment_date?.trim()) errors.appointment_date = 'Date and time are required';
     return errors;
+  },
+  validateAppointmentForm: (formData) => {
+    const errors = {};
+    if (!formData.service?.trim()) errors.service = 'Service is required';
+    if (!formData.stylist?.trim()) errors.stylist = 'Stylist is required';
+    if (!formData.appointment_date?.trim()) errors.appointment_date = 'Date and time are required';
+    return errors;
+  },
+  formatDuration: (minutes) => {
+    if (minutes < 60) {
+      return `${minutes} min`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    if (remainingMinutes === 0) {
+      return `${hours} hr${hours > 1 ? 's' : ''}`;
+    }
+    return `${hours} hr${hours > 1 ? 's' : ''} ${remainingMinutes} min`;
   }
 };
 
 // Default export (optional)
+
+
+
 export default cosmetologyAPIEndpoints;

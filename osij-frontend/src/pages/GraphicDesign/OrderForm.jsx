@@ -1,21 +1,47 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axiosConfig';
 import { useAuth } from '../../context/AuthContext';
 
 const GraphicDesignOrderForm = () => {
-  const { id: designerId } = useParams();
+  const { id: designerIdFromUrl } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
+  const [designers, setDesigners] = useState([]);
+  const [loadingDesigners, setLoadingDesigners] = useState(false);
+  
   const [formData, setFormData] = useState({
     title: '',
     brief: '',
     budget: '',
+    designer: designerIdFromUrl || '',
   });
   const [referenceFile, setReferenceFile] = useState(null);
   const [status, setStatus] = useState({ loading: false, error: null, success: null });
 
+  useEffect(() => {
+    const fetchDesigners = async () => {
+      setLoadingDesigners(true);
+      try {
+        const response = await api.get('/graphic-design/public/designers/');
+        console.log('Designers API response:', response.data);
+        const designersList = response.data.results || response.data;
+        console.log('Designers list:', designersList);
+        setDesigners(designersList);
+      } catch (err) {
+        console.error('Error fetching designers:', err);
+        setStatus(prev => ({ ...prev, error: 'Failed to load designers. Please refresh the page.' }));
+      } finally {
+        setLoadingDesigners(false);
+      }
+    };
+
+    if (!designerIdFromUrl) {
+      fetchDesigners();
+    }
+  }, [designerIdFromUrl]); 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -40,15 +66,20 @@ const GraphicDesignOrderForm = () => {
     if (formData.budget) {
       submissionData.append('budget', formData.budget);
     }
+    
+    const designerId = designerIdFromUrl || formData.designer;
     if (designerId) {
         submissionData.append('designer', designerId);
+    } else {
+        setStatus({ loading: false, error: 'Please select a designer.', success: null });
+        return;
     }
+
     if (referenceFile) {
       submissionData.append('reference_files', referenceFile);
     }
 
     try {
-      // Note: The ViewSet default create URL is typically the resource root.
       await api.post('/graphic-design/design-orders/', submissionData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -68,6 +99,24 @@ const GraphicDesignOrderForm = () => {
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Place a New Design Order</h1>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {!designerIdFromUrl && (
+              <div>
+                <label htmlFor="designer" className="block text-sm font-medium text-gray-700">Select a Designer</label>
+                <select
+                  name="designer"
+                  id="designer"
+                  value={formData.designer}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">-- Choose a Designer --</option>
+                  {designers.map(d => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">Order Title</label>
               <input type="text" name="title" id="title" required value={formData.title} onChange={handleChange} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500" />

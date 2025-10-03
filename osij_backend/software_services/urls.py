@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
     SoftwareServiceListView,
+    SoftwareServiceDetailView,
     ServiceRequestCreateView,
     UserServiceRequestsView,
     ServiceRequestDetailView,
@@ -11,6 +12,7 @@ from .views import (
 
 urlpatterns = [
     path("services/", SoftwareServiceListView.as_view(), name="software-service-list"),
+    path("services/<int:pk>/", SoftwareServiceDetailView.as_view(), name="software-service-detail"),
     path(
         "requests/create/",
         ServiceRequestCreateView.as_view(),
