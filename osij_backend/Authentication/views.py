@@ -197,6 +197,11 @@ def get_csrf_token(request):
     return response
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class DashboardView(APIView):
     """
     Provides a summary of the user's activity across all services.
@@ -205,25 +210,33 @@ class DashboardView(APIView):
 
     def get(self, request):
         user = request.user
+        logger.info(f"Fetching dashboard data for user: {user.username}")
 
         # Fetch recent data from different apps (e.g., latest 5 for each)
         enrollments = Enrollment.objects.filter(user=user).order_by('-enrolled_at')[:5]
         appointments = AppointmentBooking.objects.filter(user=user).order_by('-appointment_date')[:5]
+        logger.info(f"Found {appointments.count()} appointments for user {user.username}")
+        for app in appointments:
+            logger.info(f"Appointment: {app.id}, Date: {app.appointment_date}")
+
         design_orders = DesignOrder.objects.filter(client=user).order_by('-created_at')[:5]
         service_requests = ServiceRequest.objects.filter(user=user).order_by('-created_at')[:5]
 
         # Serialize the data
         enrollments_data = EnrollmentSerializer(enrollments, many=True, context={'request': request}).data
         appointments_data = AppointmentBookingSerializer(appointments, many=True).data
+        logger.info(f"Serialized appointments data: {appointments_data}")
+
         design_orders_data = DesignOrderSerializer(design_orders, many=True).data
         service_requests_data = ServiceRequestSerializer(service_requests, many=True).data
 
         # Combine into a single response
         dashboard_data = {
-            'enrollments': enrollments_data,
-            'appointments': appointments_data,
-            'design_orders': design_orders_data,
-            'service_requests': service_requests_data,
+            'enrolled_courses': enrollments_data,
+            'booked_appointments': appointments_data,
+            'recent_orders': design_orders_data,
+            'software_projects': service_requests_data,
         }
+        logger.info(f"Final dashboard data being sent: {dashboard_data}")
 
         return Response(dashboard_data, status=status.HTTP_200_OK)

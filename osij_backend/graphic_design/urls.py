@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from . import views
 from .views import (
     DesignerViewSet,
     DesignOrderViewSet,
@@ -9,6 +10,7 @@ from .views import (
     UserOrderListView,
     OrderDetailView,
     OrderUpdateView,
+    DesignOrderDeleteView,
 )
 
 router = DefaultRouter()
@@ -28,4 +30,5 @@ urlpatterns = [
     path("orders/my/", UserOrderListView.as_view(), name="user-order-list"),
     path("orders/<int:pk>/", OrderDetailView.as_view(), name="order-detail"),
     path("orders/<int:pk>/update/", OrderUpdateView.as_view(), name="order-update"),
+    path("orders/<int:pk>/delete/", views.DesignOrderDeleteView.as_view(), name="order-delete"),
 ]

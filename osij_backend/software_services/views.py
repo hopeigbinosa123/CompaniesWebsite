@@ -44,6 +44,14 @@ class ServiceRequestDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return ServiceRequest.objects.filter(user=self.request.user)
 
+class ServiceRequestDeleteView(generics.DestroyAPIView):
+    queryset = ServiceRequest.objects.all()
+    serializer_class = ServiceRequestSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return ServiceRequest.objects.filter(user=self.request.user)
+
 
 # Admin/Staff Views
 class ServiceRequestUpdateView(generics.RetrieveUpdateAPIView):

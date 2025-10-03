@@ -84,10 +84,6 @@ useEffect(() => {
 </div>
             </div>
 
-            <Link to="/contact" className="text-gray-700 hover:text-blue-600">
-              Contact
-            </Link>
-
             {/* Auth Links */}
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
@@ -159,8 +155,6 @@ useEffect(() => {
                 ))}
               </div>
 
-              <Link to="/contact" className="block px-3 py-2 text-gray-700">Contact</Link>
-              
               {isAuthenticated ? (
                 <>
                   <Link to="/dashboard" className="block px-3 py-2 text-gray-700">Dashboard</Link>

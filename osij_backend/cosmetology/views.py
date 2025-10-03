@@ -30,32 +30,29 @@ class AppointmentAvailabilityCheckView(APIView):
 
     def post(self, request, *args, **kwargs):
         stylist_id = request.data.get('stylist')
-        start_time_str = request.data.get('start_time')
-        duration_minutes = request.data.get('duration_minutes')
+        appointment_date_str = request.data.get('appointment_date')
 
-        if not all([stylist_id, start_time_str, duration_minutes]):
+        if not all([stylist_id, appointment_date_str]):
             return Response({'detail': 'Missing required fields.'}, status=400)
 
         try:
             stylist = StylistProfile.objects.get(id=stylist_id)
-            start_time = datetime.fromisoformat(start_time_str.replace('Z', '+00:00'))
-            duration = timedelta(minutes=int(duration_minutes))
-            end_time = start_time + duration
+            appointment_date = datetime.fromisoformat(appointment_date_str).date()
         except (StylistProfile.DoesNotExist, ValueError) as e:
             logger.error(f"Error checking appointment availability: {str(e)}")
             return Response({'detail': str(e)}, status=400)
 
-        # Check for overlapping appointments
-        overlapping_appointments = Appointment.objects.filter(
+        # Check for number of appointments on that day for the stylist
+        appointments_on_day = Appointment.objects.filter(
             stylist=stylist,
-            start_time__lt=end_time,
-            end_time__gt=start_time,
-        ).exists()
+            appointment_date=appointment_date,
+        ).count()
 
-        if overlapping_appointments:
-            return Response({'available': False, 'detail': 'This time slot is already booked.'}, status=200)
+        # Assuming a stylist can have a maximum of 5 appointments per day.
+        if appointments_on_day >= 5:
+            return Response({'available': False, 'detail': 'This day is fully booked.'}, status=200)
         else:
-            return Response({'available': True, 'detail': 'This time slot is available.'}, status=200)
+            return Response({'available': True, 'detail': 'This day is available.'}, status=200)
 
 
 class StylistViewSet(viewsets.ModelViewSet):
@@ -126,6 +123,13 @@ class AppointmentBookingViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context["request"] = self.request
         return context
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # Admin/Staff Views

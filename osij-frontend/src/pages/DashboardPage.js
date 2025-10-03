@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../api/axiosConfig';
 import StudentDashboard from '../Graphics design/StudentDashboard'; // Corrected import path
+import SoftwareProjects from '../components/dashboard/SoftwareProjects';
 
 
 const DashboardPage = () => {
@@ -43,6 +44,36 @@ const DashboardPage = () => {
         );
     }
 
+    const handleCancelAppointment = async (appointmentId) => {
+        if (window.confirm('Are you sure you want to cancel this appointment?')) {
+            try {
+                await apiClient.delete(`/cosmetology/bookings/${appointmentId}/`);
+                setDashboardData(prevData => ({
+                    ...prevData,
+                    booked_appointments: prevData.booked_appointments.filter(app => app.id !== appointmentId)
+                }));
+            } catch (err) {
+                setError('Failed to cancel appointment. Please try again later.');
+                console.error(err);
+            }
+        }
+    };
+
+    const handleLeaveCourse = async (enrollmentId) => {
+        if (window.confirm('Are you sure you want to leave this course?')) {
+            try {
+                await apiClient.delete(`/education/enrollments/${enrollmentId}/delete/`);
+                setDashboardData(prevData => ({
+                    ...prevData,
+                    enrolled_courses: prevData.enrolled_courses.filter(course => course.id !== enrollmentId)
+                }));
+            } catch (err) {
+                setError('Failed to leave course. Please try again later.');
+                console.error(err);
+            }
+        }
+    };
+
     const { enrolled_courses, upcoming_live_sessions, recent_orders, booked_appointments } = dashboardData;
 
     const DashboardCard = ({ title, children }) => (
@@ -77,8 +108,9 @@ const DashboardPage = () => {
                             <ul className="space-y-4">
                                 {enrolled_courses.map(course => (
                                     <li key={course.id} className="p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                        <Link to={`/courses/${course.id}`} className="font-semibold text-blue-600 hover:underline">{course.title}</Link>
-                                        <p className="text-sm text-gray-600">{course.description}</p>
+                                        <Link to={`/courses/${course.course}`} className="font-semibold text-blue-600 hover:underline">{course.course_title}</Link>
+                                        <p className="text-sm text-gray-600">{course.course_description}</p>
+                                        <button onClick={() => handleLeaveCourse(course.id)} className="text-red-500 hover:underline">Leave Course</button>
                                     </li>
                                 ))}
                             </ul>
@@ -128,7 +160,8 @@ const DashboardPage = () => {
                                     <li key={appointment.id} className="p-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                                         <p className="font-semibold text-gray-800">{appointment.service_name}</p>
                                         <p className="text-sm text-gray-600">With: {appointment.stylist_name}</p>
-                                        <p className="text-sm text-gray-600">On: {new Date(appointment.date_time).toLocaleString()}</p>
+                                        <p className="text-sm text-gray-600">On: {new Date(appointment.appointment_date).toLocaleDateString()}</p>
+                                        <button onClick={() => handleCancelAppointment(appointment.id)} className="text-red-500 hover:underline">Cancel</button>
                                     </li>
                                 ))}
                             </ul>
@@ -138,6 +171,9 @@ const DashboardPage = () => {
                     </DashboardCard>
                 </div>
 
+                <div className="mt-8">
+                    <SoftwareProjects />
+                </div>
                 <div className="mt-8">
                     <StudentDashboard />
                 </div>

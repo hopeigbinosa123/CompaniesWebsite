@@ -58,11 +58,10 @@ export const cosmetologyAPIEndpoints = {
     const { data: response } = await cosmetologyAPI.post('appointments/', data);
     return response;
   },
-  checkAppointmentAvailability: async (stylist, start_time, duration_minutes) => {
+  checkAppointmentAvailability: async (stylist, appointment_date) => {
     const { data } = await cosmetologyAPI.post('check-availability/', {
       stylist,
-      start_time,
-      duration_minutes,
+      appointment_date,
     });
     return data;
   },

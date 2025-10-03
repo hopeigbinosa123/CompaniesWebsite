@@ -12,6 +12,7 @@ urlpatterns = [
     ),
     # Enrollment endpoints
     path("enrollments/", views.EnrollmentView.as_view(), name="enrollments"),
+    path("enrollments/<int:pk>/delete/", views.EnrollmentDeleteView.as_view(), name="enrollment-delete"),
     path("my-enrollments/", views.MyEnrollmentsView.as_view(), name="my-enrollments"),
     path("enroll/", views.EnrollView.as_view(), name="enroll"),
     # Lesson endpoints

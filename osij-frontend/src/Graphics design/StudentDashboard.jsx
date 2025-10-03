@@ -8,6 +8,18 @@ const StudentDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const handleDeleteDesignOrder = async (orderId) => {
+        if (window.confirm('Are you sure you want to delete this design order?')) {
+            try {
+                await apiClient.delete(`/graphic-design/orders/${orderId}/delete/`);
+                setDesignOrders(prevOrders => prevOrders.filter(order => order.id !== orderId));
+            } catch (err) {
+                console.error(err);
+                setError('Failed to delete design order. Please try again later.');
+            }
+        }
+    };
+
     useEffect(() => {
         const fetchDesignOrders = async () => {
             try {
@@ -73,6 +85,7 @@ const StudentDashboard = () => {
                                 <span className={`px-3 py-1 text-sm font-semibold rounded-full ${order.status === 'Completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                                     {order.status}
                                 </span>
+                                <button onClick={() => handleDeleteDesignOrder(order.id)} className="text-red-500 hover:underline">Delete</button>
                             </div>
                             <p className="text-sm text-gray-600 mt-2">{order.brief}</p>
                         </li>

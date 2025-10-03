@@ -60,6 +60,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     course_title = serializers.CharField(source="course.title", read_only=True)
+    course_description = serializers.CharField(source="course.description", read_only=True)
     course_thumbnail = serializers.SerializerMethodField()
 
     class Meta:
@@ -69,6 +70,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
             "user",
             "course",
             "course_title",
+            "course_description",
             "course_thumbnail",
             "enrolled_at",
             "status",

@@ -73,7 +73,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "service",
             "notes",
             "appointment_date",
-            "duration_minutes",
             "status",
             "created_at",
             "updated_at",
@@ -81,7 +80,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         read_only_fields = ("status", "created_at", "updated_at")
 
     def validate_appointment_date(self, value):
-        if value < timezone.now():
+        if value < timezone.now().date():
             raise serializers.ValidationError("Appointment date must be in the future.")
         return value
 
@@ -94,8 +93,19 @@ class AppointmentBookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppointmentBooking
-        fields = "__all__"
-        read_only_fields = ["user", "created_at"]
+        fields = [
+            'id',
+            'user',
+            'user_name',
+            'service',
+            'service_name',
+            'stylist',
+            'stylist_name',
+            'appointment_date',
+            'status',
+            'notes',
+        ]
+        read_only_fields = ["user"]
 
     def get_user_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
@@ -107,11 +117,19 @@ class AppointmentBookingSerializer(serializers.ModelSerializer):
         return obj.stylist.user.get_full_name() or obj.stylist.user.username
 
 
+from datetime import datetime
+
+
 # Serializer for creating bookings
 class AppointmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppointmentBooking
         fields = ["service", "stylist", "appointment_date", "notes"]
+
+    def validate_appointment_date(self, value):
+        if isinstance(value, datetime):
+            return value.date()
+        return value
 
     def create(self, validated_data):
         validated_data["user"] = self.context["request"].user

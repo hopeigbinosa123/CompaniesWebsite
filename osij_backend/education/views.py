@@ -112,3 +112,11 @@ class MyEnrollmentsView(generics.ListAPIView):
 
     def get_queryset(self):
         return Enrollment.objects.filter(user=self.request.user)
+
+class EnrollmentDeleteView(generics.DestroyAPIView):
+    queryset = Enrollment.objects.all()
+    serializer_class = EnrollmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Enrollment.objects.filter(user=self.request.user)

@@ -1,4 +1,5 @@
 from django.urls import path
+from . import views
 from .views import (
     SoftwareServiceListView,
     SoftwareServiceDetailView,
@@ -25,6 +26,11 @@ urlpatterns = [
         "requests/<int:pk>/",
         ServiceRequestDetailView.as_view(),
         name="service-request-detail",
+    ),
+    path(
+        "requests/<int:pk>/delete/",
+        views.ServiceRequestDeleteView.as_view(),
+        name="service-request-delete",
     ),
     # Admin/Staff URLs
     path(

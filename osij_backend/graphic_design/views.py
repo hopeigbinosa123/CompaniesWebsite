@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, generics
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -92,3 +92,11 @@ class OrderUpdateView(UpdateAPIView):
     queryset = DesignOrder.objects.all()
     serializer_class = DesignOrderSerializer
     permission_classes = [permissions.IsAdminUser]
+
+class DesignOrderDeleteView(generics.DestroyAPIView):
+    queryset = DesignOrder.objects.all()
+    serializer_class = DesignOrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return DesignOrder.objects.filter(client=self.request.user)

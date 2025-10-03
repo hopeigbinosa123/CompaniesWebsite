@@ -41,17 +41,11 @@ class Appointment(models.Model):
         related_name="appointments",
     )
     service = models.ForeignKey(BeautyService, on_delete=models.CASCADE)
-    appointment_date = models.DateTimeField()
+    appointment_date = models.DateField()
     notes = models.TextField(blank=True)
-    duration_minutes = models.PositiveIntegerField(default=60)
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.PENDING
     )
-    service = models.ForeignKey(BeautyService, on_delete=models.CASCADE)
-    appointment_date = models.DateTimeField()
-    start_time = models.DateTimeField(null=True, blank=True)
-    end_time = models.DateTimeField(null=True, blank=True)
-    notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -74,7 +68,7 @@ class AppointmentBooking(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     service = models.ForeignKey(BeautyService, on_delete=models.CASCADE)
     stylist = models.ForeignKey(StylistProfile, on_delete=models.CASCADE)
-    appointment_date = models.DateTimeField()
+    appointment_date = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     notes = models.TextField(blank=True, null=True)
 

@@ -57,11 +57,9 @@ export default function CosmetologyBookingForm() {
 
       if (stylistId && appointment_date) {
         try {
-          // Use default 60 minutes for availability check
           const response = await cosmetologyAPIEndpoints.checkAppointmentAvailability(
             stylistId,
-            appointment_date,
-            60 // Default duration
+            appointment_date
           );
           setAvailability(response);
         } catch (err) {
@@ -93,7 +91,7 @@ export default function CosmetologyBookingForm() {
     },
     {
       name: "appointment_date",
-      type: "datetime-local",
+      type: "date",
       placeholder: "Appointment Date",
       required: true,
     },
@@ -136,7 +134,7 @@ export default function CosmetologyBookingForm() {
       // Use createBooking instead of createAppointment
       await cosmetologyAPIEndpoints.createBooking(payload);
       setSuccess(true);
-       Navigate('/dashboard/design-orders');
+       Navigate('/dashboard');
 
       setError(null);
     } catch (err) {
