@@ -27,7 +27,7 @@ export const graphicDesignAPI = {
   // Create a new design order
   createDesignOrder: async (data) => {
     try {
-      const response = await api.post('/graphic-design/design-orders/', data);
+      const response = await api.post('/graphic-design/orders/create/', data);
       return response.data;
     } catch (error) {
       console.error('Error creating design order:', error);
@@ -60,7 +60,7 @@ export const graphicDesignAPI = {
   // Update order status (admin only)
   updateOrderStatus: async (orderId, statusData) => {
     try {
-      const response = await api.patch(`/design-orders/admin/${orderId}/update/`, statusData);
+      const response = await api.patch(`/graphic-design/orders/${orderId}/update/`, statusData);
       return response.data;
     } catch (error) {
       console.error('Error updating order status:', error);
