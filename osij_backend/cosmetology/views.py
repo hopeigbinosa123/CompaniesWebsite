@@ -69,7 +69,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["service", "notes", "status"]
-    ordering_fields = ["start_time", "status"]
+    ordering_fields = ["appointment_date", "status"]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -105,29 +105,21 @@ class StylistDetailsView(generics.RetrieveAPIView):
 
 
 class AppointmentBookingViewSet(viewsets.ModelViewSet):
-    queryset = AppointmentBooking.objects.select_related("user", "service", "stylist")
+    queryset = Appointment.objects.select_related("client", "stylist", "service")
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action == "create":
+        if self.action in ["create", "update", "partial_update"]:
             return AppointmentCreateSerializer
-        return AppointmentBookingSerializer
+        return AppointmentSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(client=self.request.user)
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context["request"] = self.request
-        return context
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.user != request.user:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return self.queryset
+        return self.queryset.filter(client=self.request.user)
 
 # Admin/Staff Views
 class AllAppointmentsListView(generics.ListAPIView):
@@ -141,3 +133,4 @@ class AppointmentUpdateView(generics.UpdateAPIView):
     serializer_class = AppointmentBookingSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = "pk"
+

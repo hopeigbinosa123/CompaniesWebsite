@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, False)
+    DEBUG=(bool, True)
 )
 
 # Take environment variables from .env file
@@ -212,6 +212,25 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
+
+
+
+# Add this to see SQL queries in the console
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    }
+}
 
 # Email settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

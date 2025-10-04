@@ -1,3 +1,4 @@
+from django.test import client
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,11 +13,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 # Imports for Dashboard
 from education.models import Enrollment
-from cosmetology.models import AppointmentBooking
+from cosmetology.models import Appointment
 from graphic_design.models import DesignOrder
 from software_services.models import ServiceRequest
 from education.serializers import EnrollmentSerializer
-from cosmetology.serializers import AppointmentBookingSerializer
+from cosmetology.serializers import AppointmentSerializer
 from graphic_design.serializers import DesignOrderSerializer
 from software_services.serializers import ServiceRequestSerializer
 
@@ -214,7 +215,7 @@ class DashboardView(APIView):
 
         # Fetch recent data from different apps (e.g., latest 5 for each)
         enrollments = Enrollment.objects.filter(user=user).order_by('-enrolled_at')[:5]
-        appointments = AppointmentBooking.objects.filter(user=user).order_by('-appointment_date')[:5]
+        appointments = Appointment.objects.filter(client=user).order_by('-appointment_date')[:5]
         logger.info(f"Found {appointments.count()} appointments for user {user.username}")
         for app in appointments:
             logger.info(f"Appointment: {app.id}, Date: {app.appointment_date}")
@@ -224,7 +225,7 @@ class DashboardView(APIView):
 
         # Serialize the data
         enrollments_data = EnrollmentSerializer(enrollments, many=True, context={'request': request}).data
-        appointments_data = AppointmentBookingSerializer(appointments, many=True).data
+        appointments_data = AppointmentSerializer(appointments, many=True).data
         logger.info(f"Serialized appointments data: {appointments_data}")
 
         design_orders_data = DesignOrderSerializer(design_orders, many=True).data

@@ -1,154 +1,174 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { cosmetologyAPIEndpoints } from '../../api/cosmetology';
 
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { cosmetologyAPIEndpoints } from "../../api/cosmetology";
-import ServiceForm from "../../components/ServiceForm";
-
-export default function CosmetologyBookingForm() {
-  const { id: stylistIdFromUrl } = useParams();
-  const [stylists, setStylists] = useState([]);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedStylist, setSelectedStylist] = useState(stylistIdFromUrl || '');
-  const [availability, setAvailability] = useState({ available: true, message: '' });
+const BookingForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     service: '',
-    notes: '',
-    start_time: '',
-    duration_minutes: '',
+    stylist: '',
+    appointment_date: '',
+    notes: ''
   });
 
+  const [services, setServices] = useState([]);
+  const [stylists, setStylists] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Fetch services and stylists when component mounts
   useEffect(() => {
-    const fetchStylists = async () => {
+    const fetchData = async () => {
       try {
-        const data = await cosmetologyAPIEndpoints.getStylists();
-        setStylists(data);
+        // Fetch services
+        const servicesData = await cosmetologyAPIEndpoints.getServices();
+        setServices(servicesData);
+        
+        // Fetch stylists
+        const stylistsData = await cosmetologyAPIEndpoints.getStylists();
+        setStylists(stylistsData);
       } catch (err) {
-        console.error("Error fetching stylists:", err);
+        setError('Failed to load data. Please try again later.');
+        console.error('Error fetching data:', err);
       }
     };
 
-    if (!stylistIdFromUrl) {
-      fetchStylists();
-    }
-  }, [stylistIdFromUrl]);
+    fetchData();
+  }, []);
 
-  useEffect(() => {
-    const checkAvailability = async () => {
-      const stylistId = stylistIdFromUrl || selectedStylist;
-      const { start_time, duration_minutes } = formData;
-
-      if (stylistId && start_time && duration_minutes) {
-        try {
-          const response = await cosmetologyAPIEndpoints.checkAppointmentAvailability(
-            stylistId,
-            appointment_date
-          );
-          setAvailability(response);
-        } catch (err) {
-          console.error("Error checking availability:", err);
-          setAvailability({ available: false, message: 'Error checking availability.' });
-        }
-      } else {
-        setAvailability({ available: true, message: '' });
-      }
-    };
-
-    checkAvailability();
-  }, [selectedStylist, formData.start_time, formData.duration_minutes, stylistIdFromUrl, formData]);
-
-  const fields = [
-    {
-      name: "service",
-      type: "text",
-      placeholder: "Service (e.g., Haircut, Manicure)",
-      required: true,
-    },
-    {
-      name: "notes",
-      type: "textarea",
-      placeholder: "Notes (optional)",
-      required: false,
-    },
-    {
-      name: "appointment_date",
-      type: "date",
-      placeholder: "Appointment Date",
-      required: true,
-    },
-  ];
-
-  const handleSubmit = async (data) => {
-    try {
-      const stylistId = stylistIdFromUrl || selectedStylist;
-      if (!stylistId) throw new Error("Please select a stylist.");
-      if (!availability.available) throw new Error(availability.message || "Selected slot is unavailable.");
-
-      const payload = { ...data, stylist: stylistId };
-      await cosmetologyAPIEndpoints.createAppointment(payload);
-      setSuccess(true);
-       Navigate('/dashboard');
-
-      setError(null);
-    } catch (err) {
-      console.error("Booking failed:", err);
-      setError(err.message || "Booking failed. Please try again.");
-      setSuccess(false);
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleFormChange = (newFormData) => {
-    setFormData(newFormData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    setLoading(true);
+    setError('');
+    
+    try {
+      const bookingData = {
+        service: Number(formData.service),
+        stylist: Number(formData.stylist),
+        appointment_date: formData.appointment_date.split('T')[0], // Send only the date part: '2025-10-11'
+        notes: formData.notes || ''
+      };
+  
+      console.log('Sending booking data:', bookingData);
+  
+      const response = await cosmetologyAPIEndpoints.createBooking(bookingData);
+  
+      console.log('Booking response:', response);
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Booking error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      console.error('Full error response:', err.response);
+      setError(err.response?.data?.detail || 'Failed to book appointment');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
-      <h1 className="text-xl font-bold mb-4">Book Appointment</h1>
-
-      {success && (
-        <div className="mb-4 text-green-600 font-semibold">
-          ✅ Appointment booked successfully!
-        </div>
-      )}
+    <section className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6">Book an Appointment</h2>
+      
       {error && (
-        <div className="mb-4 text-red-600 font-semibold">
-          ⚠️ {error}
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          {error}
         </div>
       )}
 
-      {!stylistIdFromUrl && (
+      <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="stylist" className="block text-sm font-medium text-gray-700">Select a Stylist</label>
+          <label className="block text-gray-700 mb-2" htmlFor="service">
+            Service
+          </label>
           <select
-            name="stylist"
-            id="stylist"
-            value={selectedStylist}
-            onChange={(e) => setSelectedStylist(e.target.value)}
+            id="service"
+            name="service"
+            value={formData.service}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
             required
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500"
           >
-            <option value="">-- Choose a Stylist --</option>
-            {stylists.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
+            <option value="">Select a service</option>
+            {services.map(service => (
+              <option key={service.id} value={service.id}>
+                {service.name} (${service.price})
+              </option>
             ))}
           </select>
         </div>
-      )}
 
-      {availability.message && (
-        <div className={`mb-4 font-semibold ${availability.available ? 'text-green-600' : 'text-red-600'}`}>
-          {availability.message}
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2" htmlFor="stylist">
+            Stylist
+          </label>
+          <select
+            id="stylist"
+            name="stylist"
+            value={formData.stylist}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          >
+            <option value="">Select a stylist</option>
+            {stylists.map(stylist => (
+              <option key={stylist.id} value={stylist.id}>
+                {stylist.name} - {stylist.specialization}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
 
-      <ServiceForm
-        fields={fields}
-        onSubmit={handleSubmit}
-        submitLabel="Book Now"
-        initialState={formData}
-        onFormChange={handleFormChange}
-        submitDisabled={!availability.available}
-      />
-    </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2" htmlFor="appointment_date">
+            Date & Time
+          </label>
+          <input
+            type="datetime-local"
+            id="appointment_date"
+            name="appointment_date"
+            value={formData.appointment_date}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-gray-700 mb-2" htmlFor="notes">
+            Additional Notes (Optional)
+          </label>
+          <textarea
+            id="notes"
+            name="notes"
+            value={formData.notes}
+            onChange={handleChange}
+            rows="3"
+            className="w-full p-2 border rounded"
+            placeholder="Any specific requests or information for the stylist?"
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-pink-600 text-white py-3 px-4 rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {loading ? 'Booking...' : 'Book Now'}
+        </button>
+      </form>
+    </section>
   );
-}
+};
+
+export default BookingForm;

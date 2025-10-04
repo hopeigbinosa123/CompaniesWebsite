@@ -5,9 +5,29 @@ from .models import BeautyService, StylistProfile, Appointment, AppointmentBooki
 
 User = get_user_model()
 
+# Serializer for stylist profile list
+class StylistProfileSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
+    class Meta:
+        model = StylistProfile
+        fields = [
+            "id",
+            "name",
+            "username",
+            "specialization",
+            "experience",
+            "is_available",
+            "bio"
+        ]
 
+    def get_username(self, obj):
+        return getattr(obj.user, 'username', 'unnamed')
 
+    def get_name(self, obj):
+        full_name = obj.user.get_full_name()
+        return full_name if full_name else obj.user.username
 
 # Serializer for stylist profile detail
 class StylistDetailsSerializer(serializers.ModelSerializer):
@@ -32,22 +52,6 @@ class StylistDetailsSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         return obj.user.email
 
-        
-# Serializer for stylist profile detail
-class StylistDetailsSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-    email = serializers.SerializerMethodField()
-
-    class Meta:
-        model = StylistProfile
-        fields = "__all__"
-
-    def get_name(self, obj):
-        return obj.user.get_full_name() or obj.user.username
-
-    def get_email(self, obj):
-        return obj.user.email
-
 # Serializer for beauty services
 class BeautyServiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,8 +64,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
     stylist_name = serializers.CharField(source="stylist.user.username", read_only=True)
 
     class Meta:
-        model = Appointment
-        fields = [
+         model = Appointment
+         fields = [
             "id",
             "client",
             "client_username",
@@ -74,10 +78,10 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ("status", "created_at", "updated_at")
+         read_only_fields = ("status", "created_at", "updated_at")
 
     def validate_appointment_date(self, value):
-        if value < timezone.now().date():
+        if value < timezone.now():
             raise serializers.ValidationError("Appointment date must be in the future.")
         return value
 
@@ -89,19 +93,8 @@ class AppointmentBookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppointmentBooking
-        fields = [
-            'id',
-            'user',
-            'user_name',
-            'service',
-            'service_name',
-            'stylist',
-            'stylist_name',
-            'appointment_date',
-            'status',
-            'notes',
-        ]
-        read_only_fields = ["user"]
+        fields = "__all__"
+        read_only_fields = ["user", "created_at"]
 
     def get_user_name(self, obj):
         return obj.user.get_full_name() or obj.user.username
@@ -112,20 +105,13 @@ class AppointmentBookingSerializer(serializers.ModelSerializer):
     def get_stylist_name(self, obj):
         return obj.stylist.user.get_full_name() or obj.stylist.user.username
 
-from datetime import datetime
-
-
 # Serializer for creating bookings
 class AppointmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AppointmentBooking
-        fields = ["service", "stylist", "appointment_date", "notes"]
+        model = Appointment
+        fields = ['service', 'stylist', 'appointment_date', 'notes']
+        extra_kwargs = {
+            'appointment_date': {'required': True}
+        }
 
-    def validate_appointment_date(self, value):
-        if isinstance(value, datetime):
-            return value.date()
-        return value
-
-    def create(self, validated_data):
-        validated_data["user"] = self.context["request"].user
-        return super().create(validated_data)
+   

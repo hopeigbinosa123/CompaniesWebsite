@@ -39,28 +39,43 @@ export default function ServiceForm({ fields, onSubmit, submitLabel, initialStat
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {fields.map((field) => (
-        <div key={field.name}>
-          {field.type === "textarea" ? (
-            <textarea
-              name={field.name}
-              placeholder={field.placeholder}
-              value={formData[field.name]}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required={field.required}
-            />
-          ) : (
-            <input
-              type={field.type}
-              name={field.name}
-              placeholder={field.placeholder}
-              value={formData[field.name]}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-              required={field.required}
-            />
-          )}
-        </div>
+    <div key={field.name}>
+    {field.type === "textarea" ? (
+      <textarea
+        name={field.name}
+        placeholder={field.placeholder}
+        value={formData[field.name]}
+        onChange={handleChange}
+        className="w-full border p-2 rounded"
+        required={field.required}
+      />
+    ) : field.type === "select" ? (
+      <select
+        name={field.name}
+        value={formData[field.name]}
+        onChange={handleChange}
+        className="w-full border p-2 rounded"
+        required={field.required}
+      >
+        <option value="">{field.placeholder}</option>
+        {field.options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    ) : (
+      <input
+        type={field.type}
+        name={field.name}
+        placeholder={field.placeholder}
+        value={formData[field.name]}
+        onChange={handleChange}
+        className="w-full border p-2 rounded"
+        required={field.required}
+      />
+    )}
+  </div>  
       ))}
       <button
         type="submit"

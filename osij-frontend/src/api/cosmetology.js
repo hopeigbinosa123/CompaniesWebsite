@@ -9,10 +9,9 @@ const cosmetologyAPI = axios.create({
   },
 });
 
-// 🔐 Attach token to requests
 cosmetologyAPI.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -21,37 +20,19 @@ cosmetologyAPI.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 🚫 Handle 401 errors
 cosmetologyAPI.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
 
-// ✅ Individual named exports
-export const createAppointment = async (data) => {
-  const { data: response } = await cosmetologyAPI.post('appointments/', data);
-  return response;
-};
-
-export const checkAppointmentAvailability = async (stylist, start_time, duration_minutes) => {
-  const { data } = await cosmetologyAPI.post('check-availability/', {
-    stylist,
-    start_time,
-    duration_minutes,
-  });
-  return data;
-};
-
-// ✅ Grouped endpoints
-
-// ✅ Named export for endpoint
+// ✅ Named export for endpoints
 export const cosmetologyAPIEndpoints = {
   getServices: async () => {
     const { data } = await cosmetologyAPI.get('services/');
@@ -73,22 +54,20 @@ export const cosmetologyAPIEndpoints = {
     const { data } = await cosmetologyAPI.get(`stylists/${id}/`);
     return data;
   },
-<<<<<<< HEAD
   createAppointment: async (data) => {
     const { data: response } = await cosmetologyAPI.post('appointments/', data);
     return response;
   },
-  checkAppointmentAvailability: async (stylist, appointment_date) => {
+  checkAppointmentAvailability: async (stylist, start_time, duration_minutes) => {
     const { data } = await cosmetologyAPI.post('check-availability/', {
       stylist,
-      appointment_date,
+      start_time,
+      duration_minutes,
     });
     return data;
   },
 };
 
-
-// ✅ Form helper
 // ✅ Named export for form helpers
 export const cosmetologyFormHelpers = {
   validateBookingForm: (formData) => {
@@ -106,17 +85,17 @@ export const cosmetologyFormHelpers = {
     return errors;
   },
   formatDuration: (minutes) => {
-    if (minutes < 60) return `${minutes} min`;
+    if (minutes < 60) {
+      return `${minutes} min`;
+    }
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-    return remainingMinutes === 0
-      ? `${hours} hr${hours > 1 ? 's' : ''}`
-      : `${hours} hr${hours > 1 ? 's' : ''} ${remainingMinutes} min`;
-  },
+    if (remainingMinutes === 0) {
+      return `${hours} hr${hours > 1 ? 's' : ''}`;
+    }
+    return `${hours} hr${hours > 1 ? 's' : ''} ${remainingMinutes} min`;
+  }
 };
 
-
 // ✅ Default export (optional, if used elsewhere)
-
 export default cosmetologyAPIEndpoints;
-
